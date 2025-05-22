@@ -1,3 +1,52 @@
+<!-- AI Insights Dashboard Panel (Premium) -->
+<% if (user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual')) { %>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-primary">
+            <div class="card-header bg-primary text-white py-3">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h4 class="mb-0"><i class="fas fa-robot me-2"></i> AI Goal Assistant</h4>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="badge bg-warning">Premium Feature</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div id="ai-dashboard-assistant">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% } else { %>
+<!-- AI Premium Promo Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-warning">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h4 class="mb-2"><i class="fas fa-robot me-2"></i> Upgrade for AI Assistance</h4>
+                        <p class="mb-0">Get personalized goal insights, AI-generated custom milestones, action plans, and more!</p>
+                        <p class="mt-2 mb-0"><span class="badge bg-info">Free users</span> receive basic milestones. <span class="badge bg-warning">Premium users</span> get AI-powered custom milestones tailored to your specific goal.</p>
+                    </div>
+                    <div class="ms-auto">
+                        <a href="/subscription" class="btn btn-warning">Upgrade Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col-12">
@@ -243,35 +292,39 @@
                 <form id="new-goal-form">
                     <div class="mb-3">
                         <label for="goalTitle" class="form-label">Goal Title</label>
-                        <input type="text" class="form-control" id="goalTitle" placeholder="Enter goal title" required>
-                        <div class="form-text">Be specific about what you want to achieve</div>
+                        <input type="text" class="form-control" id="goalTitle" placeholder="Enter your goal (e.g., Learn guitar, Run a marathon)" required>
+                        <div class="form-text">Tell us what you want to achieve, and we'll create custom milestones!</div>
                     </div>
                     <div class="mb-3">
-                        <label for="goalDescription" class="form-label">Description</label>
-                        <textarea class="form-control" id="goalDescription" rows="3" placeholder="Describe your goal in detail for better AI milestones"></textarea>
-                        <div class="form-text">More details help our AI create better milestones for you</div>
+                        <label for="goalDescription" class="form-label">Additional Details (Optional)</label>
+                        <textarea class="form-control" id="goalDescription" rows="2" placeholder="Any specific details about your goal? (e.g., specific guitar style, marathon date)"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="goalCategory" class="form-label">Category</label>
-                        <select class="form-select" id="goalCategory" required>
-                            <option value="">Select a category</option>
-                            <option value="health">Health & Fitness</option>
-                            <option value="career">Career & Education</option>
-                            <option value="personal">Personal Development</option>
-                            <option value="finance">Financial</option>
-                            <option value="relationships">Relationships</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="goalDeadline" class="form-label">Target Date</label>
-                        <input type="date" class="form-control" id="goalDeadline" required>
-                        <div class="form-text">When do you want to achieve this goal?</div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="goalCategory" class="form-label">Category</label>
+                                <select class="form-select" id="goalCategory" required>
+                                    <option value="">Select a category</option>
+                                    <option value="health">Health & Fitness</option>
+                                    <option value="career">Career & Education</option>
+                                    <option value="personal">Personal Development</option>
+                                    <option value="finance">Financial</option>
+                                    <option value="relationships">Relationships</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="goalDeadline" class="form-label">Target Date</label>
+                                <input type="date" class="form-control" id="goalDeadline" required>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 
-                <div class="alert alert-info">
-                    <i class="fas fa-lightbulb me-2"></i> After creating your goal, AI will automatically generate detailed milestones to help you achieve it.
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-magic me-2"></i> We'll automatically generate 6 milestones to help you achieve your goal!
                 </div>
                 
                 <!-- Loading indicator (hidden by default) -->
@@ -279,7 +332,7 @@
                     <div class="spinner-border text-primary mb-2" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <p class="mb-0">AI is generating your milestones...</p>
+                    <p class="mb-0">Creating your personalized milestones...</p>
                 </div>
                 
             </div>
@@ -401,15 +454,221 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching goal progress:', error));
     }
     
-    // Save new goal
+    // AI Dashboard Assistant for premium users
+    const aiDashboardAssistant = document.getElementById('ai-dashboard-assistant');
+    if (aiDashboardAssistant) {
+        loadAIDashboardInsights();
+    }
+    
+    // Function to load AI dashboard insights
+    function loadAIDashboardInsights() {
+        // Fetch all goals first to provide context to the AI
+        fetch('/api/goals')
+            .then(response => response.json())
+            .then(goals => {
+                if (goals && goals.length > 0) {
+                    // Get AI insights based on goals
+                    return fetch('/api/ai/dashboard-insights', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ goals })
+                    });
+                } else {
+                    // No goals found - display empty state
+                    renderEmptyAIAssistant();
+                    throw new Error('No goals found');
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    renderAIAssistant(data.data);
+                } else {
+                    // Handle error
+                    renderAIAssistantError(data.error || 'Failed to load AI insights');
+                }
+            })
+            .catch(error => {
+                console.error('Error loading AI insights:', error);
+                if (error.message !== 'No goals found') {
+                    renderAIAssistantError('Failed to load AI insights. Please try again later.');
+                }
+            });
+    }
+    
+    // Function to render AI assistant insights
+    function renderAIAssistant(insights) {
+        // Format can vary based on your AI service response
+        const html = `
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="ai-message mb-3">
+                        <div class="d-flex">
+                            <div class="ai-avatar bg-primary text-white rounded-circle p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div>
+                                <p class="mb-1 fw-bold">Hello ${insights.username || 'there'}!</p>
+                                <p class="mb-3">${insights.summary}</p>
+                                
+                                ${insights.topPriority ? `
+                                <div class="card border-warning mb-3">
+                                    <div class="card-body p-3">
+                                        <h5 class="card-title"><i class="fas fa-exclamation-circle text-warning me-2"></i> Priority Focus</h5>
+                                        <p class="card-text">${insights.topPriority}</p>
+                                        ${insights.priorityGoalId ? `<a href="/goals/detail/${insights.priorityGoalId}" class="btn btn-sm btn-warning">View Goal</a>` : ''}
+                                    </div>
+                                </div>
+                                ` : ''}
+                                
+                                <h5 class="mt-3">Recommendations</h5>
+                                <ul class="list-group">
+                                    ${insights.recommendations.map(rec => `
+                                        <li class="list-group-item">
+                                            <i class="fas ${rec.icon || 'fa-lightbulb'} text-primary me-2"></i>
+                                            ${rec.text}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body p-3">
+                            <h5 class="card-title"><i class="fas fa-chart-line me-2"></i> Goal Progress</h5>
+                            <div class="progress-chart">
+                                <canvas id="aiGoalProgress" width="100%" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-3">
+                            <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i> Upcoming</h5>
+                            ${insights.upcomingMilestones && insights.upcomingMilestones.length > 0 ? `
+                                <ul class="list-group list-group-flush">
+                                    ${insights.upcomingMilestones.map(milestone => `
+                                        <li class="list-group-item px-0">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <p class="mb-1">${milestone.title}</p>
+                                                <small class="text-muted">${milestone.dueIn}</small>
+                                            </div>
+                                            <small>${milestone.goalTitle}</small>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            ` : `
+                                <p class="text-muted">No upcoming milestones</p>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        aiDashboardAssistant.innerHTML = html;
+    }
+    
+    // Function to render empty state
+    function renderEmptyAIAssistant() {
+        aiDashboardAssistant.innerHTML = `
+            <div class="text-center py-4">
+                <i class="fas fa-robot fa-3x text-muted mb-3"></i>
+                <h5>Create Your First Goal</h5>
+                <p class="text-muted">Add a goal to get personalized AI insights and recommendations.</p>
+                <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+                    <i class="fas fa-plus-circle me-2"></i> Add Your First Goal
+                </button>
+            </div>
+        `;
+    }
+    
+    // Function to render error state
+    function renderAIAssistantError(errorMessage) {
+        aiDashboardAssistant.innerHTML = `
+            <div class="text-center py-4">
+                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                <h5>Oops! Something went wrong</h5>
+                <p class="text-muted">${errorMessage}</p>
+                <button class="btn btn-outline-primary mt-2" onclick="loadAIDashboardInsights()">
+                    <i class="fas fa-sync me-2"></i> Try Again
+                </button>
+            </div>
+        `;
+    }
+    
+    // AI SMART Goal generation for premium users
+    const generateSmartGoalBtn = document.getElementById('generate-smart-goal-btn');
+    if (generateSmartGoalBtn) {
+        generateSmartGoalBtn.addEventListener('click', function() {
+            const userInput = document.getElementById('aiGoalInput').value;
+            if (!userInput) {
+                alert('Please describe your goal');
+                return;
+            }
+            
+            // Show loading state
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
+            
+            // Call the AI service
+            fetch('/api/ai/smart-goal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userInput }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Reset button state
+                generateSmartGoalBtn.disabled = false;
+                generateSmartGoalBtn.innerHTML = '<i class="fas fa-robot me-1"></i> Generate SMART Goal';
+                
+                if (data.success && data.data) {
+                    // Display the result
+                    const result = typeof data.data === 'string' ? JSON.parse(data.data) : data.data;
+                    
+                    document.getElementById('ai-goal-title').textContent = result.title;
+                    document.getElementById('ai-goal-description').textContent = result.description;
+                    document.getElementById('ai-goal-metrics').textContent = result.metrics;
+                    document.getElementById('ai-goal-timeframe').textContent = result.timeframe;
+                    
+                    // Store the result as a data attribute
+                    document.getElementById('ai-goal-result').dataset.goalData = JSON.stringify(result);
+                    
+                    // Show the result
+                    document.getElementById('ai-goal-result').classList.remove('d-none');
+                } else {
+                    alert('Error generating SMART goal: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                // Reset button state
+                generateSmartGoalBtn.disabled = false;
+                generateSmartGoalBtn.innerHTML = '<i class="fas fa-robot me-1"></i> Generate SMART Goal';
+                
+                console.error('Error:', error);
+                alert('Error generating SMART goal. Please try again.');
+            });
+        });
+    }
+    
+    // Simplified goal creation - auto-generates milestones
     document.getElementById('save-goal-btn').addEventListener('click', function() {
+        // Get goal information
         const title = document.getElementById('goalTitle').value;
-        const description = document.getElementById('goalDescription').value;
+        const description = document.getElementById('goalDescription').value || '';
         const category = document.getElementById('goalCategory').value;
         const targetDate = document.getElementById('goalDeadline').value;
         
         if (!title || !targetDate || !category) {
-            alert('Please fill in all required fields');
+            alert('Please enter a goal title, select a category, and set a target date');
             return;
         }
 
@@ -417,9 +676,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('ai-loading-indicator').classList.remove('d-none');
         const saveButton = document.getElementById('save-goal-btn');
         saveButton.disabled = true;
-        saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+        saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Creating your goal...';
         
-        // Send request to create goal
+        // Send request to create goal with auto-generated milestones
         fetch('/api/goals', {
             method: 'POST',
             headers: {
@@ -439,7 +698,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            // Hide loading indicator (though we're navigating away)
+            // Hide loading indicator
             document.getElementById('ai-loading-indicator').classList.add('d-none');
             saveButton.disabled = false;
             saveButton.innerHTML = 'Create Goal';
@@ -461,6 +720,66 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Failed to create goal. Please try again.');
         });
     });
+    
+    // Helper function to try to extract a date from timeframe text
+    function extractDateFromTimeframe(timeframe) {
+        if (!timeframe) return null;
+        
+        // Look for common patterns
+        const monthMatch = timeframe.match(/by\s+(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})/i);
+        if (monthMatch) {
+            const month = new Date(Date.parse(monthMatch[1] + " 1, 2000")).getMonth();
+            const day = parseInt(monthMatch[2]);
+            const year = parseInt(monthMatch[3]);
+            return `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        }
+        
+        // Look for "in X months" pattern
+        const monthsMatch = timeframe.match(/in\s+(\d+)\s+months/i);
+        if (monthsMatch) {
+            const months = parseInt(monthsMatch[1]);
+            const targetDate = new Date();
+            targetDate.setMonth(targetDate.getMonth() + months);
+            return targetDate.toISOString().split('T')[0];
+        }
+        
+        // Look for "in X weeks" pattern
+        const weeksMatch = timeframe.match(/in\s+(\d+)\s+weeks/i);
+        if (weeksMatch) {
+            const weeks = parseInt(weeksMatch[1]);
+            const targetDate = new Date();
+            targetDate.setDate(targetDate.getDate() + (weeks * 7));
+            return targetDate.toISOString().split('T')[0];
+        }
+        
+        // Default to 3 months from now if we can't extract a date
+        const defaultDate = new Date();
+        defaultDate.setMonth(defaultDate.getMonth() + 3);
+        return defaultDate.toISOString().split('T')[0];
+    }
+    
+    // Helper function to detect category from goal text
+    function detectCategoryFromGoal(title, description) {
+        const text = (title + " " + description).toLowerCase();
+        
+        const categories = {
+            health: ['health', 'fitness', 'weight', 'diet', 'exercise', 'workout', 'run', 'gym', 'yoga', 'meditation'],
+            career: ['career', 'job', 'work', 'professional', 'study', 'learn', 'course', 'degree', 'education', 'skill'],
+            finance: ['finance', 'money', 'save', 'budget', 'invest', 'debt', 'loan', 'mortgage', 'retirement', 'financial'],
+            relationships: ['relationship', 'family', 'friend', 'partner', 'marriage', 'social', 'connection', 'networking'],
+            personal: ['personal', 'hobby', 'read', 'book', 'travel', 'creative', 'art', 'music', 'write', 'journal']
+        };
+        
+        for (const [category, keywords] of Object.entries(categories)) {
+            for (const keyword of keywords) {
+                if (text.includes(keyword)) {
+                    return category;
+                }
+            }
+        }
+        
+        return 'personal'; // Default category
+    }
     
     // Edit goal button handler
     document.querySelectorAll('.edit-goal-btn').forEach(button => {
@@ -636,4 +955,14 @@ document.addEventListener('DOMContentLoaded', function() {
 .progress-bar {
     animation: progressAnimation 1s ease-in-out;
 }
-</style> 
+</style>
+
+<!-- AI Insights Dashboard Panel (Premium) -->
+
+<!-- AI Dashboard Integration for Premium Users -->
+<% if (user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual')) { %>
+<!-- Remove all content here -->
+<% } else { %>
+<!-- Upgrade Banner for Non-Premium Users -->
+<!-- Remove all content here -->
+<% } %> 

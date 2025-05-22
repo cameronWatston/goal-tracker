@@ -21,6 +21,7 @@ db.serialize(() => {
         password TEXT NOT NULL,
         verification_code TEXT,
         is_verified INTEGER DEFAULT 0,
+        is_admin INTEGER DEFAULT 0,
         verification_expires DATETIME,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         subscription_plan TEXT DEFAULT 'free',
@@ -38,6 +39,17 @@ db.serialize(() => {
         }
         
         const columnNames = columns.map(col => col.name);
+        
+        // Check for is_admin column
+        if (!columnNames.includes('is_admin')) {
+            db.run(`ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0`, (err) => {
+                if (err) {
+                    console.error('Error adding is_admin column:', err);
+                } else {
+                    console.log('Added is_admin column to users table');
+                }
+            });
+        }
         
         // Check for subscription_plan column
         if (!columnNames.includes('subscription_plan')) {

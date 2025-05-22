@@ -5,10 +5,17 @@ A comprehensive goal tracking application with AI-powered milestone generation a
 ## Features
 
 - **Goal Management**: Create, track, and complete personal and professional goals
-- **AI-Powered Milestones**: Generate smart milestones to help achieve your goals
+- **AI-Powered Assistant**: Six AI features to enhance your goal achievement
+  - AI Goal Assistant: Create SMART goals with AI guidance
+  - Automated Goal Breakdown: Generate step-by-step action plans
+  - Motivational Nudges: Receive personalized coaching messages
+  - Goal Completion Forecasting: Predict success likelihood with recommendations
+  - Progress Insights & Reports: Get AI analytics on your goal patterns
+  - Natural Language Logging: Update progress using conversational language
 - **Community Features**: Share goals, posts, and encourage others
 - **Subscription Plans**: Free, Monthly (£10), and Annual (£100) options
 - **Stripe Integration**: Secure payment processing
+- **Admin Dashboard**: User and content management capabilities
 
 ## Tech Stack
 

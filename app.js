@@ -135,12 +135,16 @@ const authRoutes = require('./routes/auth');
 const goalRoutes = require('./routes/goals');
 const subscriptionRoutes = require('./routes/subscription');
 const communityRoutes = require('./routes/community');
+const adminRoutes = require('./routes/admin');
+const aiRoutes = require('./routes/ai');
 
 app.use('/auth', authRoutes);
 app.use('/api/goals', goalRoutes);
 app.use('/goals', goalRoutes); // Add new page routes
 app.use('/subscription', subscriptionRoutes); // Add subscription routes
 app.use('/community', communityRoutes); // Add community routes
+app.use('/admin', adminRoutes); // Add admin routes
+app.use('/api/ai', aiRoutes); // Add AI feature routes
 
 // Add profile route
 app.get('/profile', (req, res) => {

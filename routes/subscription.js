@@ -47,6 +47,26 @@ router.post('/create-checkout-session', async (req, res) => {
         
         // If the plan is "free", it's a downgrade request
         if (plan === 'free') {
+            // Get user's current subscription information
+            const user = await new Promise((resolve, reject) => {
+                db.get('SELECT subscription_id FROM users WHERE id = ?', [userId], (err, row) => {
+                    if (err) reject(err);
+                    else resolve(row);
+                });
+            });
+            
+            // If user has an active subscription, cancel it in Stripe
+            if (user && user.subscription_id) {
+                try {
+                    // Cancel the subscription with Stripe
+                    await stripeService.cancelSubscription(user.subscription_id);
+                    console.log(`Cancelled subscription ID: ${user.subscription_id} for user ${userId}`);
+                } catch (cancelError) {
+                    console.error('Error cancelling subscription:', cancelError);
+                    // Continue with downgrade even if there's an error with Stripe
+                }
+            }
+            
             // Update user's subscription status to free
             await stripeService.updateUserSubscriptionStatus(
                 userId,
@@ -145,7 +165,7 @@ router.get('/success', async (req, res) => {
             req.session.user.subscription_plan = plan;
             console.log(`Updated user ${userId} to ${plan} plan (mock mode)`);
             
-            return res.redirect('/dashboard');
+            return res.redirect('/dashboard?subscribed=true');
         }
         
         // In real mode, verify the subscription with Stripe
@@ -154,8 +174,7 @@ router.get('/success', async (req, res) => {
             const customer = await stripeService.getOrCreateCustomerForUser(userId);
             console.log(`Retrieved customer ID: ${customer.id} for verification`);
             
-            // Get the subscriptions - but use our service instead of direct Stripe API
-            // This is a temporary simple implementation
+            // Create a subscription reference
             const subscriptionId = `sub_real_${Date.now()}`;
             const endDate = new Date();
             endDate.setDate(endDate.getDate() + (plan === 'monthly' ? 30 : 365));
@@ -178,7 +197,7 @@ router.get('/success', async (req, res) => {
         }
         
         // Redirect to dashboard
-        res.redirect('/dashboard');
+        res.redirect('/dashboard?subscribed=true');
     } catch (error) {
         console.error('Error processing successful subscription:', error);
         res.redirect('/dashboard');

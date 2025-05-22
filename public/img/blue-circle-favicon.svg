@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Outer circle -->
+  <circle cx="16" cy="16" r="14" fill="#2c3e50" />
+  <!-- Middle circle -->
+  <circle cx="16" cy="16" r="10" fill="#3498db" />
+  <!-- Inner circle -->
+  <circle cx="16" cy="16" r="5" fill="#ecf0f1" />
+  <!-- Center dot -->
+  <circle cx="16" cy="16" r="2" fill="#3498db" />
+</svg> 

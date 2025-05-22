@@ -1,0 +1,355 @@
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 text-dark mb-0">User Management</h1>
+                <p class="text-muted">View, edit, upgrade or delete user accounts</p>
+            </div>
+            <div>
+                <a href="/admin" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter and search -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form class="row g-3" method="GET" action="/admin/users">
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Search Users</label>
+                    <input type="text" class="form-control" id="search" name="search" placeholder="Username or email" value="<%= locals.search || '' %>">
+                </div>
+                <div class="col-md-3">
+                    <label for="filter" class="form-label">Filter By</label>
+                    <select class="form-select" id="filter" name="filter">
+                        <option value="">All Users</option>
+                        <option value="premium" <%= locals.filter === 'premium' ? 'selected' : '' %>>Premium Users</option>
+                        <option value="free" <%= locals.filter === 'free' ? 'selected' : '' %>>Free Users</option>
+                        <option value="admin" <%= locals.filter === 'admin' ? 'selected' : '' %>>Admins</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="sort" class="form-label">Sort By</label>
+                    <select class="form-select" id="sort" name="sort">
+                        <option value="newest" <%= !locals.sort || locals.sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+                        <option value="oldest" <%= locals.sort === 'oldest' ? 'selected' : '' %>>Oldest First</option>
+                        <option value="username" <%= locals.sort === 'username' ? 'selected' : '' %>>Username (A-Z)</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter me-1"></i> Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Users table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">User</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Created</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Admin</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (users && users.length > 0) { %>
+                            <% users.forEach(user => { %>
+                                <tr>
+                                    <td><%= user.id %></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar bg-primary bg-opacity-10 text-primary rounded-circle me-2">
+                                                <%= user.username.charAt(0).toUpperCase() %>
+                                            </div>
+                                            <span><%= user.username %></span>
+                                        </div>
+                                    </td>
+                                    <td><%= user.email %></td>
+                                    <td><%= new Date(user.created_at).toLocaleDateString() %></td>
+                                    <td>
+                                        <% if (user.subscription_plan === 'monthly') { %>
+                                            <span class="badge bg-success">Monthly</span>
+                                        <% } else if (user.subscription_plan === 'annual') { %>
+                                            <span class="badge bg-success">Annual</span>
+                                        <% } else { %>
+                                            <span class="badge bg-secondary">Free</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <% if (user.is_admin === 1) { %>
+                                            <span class="badge bg-danger">Admin</span>
+                                        <% } else { %>
+                                            <span class="badge bg-light text-dark">User</span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="/admin/users/<%= user.id %>" class="btn btn-outline-primary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-success" onclick="openUpgradeModal('<%= user.id %>', '<%= user.username %>')">
+                                                <i class="fas fa-crown"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-warning" onclick="toggleAdminStatus('<%= user.id %>', '<%= user.username %>', <%= user.is_admin === 1 ? false : true %>)">
+                                                <i class="fas fa-<%= user.is_admin === 1 ? 'user' : 'user-shield' %>"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-danger" onclick="confirmDeleteUser('<%= user.id %>', '<%= user.username %>')">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="7" class="text-center py-4">No users found</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <div class="d-flex justify-content-center mt-4">
+            <nav aria-label="User pagination">
+                <ul class="pagination">
+                    <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+                        <a class="page-link" href="/admin/users?page=<%= currentPage - 1 %><%= locals.filter ? '&filter=' + locals.filter : '' %><%= locals.search ? '&search=' + locals.search : '' %><%= locals.sort ? '&sort=' + locals.sort : '' %>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <% for(let i = 1; i <= totalPages; i++) { %>
+                        <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="/admin/users?page=<%= i %><%= locals.filter ? '&filter=' + locals.filter : '' %><%= locals.search ? '&search=' + locals.search : '' %><%= locals.sort ? '&sort=' + locals.sort : '' %>">
+                                <%= i %>
+                            </a>
+                        </li>
+                    <% } %>
+                    <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+                        <a class="page-link" href="/admin/users?page=<%= currentPage + 1 %><%= locals.filter ? '&filter=' + locals.filter : '' %><%= locals.search ? '&search=' + locals.search : '' %><%= locals.sort ? '&sort=' + locals.sort : '' %>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    <% } %>
+</div>
+
+<!-- Upgrade User Modal -->
+<div class="modal fade" id="upgradeUserModal" tabindex="-1" aria-labelledby="upgradeUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="upgradeUserModalLabel">Upgrade User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select a subscription plan for <strong id="upgradeUserName"></strong>:</p>
+                <input type="hidden" id="upgradeUserId" value="">
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="radio" name="subscriptionPlan" id="planMonthly" value="monthly" checked>
+                    <label class="form-check-label" for="planMonthly">
+                        Monthly Plan
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="subscriptionPlan" id="planAnnual" value="annual">
+                    <label class="form-check-label" for="planAnnual">
+                        Annual Plan
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmUpgrade">Upgrade User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete User Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the user <strong id="deleteUserName"></strong>?</p>
+                <p class="text-danger">This action cannot be undone. All user data including goals, posts, and comments will be permanently deleted.</p>
+                <input type="hidden" id="deleteUserId" value="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDelete">Delete User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Upgrade user functionality
+    function openUpgradeModal(userId, username) {
+        document.getElementById('upgradeUserId').value = userId;
+        document.getElementById('upgradeUserName').textContent = username;
+        var upgradeModal = new bootstrap.Modal(document.getElementById('upgradeUserModal'));
+        upgradeModal.show();
+    }
+
+    document.getElementById('confirmUpgrade').addEventListener('click', function() {
+        const userId = document.getElementById('upgradeUserId').value;
+        const plan = document.querySelector('input[name="subscriptionPlan"]:checked').value;
+        
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Upgrading...';
+        
+        fetch(`/admin/users/${userId}/upgrade`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ plan })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('upgradeUserModal')).hide();
+                
+                // Show success alert
+                const alertPlaceholder = document.createElement('div');
+                alertPlaceholder.className = 'alert alert-success alert-dismissible fade show';
+                alertPlaceholder.role = 'alert';
+                alertPlaceholder.innerHTML = `
+                    User successfully upgraded to ${plan} plan!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.container-fluid').prepend(alertPlaceholder);
+                
+                // Reload page after a short delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                throw new Error(data.error || 'Failed to upgrade user');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error upgrading user: ' + error.message);
+            
+            // Reset button
+            this.disabled = false;
+            this.innerHTML = 'Upgrade User';
+        });
+    });
+
+    // Toggle admin status
+    function toggleAdminStatus(userId, username, makeAdmin) {
+        if (confirm(`Are you sure you want to ${makeAdmin ? 'make' : 'remove'} ${username} ${makeAdmin ? 'an admin' : 'from admin role'}?`)) {
+            fetch(`/admin/users/${userId}/set-admin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ isAdmin: makeAdmin })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success alert
+                    const alertPlaceholder = document.createElement('div');
+                    alertPlaceholder.className = 'alert alert-success alert-dismissible fade show';
+                    alertPlaceholder.role = 'alert';
+                    alertPlaceholder.innerHTML = `
+                        Admin status ${makeAdmin ? 'granted to' : 'removed from'} ${username}!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('.container-fluid').prepend(alertPlaceholder);
+                    
+                    // Reload page after a short delay
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || 'Failed to update admin status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating admin status: ' + error.message);
+            });
+        }
+    }
+
+    // Delete user functionality
+    function confirmDeleteUser(userId, username) {
+        document.getElementById('deleteUserId').value = userId;
+        document.getElementById('deleteUserName').textContent = username;
+        var deleteModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+        deleteModal.show();
+    }
+
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        const userId = document.getElementById('deleteUserId').value;
+        
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...';
+        
+        fetch(`/admin/users/${userId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('deleteUserModal')).hide();
+                
+                // Show success alert
+                const alertPlaceholder = document.createElement('div');
+                alertPlaceholder.className = 'alert alert-success alert-dismissible fade show';
+                alertPlaceholder.role = 'alert';
+                alertPlaceholder.innerHTML = `
+                    User successfully deleted!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.container-fluid').prepend(alertPlaceholder);
+                
+                // Reload page after a short delay
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                throw new Error(data.error || 'Failed to delete user');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting user: ' + error.message);
+            
+            // Reset button
+            this.disabled = false;
+            this.innerHTML = 'Delete User';
+        });
+    });
+</script> 

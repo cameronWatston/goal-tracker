@@ -159,7 +159,11 @@ router.post('/verify', async (req, res) => {
                     req.session.user = {
                         id: user.id,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        subscription_plan: user.subscription_plan || 'free',
+                        subscription_id: user.subscription_id || null,
+                        subscription_end: user.subscription_end || null,
+                        is_admin: user.is_admin || 0
                     };
                     
                     // Clear pending user
@@ -271,46 +275,64 @@ router.post('/login', async (req, res) => {
             }
 
             if (!user) {
-                return res.render('login', { 
-                    title: 'Login - Goal Tracker',
-                    error: 'Invalid email or password',
-                    formData: { email }
+                // If not found by email, try finding by username
+                db.get('SELECT * FROM users WHERE username = ?', [email], async (err, userByUsername) => {
+                    if (err || !userByUsername) {
+                        return res.render('login', { 
+                            title: 'Login - Goal Tracker',
+                            error: 'Invalid email or password',
+                            formData: { email }
+                        });
+                    }
+                    
+                    // Use the user found by username
+                    user = userByUsername;
+                    
+                    // Continue with password check and login logic
+                    continueLoginProcess();
                 });
-            }
-
-            // Check password
-            const isMatch = await bcrypt.compare(password, user.password);
-            if (!isMatch) {
-                return res.render('login', { 
-                    title: 'Login - Goal Tracker',
-                    error: 'Invalid email or password',
-                    formData: { email }
-                });
+            } else {
+                // Continue with the user found by email
+                continueLoginProcess();
             }
             
-            // Check if user is verified
-            if (!user.is_verified) {
-                // Store user info for verification
-                req.session.pendingUser = {
+            // Helper function to continue the login process
+            async function continueLoginProcess() {
+                // Check password
+                const isMatch = await bcrypt.compare(password, user.password);
+                if (!isMatch) {
+                    return res.render('login', { 
+                        title: 'Login - Goal Tracker',
+                        error: 'Invalid email or password',
+                        formData: { email }
+                    });
+                }
+                
+                // Check if user is verified
+                if (!user.is_verified) {
+                    // Store user info for verification
+                    req.session.pendingUser = {
+                        id: user.id,
+                        username: user.username,
+                        email: user.email
+                    };
+                    
+                    return res.redirect('/verify-email');
+                }
+
+                // Set session
+                req.session.user = {
                     id: user.id,
                     username: user.username,
-                    email: user.email
+                    email: user.email,
+                    subscription_plan: user.subscription_plan || 'free',
+                    subscription_id: user.subscription_id || null,
+                    subscription_end: user.subscription_end || null,
+                    is_admin: user.is_admin || 0
                 };
-                
-                return res.redirect('/verify-email');
+
+                res.redirect('/dashboard');
             }
-
-            // Set session
-            req.session.user = {
-                id: user.id,
-                username: user.username,
-                email: user.email,
-                subscription_plan: user.subscription_plan || 'free',
-                subscription_id: user.subscription_id || null,
-                subscription_end: user.subscription_end || null
-            };
-
-            res.redirect('/dashboard');
         });
     } catch (error) {
         console.error('Login error:', error);

@@ -1,0 +1,41 @@
+<!-- AI Chatbot Component (Only visible to premium users) -->
+<% if (user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual')) { %>
+<div id="ai-chatbot-container">
+    <div id="chatbot-window" class="ai-chatbot">
+        <div class="chatbot-header">
+            <div class="chatbot-title">
+                <i class="fas fa-robot"></i>
+                <span>AI Goal Assistant</span>
+            </div>
+            <div class="chatbot-controls">
+                <i class="fas fa-minus" id="chatbot-minimize"></i>
+            </div>
+        </div>
+        <div class="chatbot-history" id="chatbot-history">
+            <!-- Chat messages will be dynamically added here -->
+        </div>
+        <div class="chatbot-loading" id="chatbot-loading">
+            <div class="spinner"></div>
+        </div>
+        <div class="chatbot-input-container">
+            <input type="text" id="chatbot-input" placeholder="Ask me anything about your goals...">
+            <button id="chatbot-send">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Maximize button (shown when minimized) -->
+    <div id="chatbot-maximize" class="chatbot-maximize">
+        <i class="fas fa-robot"></i>
+    </div>
+</div>
+
+<!-- Load chatbot scripts and styles -->
+<link rel="stylesheet" href="/css/ai-chatbot.css">
+<script src="/js/ai-chatbot.js"></script>
+
+<script>
+        // Make user goals available to the chatbot    window.userGoals = <% if (typeof goals !== 'undefined' && goals) { %> <%- JSON.stringify(goals) %> <% } else { %> [] <% } %>
+</script>
+<% } %> 

@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "create-admin": "node utils/createAdmin.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

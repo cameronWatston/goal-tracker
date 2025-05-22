@@ -98,8 +98,8 @@
                                 <div class="card-body p-3">
                                     <h6 class="card-title"><i class="fas fa-chart-line me-2"></i> Progress</h6>
                                     <div class="progress mb-2" style="height: 10px;">
-                                        <div class="progress-bar bg-success" role="progressbar" 
-                                            style="width: <%= progressPercent %>%" 
+                                        <div class="progress-bar bg-success progress-value-bar" role="progressbar" 
+                                            data-progress="<%= progressPercent %>"
                                             aria-valuenow="<%= progressPercent %>" 
                                             aria-valuemin="0" 
                                             aria-valuemax="100"></div>
@@ -146,7 +146,12 @@
         <div class="col-12">
             <div class="card shadow-sm">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-flag-checkered me-2"></i> Milestones</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-flag-checkered me-2"></i> Milestones</h5>
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCustomMilestoneModal">
+                            <i class="fas fa-plus me-1"></i> Add Custom Milestone
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body p-4">
                     <% if (milestones && milestones.length > 0) { %>
@@ -222,8 +227,16 @@
                                                     <ul class="metrics-list">
                                                         <% for(let i = 0; i < metricsArray.length; i++) { 
                                                             const metric = metricsArray[i];
-                                                            if (typeof metric === 'object' && metric.name && metric.value) { %>
-                                                                <li class="metric-item"><%= metric.name %>: <%= metric.value %></li>
+                                                            if (typeof metric === 'object' && metric !== null) { %>
+                                                                <li class="metric-item">
+                                                                    <% if (metric.name && (metric.target !== undefined || metric.value !== undefined)) { %>
+                                                                        <strong><%= metric.name %>:</strong> 
+                                                                        <%= metric.value !== undefined ? metric.value : metric.target %> 
+                                                                        <%= metric.unit ? metric.unit : '' %>
+                                                                    <% } else { %>
+                                                                        <%= JSON.stringify(metric) %>
+                                                                    <% } %>
+                                                                </li>
                                                             <% } else { %>
                                                                 <li class="metric-item"><%= metric %></li>
                                                             <% } 
@@ -512,9 +525,53 @@
     </div>
 </div>
 
+<!-- Add Custom Milestone Modal -->
+<div class="modal fade" id="addCustomMilestoneModal" tabindex="-1" aria-labelledby="addCustomMilestoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCustomMilestoneModalLabel">Add Custom Milestone</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-custom-milestone-form">
+                    <div class="mb-3">
+                        <label for="customMilestoneText" class="form-label">What would you like to achieve?</label>
+                        <textarea class="form-control" id="customMilestoneText" rows="3" 
+                          placeholder="Describe a specific milestone to add to your goal (e.g., 'Learn to play basic chords on guitar')" required></textarea>
+                        <div class="form-text">Be specific about what you want to accomplish as part of your goal.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customMilestoneDate" class="form-label">Target Date</label>
+                        <input type="date" class="form-control" id="customMilestoneDate" required>
+                    </div>
+                    
+                    <!-- Loading indicator (hidden by default) -->
+                    <div id="milestone-loading-indicator" class="text-center p-3 d-none">
+                        <div class="spinner-border text-primary mb-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mb-0">Creating your custom milestone...</p>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="create-milestone-btn">Create Milestone</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- JavaScript for Goal Detail Page -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Set progress bar widths
+    document.querySelectorAll('.progress-value-bar').forEach(bar => {
+        const progress = bar.getAttribute('data-progress');
+        bar.style.width = progress + '%';
+    });
+    
     // AI Feedback for struggling users
     const moodInputs = document.querySelectorAll('input[name="logMood"]');
     const aiFeedbackSection = document.getElementById('aiFeedbackSection');
@@ -713,6 +770,61 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    // Custom milestone creation
+    const createMilestoneBtn = document.getElementById('create-milestone-btn');
+    if (createMilestoneBtn) {
+        createMilestoneBtn.addEventListener('click', function() {
+            const milestoneText = document.getElementById('customMilestoneText').value;
+            const milestoneDate = document.getElementById('customMilestoneDate').value;
+            const goalId = '<%= goal.id %>';
+            
+            if (!milestoneText || !milestoneDate) {
+                alert('Please provide both a description and target date for your milestone');
+                return;
+            }
+            
+            // Show loading indicator
+            document.getElementById('milestone-loading-indicator').classList.remove('d-none');
+            createMilestoneBtn.disabled = true;
+            
+            // Call API to generate and add the milestone
+            fetch(`/api/goals/${goalId}/custom-milestone`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    description: milestoneText,
+                    targetDate: milestoneDate
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Hide loading indicator
+                document.getElementById('milestone-loading-indicator').classList.add('d-none');
+                createMilestoneBtn.disabled = false;
+                
+                // Close the modal and reload the page to show the new milestone
+                const modal = bootstrap.Modal.getInstance(document.getElementById('addCustomMilestoneModal'));
+                modal.hide();
+                window.location.reload();
+            })
+            .catch(error => {
+                // Hide loading indicator on error
+                document.getElementById('milestone-loading-indicator').classList.add('d-none');
+                createMilestoneBtn.disabled = false;
+                
+                console.error('Error creating milestone:', error);
+                alert('Failed to create milestone. Please try again.');
+            });
+        });
+    }
 });
 </script>
 

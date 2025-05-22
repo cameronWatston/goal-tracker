@@ -5,11 +5,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 let stripe;
-let useMockService = false;
+let useMockService = process.env.USE_STRIPE_MOCK === 'true';
 
 try {
-    if (!process.env.STRIPE_SECRET_KEY) {
-        console.error('ERROR: Stripe secret key not found in environment variables');
+    // Check if we're explicitly setting mock mode or missing Stripe keys
+    if (useMockService || !process.env.STRIPE_SECRET_KEY) {
         console.log('Using mock Stripe service - no real charges will occur');
         useMockService = true;
     } else {
@@ -42,17 +42,17 @@ try {
 const db = require('../db/init');
 
 // Product and price IDs for our subscription plans
-// In a real application, get these IDs from your Stripe dashboard
+// Get price IDs from environment variables
 const PRODUCTS = {
     monthly: {
         name: 'Monthly Subscription',
-        price_id: 'price_123MonthlyPlanID', // Replace with actual Stripe price ID
+        price_id: process.env.STRIPE_MONTHLY_PLAN_ID,
         amount: 1000, // £10.00 in pence
         interval: 'month'
     },
     annual: {
         name: 'Annual Subscription',
-        price_id: 'price_123AnnualPlanID', // Replace with actual Stripe price ID
+        price_id: process.env.STRIPE_ANNUAL_PLAN_ID,
         amount: 10000, // £100.00 in pence
         interval: 'year'
     }
@@ -130,14 +130,11 @@ async function createPaymentIntent(amount, currency = 'gbp', customerId = null) 
 async function createSubscription(customerId, priceId) {
     if (useMockService) {
         console.log('Mock: Creating subscription for', customerId);
-        const trialEnd = new Date();
-        trialEnd.setDate(trialEnd.getDate() + 7);
         return { 
             id: mockSubscriptionId, 
             customer: customerId, 
             items: [{ price: { id: priceId } }],
-            trial_end: Math.floor(trialEnd.getTime() / 1000),
-            current_period_end: Math.floor(trialEnd.getTime() / 1000) + (30 * 24 * 60 * 60)
+            current_period_end: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60)
         };
     }
     
@@ -146,8 +143,7 @@ async function createSubscription(customerId, priceId) {
             customer: customerId,
             items: [{ price: priceId }],
             payment_behavior: 'default_incomplete',
-            expand: ['latest_invoice.payment_intent'],
-            trial_period_days: 7 // Add 7-day free trial
+            expand: ['latest_invoice.payment_intent']
         });
         return subscription;
     } catch (error) {
@@ -158,7 +154,7 @@ async function createSubscription(customerId, priceId) {
 
 // Create a checkout session for subscription
 async function createCheckoutSession(customerId, priceId, successUrl, cancelUrl) {
-    // Force consistency - if the service is in mock mode, always use mock data
+    // If in mock mode, always use mock data
     if (useMockService) {
         console.log('Mock: Creating checkout session with:', { 
             customerId, 
@@ -197,28 +193,20 @@ async function createCheckoutSession(customerId, priceId, successUrl, cancelUrl)
                 },
             ],
             mode: 'subscription',
-            subscription_data: {
-                trial_period_days: 7 // Add 7-day free trial
-            },
             success_url: successUrl,
             cancel_url: cancelUrl,
         });
         return session;
     } catch (error) {
         console.error('Error creating checkout session:', error);
-        // If there's an error with the real API, fall back to mock mode for this session
-        console.log('Falling back to mock checkout session due to error');
-        return { 
-            id: mockSessionId, 
-            url: successUrl.replace('?plan=', '?session_id=' + mockSessionId + '&plan='),
-            isFallback: true
-        };
+        // Don't fall back to mock mode - let the caller handle the error
+        throw error;
     }
 }
 
 // Get or create a Stripe customer for the user
 async function getOrCreateCustomerForUser(userId) {
-    // Force consistency - if the service is in mock mode, always use mock data
+    // If in mock mode, always use mock data
     if (useMockService) {
         console.log('Mock: Getting/creating customer for user', userId);
         return { 
@@ -250,22 +238,28 @@ async function getOrCreateCustomerForUser(userId) {
             throw new Error('User not found');
         }
 
-        if (user.stripe_customer_id) {
-            // Skip real API calls if the stored ID is a mock ID
-            if (user.stripe_customer_id.startsWith('cus_mock')) {
-                console.log('Found stored mock customer ID - switching to mock mode');
-                return { 
-                    id: mockCustomerId, 
-                    email: user.email, 
-                    name: user.username,
-                    isMockCustomer: true
-                };
+        // If user has a stored customer ID that's not a mock ID, use it
+        if (user.stripe_customer_id && !user.stripe_customer_id.includes('mock')) {
+            try {
+                // If user already has a Stripe customer ID, retrieve the customer
+                return await getCustomer(user.stripe_customer_id);
+            } catch (error) {
+                // If customer not found in Stripe, create a new one
+                console.log('Customer ID not found in Stripe, creating new customer');
+                const newCustomer = await createCustomer(user.email, user.username);
+                
+                // Update user record with new Stripe customer ID
+                await new Promise((resolve, reject) => {
+                    db.run('UPDATE users SET stripe_customer_id = ? WHERE id = ?', [newCustomer.id, userId], (err) => {
+                        if (err) reject(err);
+                        else resolve();
+                    });
+                });
+                
+                return newCustomer;
             }
-            
-            // If user already has a Stripe customer ID, retrieve the customer
-            return await getCustomer(user.stripe_customer_id);
         } else {
-            // Otherwise, create a new customer
+            // Create a new customer
             const customer = await createCustomer(user.email, user.username);
             
             // Update user record with Stripe customer ID
@@ -281,8 +275,15 @@ async function getOrCreateCustomerForUser(userId) {
     } catch (error) {
         console.error('Error in getOrCreateCustomerForUser:', error);
         
-        // If there's an error with the real API, fall back to mock mode for this customer
-        console.log('Falling back to mock customer due to error');
+        // If there's an error with the real API and we're not already in mock mode,
+        // we need to decide whether to fail or fall back to mock mode
+        if (!useMockService) {
+            // Re-throw the error for proper handling upstream
+            throw error;
+        }
+        
+        // This should not happen, but just in case - provide a fallback mock
+        console.log('UNEXPECTED: Falling back to mock customer due to error');
         return { 
             id: mockCustomerId, 
             email: 'fallback@example.com', 
@@ -300,10 +301,41 @@ async function cancelSubscription(subscriptionId) {
         return { id: subscriptionId, status: 'canceled' };
     }
     
+    // Skip cancellation if subscription ID format doesn't look like a real Stripe ID
+    if (!subscriptionId || subscriptionId.startsWith('sub_mock') || subscriptionId.startsWith('sub_real_')) {
+        console.log('Skipping cancellation for non-Stripe subscription ID:', subscriptionId);
+        return { id: subscriptionId, status: 'canceled', skipped: true };
+    }
+    
     try {
-        return await stripe.subscriptions.del(subscriptionId);
+        console.log('Real Stripe: Cancelling subscription', subscriptionId);
+        
+        // We should only get here if we have a valid Stripe instance
+        if (!stripe) {
+            console.error('Stripe not initialized but trying to cancel real subscription');
+            throw new Error('Stripe not properly initialized');
+        }
+        
+        // Cancel at period end to avoid immediate cancellation
+        // const subscription = await stripe.subscriptions.update(
+        //     subscriptionId,
+        //     {cancel_at_period_end: true}
+        // );
+        
+        // For immediate cancellation, use this instead:
+        const subscription = await stripe.subscriptions.del(subscriptionId);
+        
+        console.log('Successfully cancelled subscription in Stripe');
+        return subscription;
     } catch (error) {
         console.error('Error canceling subscription:', error);
+        
+        // If the subscription doesn't exist, handle gracefully
+        if (error.code === 'resource_missing') {
+            console.log('Subscription not found in Stripe, might have been already cancelled');
+            return { id: subscriptionId, status: 'canceled', missing: true };
+        }
+        
         throw error;
     }
 }

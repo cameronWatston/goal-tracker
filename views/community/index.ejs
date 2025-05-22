@@ -1,0 +1,207 @@
+<!-- Community Home Page -->
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="mb-1">Community</h2>
+                            <p class="text-muted mb-0">Connect with other goal achievers and share your journey</p>
+                        </div>
+                        <div>
+                            <a href="/community/create" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i> Create Post
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% } %>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% } %>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-md-8">
+            <% if (posts && posts.length > 0) { %>
+                <% posts.forEach(post => { %>
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="fw-bold"><%= post.username %></span>
+                                <small class="text-muted ms-2">
+                                    <%= new Date(post.created_at).toLocaleDateString() %>
+                                </small>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <h5 class="card-title mb-3"><%= post.title %></h5>
+                            <p class="card-text">
+                                <%= post.content.length > 200 ? post.content.substring(0, 200) + '...' : post.content %>
+                            </p>
+                            
+                            <% if (post.goal_id && post.goalData) { %>
+                                <div class="small mb-3 p-2 bg-light border rounded">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span><i class="fas fa-bullseye me-1 text-primary"></i> <strong>Linked Goal:</strong> <%= post.goalData.title %></span>
+                                        <span class="badge bg-<%= post.goalData.status === 'completed' ? 'success' : post.goalData.status === 'abandoned' ? 'danger' : 'primary' %>">
+                                            <%= post.goalData.status.charAt(0).toUpperCase() + post.goalData.status.slice(1) %>
+                                        </span>
+                                    </div>
+                                </div>
+                            <% } %>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <button class="btn btn-sm <%= post.user_liked ? 'btn-primary liked' : 'btn-outline-primary' %> like-btn" data-post-id="<%= post.id %>">
+                                        <i class="<%= post.user_liked ? 'fas' : 'far' %> fa-heart me-1"></i> 
+                                        <span class="like-text"><%= post.user_liked ? 'Liked' : 'Like' %></span>
+                                        <% if (post.like_count > 0) { %>
+                                            <span class="like-count ms-1">(<%= post.like_count %>)</span>
+                                        <% } %>
+                                    </button>
+                                    <a href="/community/post/<%= post.id %>" class="btn btn-sm btn-outline-secondary ms-2">
+                                        <i class="far fa-comment me-1"></i> Comment
+                                        <% if (post.comments && post.comments.length > 0) { %>
+                                            <span class="ms-1">(<%= post.comments.length %>)</span>
+                                        <% } %>
+                                    </a>
+                                </div>
+                                <a href="/community/post/<%= post.id %>" class="text-decoration-none">Read more</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-5 text-center">
+                        <i class="fas fa-users mb-3" style="font-size: 3rem; color: #ddd;"></i>
+                        <h5>No posts yet</h5>
+                        <p class="text-muted">Be the first to share something with the community!</p>
+                        <a href="/community/create" class="btn btn-primary mt-2">Create Post</a>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Community Actions</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-grid gap-2">
+                        <a href="/community/create" class="btn btn-primary">
+                            <i class="fas fa-plus-circle me-2"></i> Create New Post
+                        </a>
+                        <a href="/community/my-posts" class="btn btn-outline-primary">
+                            <i class="fas fa-user me-2"></i> My Posts
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> About Community</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p>Connect with other goal achievers, share your progress, get inspired, and motivate others on their journey.</p>
+                    <p class="mb-0">Guidelines:</p>
+                    <ul class="mb-0">
+                        <li>Be respectful and supportive</li>
+                        <li>Share your achievements and challenges</li>
+                        <li>Ask for advice when needed</li>
+                        <li>Celebrate others' successes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle like button clicks
+    const likeButtons = document.querySelectorAll('.like-btn');
+    
+    likeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const postId = this.getAttribute('data-post-id');
+            const isLiked = this.classList.contains('liked');
+            
+            const endpoint = isLiked 
+                ? `/community/post/${postId}/unlike` 
+                : `/community/post/${postId}/like`;
+            
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Get current like count
+                    let countElement = this.querySelector('.like-count');
+                    let likeCount = countElement ? parseInt(countElement.textContent.replace(/[()]/g, '')) : 0;
+                    
+                    if (isLiked) {
+                        // Update for unlike
+                        this.classList.remove('liked', 'btn-primary');
+                        this.classList.add('btn-outline-primary');
+                        this.querySelector('i').classList.remove('fas');
+                        this.querySelector('i').classList.add('far');
+                        this.querySelector('.like-text').textContent = 'Like';
+                        
+                        // Update count
+                        likeCount -= 1;
+                    } else {
+                        // Update for like
+                        this.classList.add('liked', 'btn-primary');
+                        this.classList.remove('btn-outline-primary');
+                        this.querySelector('i').classList.remove('far');
+                        this.querySelector('i').classList.add('fas');
+                        this.querySelector('.like-text').textContent = 'Liked';
+                        
+                        // Update count
+                        likeCount += 1;
+                    }
+                    
+                    // Update or remove count display
+                    if (likeCount > 0) {
+                        if (countElement) {
+                            countElement.textContent = `(${likeCount})`;
+                        } else {
+                            const countSpan = document.createElement('span');
+                            countSpan.className = 'like-count ms-1';
+                            countSpan.textContent = `(${likeCount})`;
+                            this.appendChild(countSpan);
+                        }
+                    } else if (countElement) {
+                        countElement.remove();
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+});
+</script> 

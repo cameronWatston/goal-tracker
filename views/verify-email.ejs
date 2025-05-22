@@ -1,0 +1,57 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm my-5">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h1 class="h3 mb-3 fw-bold text-primary">Verify Your Email</h1>
+                        <p class="text-muted">We've sent a verification code to <strong><%= email %></strong></p>
+                    </div>
+                    
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <form action="/auth/verify" method="POST">
+                        <div class="mb-4">
+                            <label for="verificationCode" class="form-label">Verification Code</label>
+                            <input type="text" class="form-control form-control-lg text-center" 
+                                   id="verificationCode" name="code" 
+                                   placeholder="Enter 6-digit code" maxlength="6" required>
+                            <div class="form-text">Enter the 6-digit code sent to your email</div>
+                        </div>
+                        
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">Verify Email</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="mb-0">Didn't receive the code?</p>
+                        <form action="/auth/resend-verification" method="POST">
+                            <button type="submit" class="btn btn-link">Send a new code</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-muted">
+                    <a href="/register" class="text-decoration-none">
+                        <i class="fas fa-arrow-left me-1"></i> Back to registration
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div> 

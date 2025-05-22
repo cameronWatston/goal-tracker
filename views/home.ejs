@@ -1,0 +1,816 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary">Goal Tracker</h1>
+                <p class="lead text-muted">Track your goals, achieve your dreams, and transform your life!</p>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Hero Section -->
+<section class="py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h1 class="display-4 fw-bold mb-4">Achieve Your Goals with <span class="text-warning">AI Assistance</span></h1>
+            <p class="lead mb-4">Goal Tracker helps you set, track, and achieve your personal and professional goals with intelligent AI guidance tailored to your needs.</p>
+            <div class="d-flex gap-3">
+                <a href="/register" class="btn btn-primary btn-lg px-4 py-2">Get Started</a>
+                <a href="/login" class="btn btn-outline-secondary btn-lg px-4 py-2">Login</a>
+            </div>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block">
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                 class="img-fluid rounded shadow-lg" alt="Goal Tracking">
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Why Choose Goal Tracker?</h2>
+        <p class="lead text-muted">Our platform combines goal tracking with AI to help you succeed</p>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="mb-3">
+                    <i class="fas fa-brain text-warning fa-3x"></i>
+                </div>
+                <h3 class="h4">AI-Powered Insights</h3>
+                <p class="text-muted">Our intelligent AI analyzes your progress and provides personalized recommendations to keep you on track.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="mb-3">
+                    <i class="fas fa-chart-line text-primary fa-3x"></i>
+                </div>
+                <h3 class="h4">Progress Tracking</h3>
+                <p class="text-muted">Visualize your progress with beautiful charts and analytics that help you stay motivated.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="mb-3">
+                    <i class="fas fa-trophy text-warning fa-3x"></i>
+                </div>
+                <h3 class="h4">Custom Milestones</h3>
+                <p class="text-muted">AI creates personalized milestones for your specific goals, making complex achievements manageable.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="py-5 bg-light">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Simple Pricing, Powerful Features</h2>
+        <p class="lead text-muted">Choose the plan that suits your needs</p>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+        <!-- Free Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 text-center">Free</h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <span class="display-4">£0</span>
+                        <span class="text-muted">/forever</span>
+                    </div>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Track 1 goal at a time</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>AI-generated milestones</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center text-muted">
+                            <i class="fas fa-times text-danger me-2"></i>
+                            <span>Unlimited goals</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center text-muted">
+                            <i class="fas fa-times text-danger me-2"></i>
+                            <span>Social sharing</span>
+                        </li>
+                    </ul>
+                    <div class="mt-auto">
+                        <div class="d-grid">
+                            <a href="/register" class="btn btn-outline-primary">Get Started Free</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monthly Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 text-center">Monthly</h5>
+                    <div class="badge bg-warning text-dark position-absolute end-0 top-0 mt-2 me-2">Popular</div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <span class="display-4">£10</span>
+                        <span class="text-muted">/month</span>
+                    </div>
+                    <div class="text-center mb-3">
+                        <span class="badge bg-success">7-day free trial</span>
+                    </div>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span><strong>Unlimited</strong> goals</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>AI-generated milestones</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Social sharing features</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>PDF exports</span>
+                        </li>
+                    </ul>
+                    <div class="mt-auto">
+                        <div class="d-grid">
+                            <a href="/subscription" class="btn btn-primary">Subscribe Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Annual Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0 text-center">Annual</h5>
+                    <div class="badge bg-danger text-white position-absolute end-0 top-0 mt-2 me-2">Save 17%</div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <span class="display-4">£100</span>
+                        <span class="text-muted">/year</span>
+                    </div>
+                    <div class="text-center mb-3">
+                        <span class="badge bg-success">7-day free trial</span>
+                    </div>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span><strong>Everything in Monthly</strong></span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Save £20 compared to monthly</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Annual progress report</span>
+                        </li>
+                    </ul>
+                    <div class="mt-auto">
+                        <div class="d-grid">
+                            <a href="/subscription" class="btn btn-success">Subscribe Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">How It Works</h2>
+        <p class="lead text-muted">Three simple steps to achieve your goals</p>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <span class="h3 mb-0">1</span>
+                    </div>
+                </div>
+                <h3 class="h4">Set Your Goal</h3>
+                <p class="text-muted">Tell us what you want to achieve and when you want to achieve it.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <span class="h3 mb-0">2</span>
+                    </div>
+                </div>
+                <h3 class="h4">Get AI Milestones</h3>
+                <p class="text-muted">Our AI breaks down your goal into manageable steps and timeframes.</p>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 p-4 text-center">
+                <div class="mb-3">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <span class="h3 mb-0">3</span>
+                    </div>
+                </div>
+                <h3 class="h4">Track & Achieve</h3>
+                <p class="text-muted">Follow your personalized plan, track progress, and reach your goals faster.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-light">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Success Stories</h2>
+        <p class="lead text-muted">See how Goal Tracker has helped others achieve their dreams</p>
+    </div>
+    
+    <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <!-- First slide (active) -->
+            <div class="carousel-item active">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Sarah Johnson</h5>
+                                        <small class="text-muted">Fitness Enthusiast</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me get my six-pack in 6 months! The AI-generated milestones were perfectly paced for my fitness level."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Michael Chen</h5>
+                                        <small class="text-muted">Entrepreneur</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I used Goal Tracker to launch my startup in 12 months. The milestone system kept me on track with realistic deadlines."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Emily Rodriguez</h5>
+                                        <small class="text-muted">Student</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I set a goal to learn piano in 8 months. The AI assistant created weekly practice milestones that made the process enjoyable!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Second slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">David Kim</h5>
+                                        <small class="text-muted">Software Engineer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"The milestones created for my coding project were incredibly detailed. I was able to build my app on schedule thanks to Goal Tracker."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Jessica Taylor</h5>
+                                        <small class="text-muted">Marathon Runner</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"From couch to marathon in 10 months! The AI training schedule was better than any coach I've worked with before."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Marcus Johnson</h5>
+                                        <small class="text-muted">Small Business Owner</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me double my revenue in just 8 months by breaking down my business growth goals into achievable steps."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Third slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Sophia Martinez</h5>
+                                        <small class="text-muted">Language Learner</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I became conversational in Japanese in just 6 months following the milestones generated by Goal Tracker. The pacing was perfect!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">James Wilson</h5>
+                                        <small class="text-muted">Author</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"From outline to published novel in one year. The writing milestones kept me accountable and helped me finish my book on schedule."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Olivia Thompson</h5>
+                                        <small class="text-muted">Yoga Instructor</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I used Goal Tracker to open my own yoga studio. The AI milestones guided me through business licensing, location scouting, and marketing."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fourth slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Daniel Brown</h5>
+                                        <small class="text-muted">Finance Professional</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me save for my dream house. The financial milestones were realistic and I achieved my down payment goal 3 months early!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Ava Williams</h5>
+                                        <small class="text-muted">Professional Baker</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"From amateur to professional baker in 9 months using Goal Tracker's milestones. Now I have my own bakery and couldn't be happier!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Alex Morgan</h5>
+                                        <small class="text-muted">Photographer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"The structured milestones helped me transition from hobbyist to professional photographer. My portfolio improved dramatically in just 6 months."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fifth slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Liam Parker</h5>
+                                        <small class="text-muted">Music Producer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker's milestones helped me produce and release my first EP. The timeline was perfect for learning production while creating quality music."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Emma Davis</h5>
+                                        <small class="text-muted">Digital Nomad</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I used Goal Tracker to transition to remote work and travel. The AI helped me build a freelance career that lets me work from anywhere!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Noah Turner</h5>
+                                        <small class="text-muted">App Developer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"From idea to launch in 5 months! Goal Tracker broke down the app development process into manageable weekly goals that kept me focused."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sixth slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Isabella Scott</h5>
+                                        <small class="text-muted">Content Creator</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I grew my YouTube channel from 0 to 100K subscribers in 14 months using Goal Tracker's content strategy milestones. Amazing results!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">William Hayes</h5>
+                                        <small class="text-muted">Home Chef</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me master French cuisine in just 7 months. The progressive cooking skills in the milestones were perfectly sequenced."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Charlotte Green</h5>
+                                        <small class="text-muted">Urban Gardener</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"From concrete jungle to lush balcony garden in 4 months! The AI milestones taught me how to grow vegetables in my small urban space."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seventh slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Ethan Wright</h5>
+                                        <small class="text-muted">Woodworker</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I went from basic projects to custom furniture in one year. Goal Tracker created the perfect progression of woodworking skills to master."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Mia Johnson</h5>
+                                        <small class="text-muted">Nutritionist</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me transform my health with realistic nutrition goals. I lost 30 pounds and gained energy to pursue my passions!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Lucas Miller</h5>
+                                        <small class="text-muted">Chess Player</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I improved my chess rating by 500 points in 9 months! The study plan and practice milestones were perfectly tailored to my skill level."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Eighth slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Harper Ross</h5>
+                                        <small class="text-muted">Fashion Designer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me create my first fashion collection from concept to runway in 10 months. The milestone progression was brilliant!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Elijah Cooper</h5>
+                                        <small class="text-muted">Public Speaker</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"From terrified of public speaking to keynote speaker in 7 months! Goal Tracker's progressive milestones helped me overcome my greatest fear."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Abigail Harris</h5>
+                                        <small class="text-muted">Meditation Teacher</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me establish a daily meditation practice that grew into teaching others. The milestones were mindful and progressive."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ninth slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Benjamin Turner</h5>
+                                        <small class="text-muted">Data Scientist</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"I transitioned careers into data science in just 12 months using Goal Tracker. The learning path and project milestones were extremely effective."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Lily Sanders</h5>
+                                        <small class="text-muted">Travel Blogger</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me plan and execute my round-the-world trip. The content creation milestones helped me build my travel blog simultaneously!"</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Henry Mitchell</h5>
+                                        <small class="text-muted">Classic Car Restorer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Restored my grandfather's 1967 Mustang in 11 months using Goal Tracker. The detailed milestone breakdown made a complex project manageable!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tenth slide -->
+            <div class="carousel-item">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Scarlett Adams</h5>
+                                        <small class="text-muted">Video Game Developer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"From concept to published indie game in 14 months! Goal Tracker's milestones guided me through the entire development process."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Sebastian Gray</h5>
+                                        <small class="text-muted">Organic Farmer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"Goal Tracker helped me transition from corporate job to running my own organic farm. The milestones covered everything from land acquisition to growing techniques."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="card h-100 p-4">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-user-circle text-primary fa-3x"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h5 class="mb-0">Zoe Phillips</h5>
+                                        <small class="text-muted">Astronomer</small>
+                                    </div>
+                                </div>
+                                <p class="fst-italic">"As an amateur astronomer, Goal Tracker helped me complete my catalog of deep sky objects in just one year. The night-by-night plan was incredible!"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Carousel Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon bg-primary rounded-circle" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon bg-primary rounded-circle" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+        
+        <!-- Carousel Indicators -->
+        <div class="carousel-indicators position-relative mt-4">
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active bg-primary" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1" class="bg-primary" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2" class="bg-primary" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="3" class="bg-primary" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="4" class="bg-primary" aria-label="Slide 5"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="5" class="bg-primary" aria-label="Slide 6"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="6" class="bg-primary" aria-label="Slide 7"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="7" class="bg-primary" aria-label="Slide 8"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="8" class="bg-primary" aria-label="Slide 9"></button>
+            <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="9" class="bg-primary" aria-label="Slide 10"></button>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5">
+    <div class="card bg-secondary text-white p-5 text-center">
+        <h2 class="fw-bold mb-3">Ready to Achieve Your Goals?</h2>
+        <p class="lead mb-4">Join thousands of users who are already transforming their lives with Goal Tracker.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="/register" class="btn btn-warning btn-lg px-4 text-dark">Get Started Now</a>
+        </div>
+    </div>
+</section> 

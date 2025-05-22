@@ -1,0 +1,793 @@
+<!-- Goal Detail Page -->
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h2 class="mb-1"><%= goal.title %></h2>
+                            <p class="text-muted mb-0">
+                                <% if (goal.category) { %>
+                                <span class="badge bg-<%= 
+                                    goal.category === 'health' ? 'success' : 
+                                    goal.category === 'career' ? 'primary' : 
+                                    goal.category === 'personal' ? 'info' : 
+                                    goal.category === 'finance' ? 'warning' : 
+                                    goal.category === 'relationships' ? 'danger' : 
+                                    'secondary' %>">
+                                    <i class="fas fa-<%= 
+                                        goal.category === 'health' ? 'heartbeat' : 
+                                        goal.category === 'career' ? 'briefcase' : 
+                                        goal.category === 'personal' ? 'user' : 
+                                        goal.category === 'finance' ? 'dollar-sign' : 
+                                        goal.category === 'relationships' ? 'heart' : 
+                                        'tag' %>"></i>
+                                    <%= goal.category.charAt(0).toUpperCase() + goal.category.slice(1) %>
+                                </span>
+                                <% } %>
+                                <span class="ms-2">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    <%= new Date(goal.target_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="ms-auto">
+                            <a href="/goals/dashboard" class="btn btn-outline-secondary me-2">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                            </a>
+                            <a href="/goals/export/<%= goal.id %>" class="btn btn-primary">
+                                <i class="fas fa-file-export me-1"></i> Export
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goal Overview -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Goal Overview</h5>
+                </div>
+                <div class="card-body p-4">
+                    <% if (goal.description) { %>
+                        <p class="card-text"><%= goal.description %></p>
+                    <% } else { %>
+                        <p class="text-muted fst-italic">No description provided.</p>
+                    <% } %>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body p-3">
+                                    <h6 class="card-title"><i class="fas fa-calendar-alt me-2"></i> Timeline</h6>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <small class="text-muted d-block">Started</small>
+                                            <span><%= new Date(goal.created_at).toLocaleDateString() %></span>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted d-block">Target Date</small>
+                                            <span><%= new Date(goal.target_date).toLocaleDateString() %></span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">
+                                        <div class="d-flex justify-content-between align-items-center <%= daysRemaining < 0 ? 'text-danger' : daysRemaining <= 7 ? 'text-warning' : 'text-muted' %>">
+                                            <span>
+                                                <% if (daysRemaining < 0) { %>
+                                                    <i class="fas fa-exclamation-circle me-1"></i> Overdue by <%= Math.abs(daysRemaining) %> days
+                                                <% } else if (daysRemaining === 0) { %>
+                                                    <i class="fas fa-exclamation-circle me-1"></i> Due today
+                                                <% } else { %>
+                                                    <i class="fas fa-hourglass-half me-1"></i> <%= daysRemaining %> days remaining
+                                                <% } %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body p-3">
+                                    <h6 class="card-title"><i class="fas fa-chart-line me-2"></i> Progress</h6>
+                                    <div class="progress mb-2" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar" 
+                                            style="width: <%= progressPercent %>%" 
+                                            aria-valuenow="<%= progressPercent %>" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span><%= progressPercent %>% Complete</span>
+                                        <span><%= milestones.filter(m => m.status === 'completed').length %> of <%= milestones.length %> milestones</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-cog me-2"></i> Actions</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addLogModal">
+                            <i class="fas fa-plus-circle me-2"></i> Add Check-in
+                        </button>
+                        <button class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                            <i class="fas fa-sticky-note me-2"></i> Add Note
+                        </button>
+                        <button class="btn btn-outline-secondary edit-goal-btn" data-goal-id="<%= goal.id %>">
+                            <i class="fas fa-edit me-2"></i> Edit Goal
+                        </button>
+                        <button class="btn btn-outline-danger delete-goal-btn" data-goal-id="<%= goal.id %>">
+                            <i class="fas fa-trash-alt me-2"></i> Delete Goal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Milestones Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-flag-checkered me-2"></i> Milestones</h5>
+                </div>
+                <div class="card-body p-4">
+                    <% if (milestones && milestones.length > 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 15%">Status</th>
+                                        <th style="width: 40%">Milestone</th>
+                                        <th style="width: 15%">Target Date</th>
+                                        <th style="width: 20%">Metrics</th>
+                                        <th style="width: 10%">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% milestones.forEach(milestone => { %>
+                                        <tr>
+                                            <td>
+                                                <% if (milestone.status === 'pending') { %>
+                                                    <span class="badge bg-secondary">Pending</span>
+                                                <% } else if (milestone.status === 'in-progress') { %>
+                                                    <span class="badge bg-primary">In Progress</span>
+                                                <% } else if (milestone.status === 'completed') { %>
+                                                    <span class="badge bg-success">Completed</span>
+                                                <% } else if (milestone.status === 'missed') { %>
+                                                    <span class="badge bg-danger">Missed</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <strong><%= milestone.title %></strong>
+                                                <% if (milestone.description) { %>
+                                                    <p class="small text-muted mb-0"><%= milestone.description %></p>
+                                                <% } %>
+                                            </td>
+                                            <td><%= new Date(milestone.target_date).toLocaleDateString() %></td>
+                                            <td>
+                                                <% 
+                                                let metricsArray = [];
+                                                try {
+                                                    // Handle case where metrics might be a string
+                                                    if (milestone.metrics && typeof milestone.metrics === 'string') {
+                                                        try {
+                                                            const parsed = JSON.parse(milestone.metrics);
+                                                            // If parsed is array, use it directly
+                                                            if (Array.isArray(parsed)) {
+                                                                metricsArray = parsed;
+                                                            } 
+                                                            // If parsed is a string, wrap it in array
+                                                            else if (typeof parsed === 'string') {
+                                                                metricsArray = [parsed];
+                                                            }
+                                                            // Otherwise handle as object or other value
+                                                            else {
+                                                                metricsArray = [String(parsed)];
+                                                            }
+                                                        } catch (e) {
+                                                            // If JSON parsing fails, treat as plain string
+                                                            metricsArray = [milestone.metrics];
+                                                        }
+                                                    } else if (Array.isArray(milestone.metrics)) {
+                                                        metricsArray = milestone.metrics;
+                                                    } else if (milestone.metrics) {
+                                                        // Handle any other data type by converting to string
+                                                        metricsArray = [String(milestone.metrics)];
+                                                    }
+                                                } catch (e) {
+                                                    // If parsing fails, leave as empty array
+                                                    console.log('Error parsing metrics:', e);
+                                                    metricsArray = [];
+                                                }
+                                                %>
+                                                <% if (metricsArray && metricsArray.length > 0) { %>
+                                                    <ul class="metrics-list">
+                                                        <% for(let i = 0; i < metricsArray.length; i++) { 
+                                                            const metric = metricsArray[i];
+                                                            if (typeof metric === 'object' && metric.name && metric.value) { %>
+                                                                <li class="metric-item"><%= metric.name %>: <%= metric.value %></li>
+                                                            <% } else { %>
+                                                                <li class="metric-item"><%= metric %></li>
+                                                            <% } 
+                                                        } %>
+                                                    </ul>
+                                                <% } else { %>
+                                                    <small class="text-muted">No metrics</small>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary edit-milestone-btn" 
+                                                        data-milestone-id="<%= milestone.id %>"
+                                                        data-milestone-title="<%= milestone.title %>"
+                                                        data-milestone-description="<%= milestone.description || '' %>"
+                                                        data-milestone-target-date="<%= milestone.target_date %>"
+                                                        data-milestone-status="<%= milestone.status %>">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-tasks text-secondary fa-3x"></i>
+                            </div>
+                            <h5>No Milestones Yet</h5>
+                            <p class="text-muted">Milestones will be automatically generated when you create a goal.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Logs and Notes Section -->
+    <div class="row">
+        <!-- Check-ins / Logs -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-clipboard-check me-2"></i> Check-ins</h5>
+                </div>
+                <div class="card-body p-4">
+                    <% if (logs && logs.length > 0) { %>
+                        <div class="timeline">
+                            <% logs.forEach((log, index) => { %>
+                                <div class="timeline-item">
+                                    <div class="timeline-item-marker">
+                                        <div class="timeline-item-marker-indicator bg-<%= 
+                                            log.mood === 'positive' ? 'success' : 
+                                            log.mood === 'negative' ? 'danger' : 
+                                            'primary' %>">
+                                            <i class="fas fa-<%= 
+                                                log.mood === 'positive' ? 'smile' : 
+                                                log.mood === 'negative' ? 'frown' : 
+                                                'comment' %>"></i>
+                                        </div>
+                                    </div>
+                                    <div class="timeline-item-content pt-0">
+                                        <div class="card mb-2">
+                                            <div class="card-body py-2 px-3">
+                                                <p class="mb-1"><%= log.content %></p>
+                                            </div>
+                                        </div>
+                                        <div class="text-muted small">
+                                            <i class="fas fa-calendar-alt me-1"></i> 
+                                            <%= new Date(log.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-clipboard-check text-secondary fa-3x"></i>
+                            </div>
+                            <h5>No Check-ins Yet</h5>
+                            <p class="text-muted">Record your progress with regular check-ins.</p>
+                            <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addLogModal">
+                                <i class="fas fa-plus-circle me-1"></i> Add Your First Check-in
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+                <% if (logs && logs.length > 0) { %>
+                    <div class="card-footer">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addLogModal">
+                            <i class="fas fa-plus-circle me-1"></i> Add New Check-in
+                        </button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <!-- Notes -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-sticky-note me-2"></i> Notes</h5>
+                </div>
+                <div class="card-body p-4">
+                    <% if (notes && notes.length > 0) { %>
+                        <div class="notes-container">
+                            <% notes.forEach(note => { %>
+                                <div class="card mb-3 note-card">
+                                    <div class="card-header py-2 px-3 bg-light">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0"><%= note.title %></h6>
+                                            <small class="text-muted"><%= new Date(note.created_at).toLocaleDateString() %></small>
+                                        </div>
+                                    </div>
+                                    <div class="card-body py-2 px-3">
+                                        <p class="card-text mb-0"><%= note.content %></p>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center p-4">
+                            <div class="mb-3">
+                                <i class="fas fa-sticky-note text-secondary fa-3x"></i>
+                            </div>
+                            <h5>No Notes Yet</h5>
+                            <p class="text-muted">Add notes to help you remember important information.</p>
+                            <button class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                                <i class="fas fa-plus-circle me-1"></i> Add Your First Note
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+                <% if (notes && notes.length > 0) { %>
+                    <div class="card-footer">
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addNoteModal">
+                            <i class="fas fa-plus-circle me-1"></i> Add New Note
+                        </button>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal forms -->
+<!-- Add Log/Check-in Modal -->
+<div class="modal fade" id="addLogModal" tabindex="-1" aria-labelledby="addLogModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLogModalLabel">Add Check-in</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-log-form">
+                    <div class="mb-3">
+                        <label for="logContent" class="form-label">How's your progress?</label>
+                        <textarea class="form-control" id="logContent" rows="3" placeholder="Share your progress update..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">How are you feeling?</label>
+                        <div class="btn-group d-flex" role="group">
+                            <input type="radio" class="btn-check" name="logMood" id="logMoodPositive" value="positive" autocomplete="off">
+                            <label class="btn btn-outline-success" for="logMoodPositive"><i class="fas fa-smile me-1"></i> Good</label>
+                            
+                            <input type="radio" class="btn-check" name="logMood" id="logMoodNeutral" value="neutral" autocomplete="off" checked>
+                            <label class="btn btn-outline-primary" for="logMoodNeutral"><i class="fas fa-meh me-1"></i> Neutral</label>
+                            
+                            <input type="radio" class="btn-check" name="logMood" id="logMoodNegative" value="negative" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="logMoodNegative"><i class="fas fa-frown me-1"></i> Struggling</label>
+                        </div>
+                    </div>
+                    <!-- AI Feedback Section (hidden by default) -->
+                    <div id="aiFeedbackSection" class="mb-3 mt-4 d-none">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title text-primary">
+                                    <i class="fas fa-robot me-2"></i> AI Assistant Feedback
+                                </h6>
+                                
+                                <p class="card-text small">
+                                    I notice you're struggling with this goal. Here are some suggestions that might help:
+                                </p>
+                                
+                                <ul class="list-unstyled mb-0 small">
+                                    <li class="mb-2">
+                                        <i class="fas fa-lightbulb text-warning me-2"></i> 
+                                        <strong>Break it down:</strong> Consider dividing your current milestone into smaller, more manageable tasks.
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-users text-info me-2"></i> 
+                                        <strong>Find support:</strong> Share your challenges with a friend or family member who can help keep you accountable.
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-clock text-success me-2"></i> 
+                                        <strong>Adjust timeline:</strong> If needed, consider adjusting your deadline to make it more realistic.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-chart-line text-danger me-2"></i> 
+                                        <strong>Review progress:</strong> Look back at how far you've already come - sometimes seeing progress can provide new motivation.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-log-btn">Save Check-in</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Note Modal -->
+<div class="modal fade" id="addNoteModal" tabindex="-1" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add-note-form">
+                    <div class="mb-3">
+                        <label for="noteTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="noteTitle" placeholder="Note title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="noteContent" class="form-label">Content</label>
+                        <textarea class="form-control" id="noteContent" rows="4" placeholder="Write your note here..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-note-btn">Save Note</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Milestone Modal -->
+<div class="modal fade" id="editMilestoneModal" tabindex="-1" aria-labelledby="editMilestoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMilestoneModalLabel">Update Milestone</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-milestone-form">
+                    <input type="hidden" id="editMilestoneId">
+                    <div class="mb-3">
+                        <label for="editMilestoneTitle" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="editMilestoneTitle" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMilestoneDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editMilestoneDescription" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMilestoneDate" class="form-label">Target Date</label>
+                        <input type="date" class="form-control" id="editMilestoneDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editMilestoneStatus" class="form-label">Status</label>
+                        <select class="form-select" id="editMilestoneStatus" required>
+                            <option value="pending">Pending</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                            <option value="missed">Missed</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="update-milestone-btn">Update Milestone</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Goal Detail Page -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // AI Feedback for struggling users
+    const moodInputs = document.querySelectorAll('input[name="logMood"]');
+    const aiFeedbackSection = document.getElementById('aiFeedbackSection');
+    
+    moodInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.value === 'negative') {
+                aiFeedbackSection.classList.remove('d-none');
+            } else {
+                aiFeedbackSection.classList.add('d-none');
+            }
+        });
+    });
+    
+    // Save log/check-in
+    document.getElementById('save-log-btn').addEventListener('click', function() {
+        const content = document.getElementById('logContent').value;
+        const mood = document.querySelector('input[name="logMood"]:checked').value;
+        
+        if (!content) {
+            alert('Please enter your check-in content');
+            return;
+        }
+        
+        // Send request to create log
+        fetch('/api/goals/<%= goal.id %>/logs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                content,
+                mood
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Close modal and refresh page
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addLogModal'));
+            modal.hide();
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error creating log:', error);
+            alert('Failed to save check-in. Please try again.');
+        });
+    });
+    
+    // Save note
+    document.getElementById('save-note-btn').addEventListener('click', function() {
+        const title = document.getElementById('noteTitle').value || 'Untitled Note';
+        const content = document.getElementById('noteContent').value;
+        
+        if (!content) {
+            alert('Please enter your note content');
+            return;
+        }
+        
+        // Send request to create note
+        fetch('/api/goals/<%= goal.id %>/notes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                content
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Close modal and refresh page
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addNoteModal'));
+            modal.hide();
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error creating note:', error);
+            alert('Failed to save note. Please try again.');
+        });
+    });
+    
+    // Edit milestone
+    document.querySelectorAll('.edit-milestone-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const milestoneId = this.getAttribute('data-milestone-id');
+            const title = this.getAttribute('data-milestone-title');
+            const description = this.getAttribute('data-milestone-description');
+            const targetDate = this.getAttribute('data-milestone-target-date');
+            const status = this.getAttribute('data-milestone-status');
+            
+            document.getElementById('editMilestoneId').value = milestoneId;
+            document.getElementById('editMilestoneTitle').value = title;
+            document.getElementById('editMilestoneDescription').value = description;
+            document.getElementById('editMilestoneDate').value = targetDate;
+            document.getElementById('editMilestoneStatus').value = status;
+            
+            const modal = new bootstrap.Modal(document.getElementById('editMilestoneModal'));
+            modal.show();
+        });
+    });
+    
+    // Update milestone
+    document.getElementById('update-milestone-btn').addEventListener('click', function() {
+        const milestoneId = document.getElementById('editMilestoneId').value;
+        const title = document.getElementById('editMilestoneTitle').value;
+        const description = document.getElementById('editMilestoneDescription').value;
+        const targetDate = document.getElementById('editMilestoneDate').value;
+        const status = document.getElementById('editMilestoneStatus').value;
+        
+        if (!title || !targetDate) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        
+        // Send request to update milestone
+        fetch('/api/goals/milestone/' + milestoneId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                description,
+                targetDate,
+                status
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Close modal and refresh page
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editMilestoneModal'));
+            modal.hide();
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error updating milestone:', error);
+            alert('Failed to update milestone. Please try again.');
+        });
+    });
+    
+    // Handle edit goal button
+    document.querySelector('.edit-goal-btn').addEventListener('click', function() {
+        const goalId = this.getAttribute('data-goal-id');
+        
+        // Redirect to edit goal page or open modal
+        // Assuming you want to reuse the edit modal from dashboard
+        // You'd need to fetch the goal data and populate the form
+        
+        fetch('/api/goals/<%= goal.id %>')
+            .then(response => response.json())
+            .then(goal => {
+                // Redirect to dashboard with edit modal open
+                window.location.href = `/goals/dashboard?edit=${goal.id}`;
+            })
+            .catch(error => console.error('Error fetching goal data:', error));
+    });
+    
+    // Handle delete goal button
+    document.querySelector('.delete-goal-btn').addEventListener('click', function() {
+        const goalId = this.getAttribute('data-goal-id');
+        
+        if (confirm('Are you sure you want to delete this goal? This action cannot be undone.')) {
+            // Send request to delete goal
+            fetch('/api/goals/' + goalId, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Redirect to dashboard
+                window.location.href = '/goals/dashboard';
+            })
+            .catch(error => {
+                console.error('Error deleting goal:', error);
+                alert('Failed to delete goal. Please try again.');
+            });
+        }
+    });
+});
+</script>
+
+<style>
+/* Timeline styling */
+.timeline {
+    position: relative;
+    padding-left: 25px;
+    list-style: none;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 1.5rem;
+}
+
+.timeline-item:not(:last-child):before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -25px;
+    height: 100%;
+    border-left: 1px dashed rgba(33, 40, 50, 0.2);
+}
+
+.timeline-item-marker {
+    position: absolute;
+    left: -25px;
+    top: 0;
+    margin-top: 0.5rem;
+}
+
+.timeline-item-marker-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+    background-color: var(--primary-color);
+    border-radius: 100%;
+    color: white;
+}
+
+.timeline-item-content {
+    padding-top: 0;
+    padding-bottom: 1.5rem;
+    padding-left: 0.75rem;
+}
+
+/* Note card styling */
+.note-card {
+    transition: all 0.2s ease;
+    box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.05);
+}
+
+.note-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+/* Metrics styling */
+.metrics-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.metric-item {
+    margin-bottom: 4px;
+    font-size: 0.875rem;
+    display: block;
+    width: 100%;
+    text-align: left;
+    white-space: normal;
+    word-break: normal;
+    line-height: 1.4;
+}
+</style> 

@@ -1,0 +1,332 @@
+<!-- Subscription Page -->
+<div class="container-fluid">
+    <!-- Mock Mode Notice - Only shown in mock mode -->
+    <% if (typeof useMockMode !== 'undefined' && useMockMode) { %>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Test Mode:</strong> The application is running in mock mode. No real charges will be processed.
+                Subscriptions will be simulated for testing purposes.
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h2 class="mb-1">Upgrade Your Account</h2>
+                            <p class="text-muted mb-0">Unlock premium features to achieve your goals faster</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Plans -->
+    <div class="row">
+        <!-- Free Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-light py-3">
+                    <h5 class="mb-0 text-center">Free</h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <span class="display-4">£0</span>
+                        <span class="text-muted">/forever</span>
+                    </div>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Track 1 goal at a time</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>AI-generated milestones</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center text-muted">
+                            <i class="fas fa-times text-danger me-2"></i>
+                            <span>Unlimited goals</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center text-muted">
+                            <i class="fas fa-times text-danger me-2"></i>
+                            <span>Social sharing</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center text-muted">
+                            <i class="fas fa-times text-danger me-2"></i>
+                            <span>Advanced milestone tracking</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center text-muted">
+                            <i class="fas fa-times text-danger me-2"></i>
+                            <span>PDF exports</span>
+                        </li>
+                    </ul>
+                    <div class="mt-auto">
+                        <div class="d-grid">
+                            <% if (!user.subscription_plan || user.subscription_plan === 'free') { %>
+                                <button class="btn btn-outline-secondary" disabled>Current Plan</button>
+                            <% } else { %>
+                                <button class="btn btn-outline-secondary subscribe-btn" data-plan="free">Downgrade to Free</button>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monthly Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-primary">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 text-center">Monthly</h5>
+                    <div class="badge bg-warning text-dark position-absolute end-0 top-0 mt-2 me-2">Popular</div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <span class="display-4">£10</span>
+                        <span class="text-muted">/month</span>
+                    </div>
+                    <div class="text-center mb-3">
+                        <span class="badge bg-success">7-day free trial</span>
+                    </div>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span><strong>Unlimited</strong> goals</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>AI-generated milestones</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Social sharing features</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Advanced progress tracking</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>PDF exports</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Priority support</span>
+                        </li>
+                    </ul>
+                    <div class="mt-auto">
+                        <div class="d-grid">
+                            <% if (user.subscription_plan === 'monthly') { %>
+                                <button class="btn btn-outline-primary" disabled>Current Plan</button>
+                            <% } else { %>
+                                <button class="btn btn-primary subscribe-btn" data-plan="monthly">Subscribe Now</button>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Annual Plan -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0 text-center">Annual</h5>
+                    <div class="badge bg-danger text-white position-absolute end-0 top-0 mt-2 me-2">Save 17%</div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <span class="display-4">£100</span>
+                        <span class="text-muted">/year</span>
+                    </div>
+                    <div class="text-center mb-3">
+                        <span class="badge bg-success">7-day free trial</span>
+                    </div>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span><strong>Everything in Monthly</strong></span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Save £20 compared to monthly</span>
+                        </li>
+                        <li class="list-group-item d-flex align-items-center">
+                            <i class="fas fa-check text-success me-2"></i>
+                            <span>Annual progress report</span>
+                        </li>
+                    </ul>
+                    <div class="mt-auto">
+                        <div class="d-grid">
+                            <% if (user.subscription_plan === 'annual') { %>
+                                <button class="btn btn-outline-success" disabled>Current Plan</button>
+                            <% } else { %>
+                                <button class="btn btn-success subscribe-btn" data-plan="annual">Subscribe Now</button>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-question-circle me-2"></i> Frequently Asked Questions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="subscriptionFAQ">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    How does the 7-day free trial work?
+                                </button>
+                            </h2>
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="faqOne">
+                                <div class="accordion-body">
+                                    When you subscribe to any paid plan, you'll get full premium access for 7 days completely free. You won't be charged until the trial period ends, and you can cancel anytime during the trial with no charges.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                    How does billing work?
+                                </button>
+                            </h2>
+                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="faqTwo">
+                                <div class="accordion-body">
+                                    After your 7-day free trial ends, your subscription will be billed automatically, and then at the beginning of each billing period. You can cancel at any time.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                    What payment methods do you accept?
+                                </button>
+                            </h2>
+                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="faqThree">
+                                <div class="accordion-body">
+                                    We accept all major credit cards (Visa, Mastercard, American Express) and PayPal.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faqFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                    Can I change plans later?
+                                </button>
+                            </h2>
+                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="faqFour">
+                                <div class="accordion-body">
+                                    Yes! You can upgrade, downgrade, or cancel your subscription at any time from your account settings.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Stripe.js before the closing body tag -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Stripe with error handling
+    let stripe;
+    try {
+        stripe = Stripe('<%= stripePublishableKey %>');
+    } catch (error) {
+        console.error('Error initializing Stripe:', error);
+        // If Stripe fails to initialize, we'll handle it gracefully in the button click handler
+    }
+    
+    // Handle subscription button clicks
+    const subscribeButtons = document.querySelectorAll('.subscribe-btn');
+    
+    subscribeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const plan = this.getAttribute('data-plan');
+            
+            // Show loading state
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
+            
+            // Call our server to create a Stripe checkout session
+            fetch('/subscription/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    plan: plan
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    // Reset button
+                    this.disabled = false;
+                    this.innerHTML = plan === 'free' ? 'Downgrade to Free' : 'Subscribe Now';
+                    return;
+                }
+                
+                // Handle the free plan downgrade which returns a direct URL
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                    return;
+                }
+                
+                // Redirect to Stripe Checkout
+                if (data.url) {
+                    window.location.href = data.url;
+                } else if (data.id && stripe) {
+                    // If we get a session ID but no URL, use Stripe.js to redirect
+                    stripe.redirectToCheckout({
+                        sessionId: data.id
+                    }).then(function (result) {
+                        if (result.error) {
+                            // If `redirectToCheckout` fails due to a browser or network
+                            // error, display the localized error message to your customer.
+                            alert(result.error.message);
+                            
+                            // Reset button
+                            button.disabled = false;
+                            button.innerHTML = plan === 'free' ? 'Downgrade to Free' : 'Subscribe Now';
+                        }
+                    });
+                } else {
+                    alert('Something went wrong. Please try again.');
+                    // Reset button
+                    this.disabled = false;
+                    this.innerHTML = plan === 'free' ? 'Downgrade to Free' : 'Subscribe Now';
+                }
+            })
+            .catch(error => {
+                console.error('Error creating checkout session:', error);
+                alert('There was an error processing your request. Please try again.');
+                
+                // Reset button
+                this.disabled = false;
+                this.innerHTML = plan === 'free' ? 'Downgrade to Free' : 'Subscribe Now';
+            });
+        });
+    });
+});
+</script> 

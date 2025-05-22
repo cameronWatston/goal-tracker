@@ -1,0 +1,82 @@
+<!-- Edit Post Page -->
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h2 class="mb-1">Edit Post</h2>
+                            <p class="text-muted mb-0">Update your community post</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% } %>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <form action="/community/post/<%= post.id %>/edit" method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" value="<%= post.title %>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="6" required><%= post.content %></textarea>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="/community/post/<%= post.id %>" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> Tips for Great Posts</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="mb-0">
+                        <li class="mb-2">Be clear and concise in your title</li>
+                        <li class="mb-2">Share specific details about your goals or challenges</li>
+                        <li class="mb-2">Ask specific questions if you're looking for advice</li>
+                        <li class="mb-2">Consider adding your goal progress for context</li>
+                        <li>Be open to feedback and suggestions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-tasks me-2"></i> Actions</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-grid gap-2">
+                        <a href="/community/post/<%= post.id %>" class="btn btn-outline-primary">
+                            <i class="fas fa-eye me-2"></i> View Post
+                        </a>
+                        <form action="/community/post/<%= post.id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this post? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-trash me-2"></i> Delete Post
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

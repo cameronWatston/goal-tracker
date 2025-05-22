@@ -1,0 +1,100 @@
+<!-- Create Post Page -->
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h2 class="mb-1">Create Post</h2>
+                            <p class="text-muted mb-0">Share your goals, progress, or insights with the community</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <% } %>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <form action="/community/create" method="POST">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" value="<%= typeof formData !== 'undefined' && formData.title ? formData.title : '' %>" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control" id="content" name="content" rows="6" required><%= typeof formData !== 'undefined' && formData.content ? formData.content : '' %></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="goalId" class="form-label">Link to a Goal (Optional)</label>
+                            <select class="form-select" id="goalId" name="goalId">
+                                <option value="">Select a goal (optional)</option>
+                                <% if (goals && goals.length > 0) { %>
+                                    <% goals.forEach(goal => { %>
+                                        <option value="<%= goal.id %>" <%= typeof formData !== 'undefined' && formData.goalId == goal.id ? 'selected' : '' %>><%= goal.title %></option>
+                                    <% }); %>
+                                <% } %>
+                            </select>
+                            <div class="form-text">
+                                <p class="mb-1">Linking your post to a goal:</p>
+                                <ul class="small ps-3 mb-1">
+                                    <li>Shows other users what you're working on</li>
+                                    <li>Lets others offer guidance and support for specific challenges</li>
+                                    <li>Creates a reference point for your progress updates</li>
+                                    <li>Helps community members relate to similar goals</li>
+                                </ul>
+                                <p class="mb-0 small">Other users will only see a summary of your goal, not all your milestone details.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="/community" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Create Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i> Tips for Great Posts</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="mb-0">
+                        <li class="mb-2">Be clear and concise in your title</li>
+                        <li class="mb-2">Share specific details about your goals or challenges</li>
+                        <li class="mb-2">Ask specific questions if you're looking for advice</li>
+                        <li class="mb-2">Consider adding your goal progress for context</li>
+                        <li>Be open to feedback and suggestions</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Community Guidelines</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="mb-0">Remember to follow our community guidelines:</p>
+                    <ul class="mb-0">
+                        <li>Be respectful and supportive</li>
+                        <li>No spam or self-promotion</li>
+                        <li>Keep content relevant to goals and personal development</li>
+                        <li>Respect others' privacy and opinions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

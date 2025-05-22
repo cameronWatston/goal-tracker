@@ -1,0 +1,217 @@
+<!-- Leaderboard Page -->
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h2 class="mb-1">Goal Champion Leaderboard</h2>
+                            <p class="text-muted mb-0">See who's leading the way in achieving their goals</p>
+                        </div>
+                        <div class="ms-auto">
+                            <a href="/goals/dashboard" class="btn btn-outline-secondary me-2">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-trophy me-2"></i> Top Goal Achievers</h5>
+                </div>
+                <div class="card-body p-4">
+                    <% if (leaderboard && leaderboard.length > 0) { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%">Rank</th>
+                                        <th style="width: 25%">User</th>
+                                        <th style="width: 20%">Goals</th>
+                                        <th style="width: 20%">Milestones</th>
+                                        <th style="width: 15%">Total Score</th>
+                                        <th style="width: 10%">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% leaderboard.forEach((user, index) => { 
+                                        const isCurrentUser = currentUser && user.id === currentUser.id;
+                                    %>
+                                        <tr class="<%= isCurrentUser ? 'table-primary' : '' %>">
+                                            <td>
+                                                <% if (index === 0) { %>
+                                                    <span class="badge bg-warning text-dark">
+                                                        <i class="fas fa-trophy me-1"></i> 1<sup>st</sup>
+                                                    </span>
+                                                <% } else if (index === 1) { %>
+                                                    <span class="badge bg-secondary">
+                                                        <i class="fas fa-medal me-1"></i> 2<sup>nd</sup>
+                                                    </span>
+                                                <% } else if (index === 2) { %>
+                                                    <span class="badge bg-danger">
+                                                        <i class="fas fa-medal me-1"></i> 3<sup>rd</sup>
+                                                    </span>
+                                                <% } else { %>
+                                                    <%= index + 1 %>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar me-2 bg-<%= ['primary', 'success', 'info', 'warning', 'danger'][index % 5] %> text-white">
+                                                        <%= user.username.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <div>
+                                                        <%= user.username %>
+                                                        <% if (isCurrentUser) { %>
+                                                            <span class="badge bg-primary ms-1">You</span>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-flex justify-content-between">
+                                                        <small><%= user.completed_goals %>/<%= user.total_goals %></small>
+                                                        <small><%= user.goalCompletionRate %>%</small>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" 
+                                                            style="width: <%= user.goalCompletionRate %>%;" 
+                                                            aria-valuenow="<%= user.goalCompletionRate %>" 
+                                                            aria-valuemin="0" 
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-flex justify-content-between">
+                                                        <small><%= user.completed_milestones %>/<%= user.total_milestones %></small>
+                                                        <small><%= user.milestoneCompletionRate %>%</small>
+                                                    </div>
+                                                    <div class="progress" style="height: 6px;">
+                                                        <div class="progress-bar bg-info" role="progressbar" 
+                                                            style="width: <%= user.milestoneCompletionRate %>%;" 
+                                                            aria-valuenow="<%= user.milestoneCompletionRate %>" 
+                                                            aria-valuemin="0" 
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="fw-bold"><%= user.totalScore %></span>
+                                            </td>
+                                            <td>
+                                                <% 
+                                                let status = '';
+                                                let statusColor = '';
+                                                let statusIcon = '';
+                                                
+                                                if (user.totalScore >= 250) {
+                                                    status = 'Expert';
+                                                    statusColor = 'success';
+                                                    statusIcon = 'crown';
+                                                } else if (user.totalScore >= 150) {
+                                                    status = 'Advanced';
+                                                    statusColor = 'primary';
+                                                    statusIcon = 'star';
+                                                } else if (user.totalScore >= 75) {
+                                                    status = 'Intermediate';
+                                                    statusColor = 'info';
+                                                    statusIcon = 'thumbs-up';
+                                                } else {
+                                                    status = 'Beginner';
+                                                    statusColor = 'secondary';
+                                                    statusIcon = 'seedling';
+                                                }
+                                                %>
+                                                <span class="badge bg-<%= statusColor %>">
+                                                    <i class="fas fa-<%= statusIcon %> me-1"></i> <%= status %>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center p-5">
+                            <div class="mb-3">
+                                <i class="fas fa-trophy text-warning fa-4x"></i>
+                            </div>
+                            <h3>No Leaderboard Data Yet</h3>
+                            <p class="text-muted mb-4">Start completing goals to appear on the leaderboard!</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scoring System -->
+    <div class="row mt-4">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-calculator me-2"></i> How Scoring Works</h5>
+                </div>
+                <div class="card-body p-4">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                            <span><i class="fas fa-bullseye text-primary me-2"></i> Goal Completion Rate</span>
+                            <span class="badge bg-primary rounded-pill">× 2 points</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center bg-light">
+                            <span><i class="fas fa-tasks text-info me-2"></i> Milestone Completion Rate</span>
+                            <span class="badge bg-info rounded-pill">× 1 point</span>
+                        </li>
+                        <li class="list-group-item bg-light">
+                            <div class="mt-2">
+                                <h6>Status Levels:</h6>
+                                <div class="d-flex flex-wrap gap-2 mt-2">
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-seedling me-1"></i> Beginner (0-74)
+                                    </span>
+                                    <span class="badge bg-info">
+                                        <i class="fas fa-thumbs-up me-1"></i> Intermediate (75-149)
+                                    </span>
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-star me-1"></i> Advanced (150-249)
+                                    </span>
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-crown me-1"></i> Expert (250+)
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+</style> 

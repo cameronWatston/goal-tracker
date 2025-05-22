@@ -1,0 +1,639 @@
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h2 class="mb-1">Your Goals</h2>
+                            <p class="text-muted mb-0">Track and manage your personal and professional goals</p>
+                        </div>
+                        <div class="ms-auto">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+                                <i class="fas fa-plus-circle me-2"></i> Add New Goal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Sort Controls -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="btn-group" role="group" aria-label="Filter goals">
+                <a href="/goals/dashboard?filter=all&sort=<%= sort %>" class="btn <%= filter === 'all' ? 'btn-primary' : 'btn-outline-secondary' %>">
+                    All
+                </a>
+                <a href="/goals/dashboard?filter=active&sort=<%= sort %>" class="btn <%= filter === 'active' ? 'btn-primary' : 'btn-outline-secondary' %>">
+                    Active
+                </a>
+                <a href="/goals/dashboard?filter=completed&sort=<%= sort %>" class="btn <%= filter === 'completed' ? 'btn-primary' : 'btn-outline-secondary' %>">
+                    Completed
+                </a>
+                <a href="/goals/dashboard?filter=archived&sort=<%= sort %>" class="btn <%= filter === 'archived' ? 'btn-primary' : 'btn-outline-secondary' %>">
+                    Archived
+                </a>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="dropdown float-end">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-sort me-1"></i> Sort By
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                    <li>
+                        <a class="dropdown-item <%= sort === 'newest' ? 'active' : '' %>" href="/goals/dashboard?filter=<%= filter %>&sort=newest">
+                            <i class="fas fa-calendar-alt me-2"></i> Newest First
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item <%= sort === 'oldest' ? 'active' : '' %>" href="/goals/dashboard?filter=<%= filter %>&sort=oldest">
+                            <i class="fas fa-calendar-alt me-2"></i> Oldest First
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item <%= sort === 'deadline' ? 'active' : '' %>" href="/goals/dashboard?filter=<%= filter %>&sort=deadline">
+                            <i class="fas fa-hourglass-end me-2"></i> Upcoming Deadline
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item <%= sort === 'progress' ? 'active' : '' %>" href="/goals/dashboard?filter=<%= filter %>&sort=progress">
+                            <i class="fas fa-chart-line me-2"></i> Progress
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Goals Grid -->
+    <div class="row g-4 mb-5">
+        <% if (goals && goals.length > 0) { %>
+            <% goals.forEach(goal => { %>
+                <div class="col-md-6 col-lg-4 goal-card-container">
+                    <div class="card h-100 goal-card" data-goal-id="<%= goal.id %>">
+                        <div class="card-body p-4">
+                            <!-- Category Badge -->
+                            <% 
+                            let categoryColor = 'secondary';
+                            let categoryIcon = 'tag';
+                            
+                            if (goal.category) {
+                                if (goal.category === 'health') {
+                                    categoryColor = 'success';
+                                    categoryIcon = 'heartbeat';
+                                } else if (goal.category === 'career') {
+                                    categoryColor = 'primary';
+                                    categoryIcon = 'briefcase';
+                                } else if (goal.category === 'personal') {
+                                    categoryColor = 'info';
+                                    categoryIcon = 'user';
+                                } else if (goal.category === 'finance') {
+                                    categoryColor = 'warning';
+                                    categoryIcon = 'dollar-sign';
+                                } else if (goal.category === 'relationships') {
+                                    categoryColor = 'danger';
+                                    categoryIcon = 'heart';
+                                }
+                            }
+                            %>
+                            <span class="badge bg-<%= categoryColor %> mb-3">
+                                <i class="fas fa-<%= categoryIcon %> me-1"></i>
+                                <%= goal.category ? goal.category.charAt(0).toUpperCase() + goal.category.slice(1) : 'General' %>
+                            </span>
+
+                            <!-- Goal Status Badge -->
+                            <% 
+                            let statusColor = 'primary';
+                            let statusIcon = 'clock';
+                            
+                            if (goal.status === 'completed') {
+                                statusColor = 'success';
+                                statusIcon = 'check-circle';
+                            } else if (goal.status === 'archived') {
+                                statusColor = 'secondary';
+                                statusIcon = 'archive';
+                            }
+                            %>
+                            <span class="badge bg-<%= statusColor %> mb-3 ms-2">
+                                <i class="fas fa-<%= statusIcon %> me-1"></i>
+                                <%= goal.status.charAt(0).toUpperCase() + goal.status.slice(1) %>
+                            </span>
+
+                            <!-- Goal Title & Description -->
+                            <h4 class="card-title mb-2"><%= goal.title %></h4>
+                            <p class="card-text text-muted mb-3">
+                                <%= goal.description ? (goal.description.length > 100 ? goal.description.substring(0, 100) + '...' : goal.description) : 'No description' %>
+                            </p>
+
+                            <!-- Progress Bar -->
+                            <div class="mb-3" id="progress-container-<%= goal.id %>">
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" 
+                                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    <small class="text-muted">Progress</small>
+                                    <small class="text-muted"><span id="progress-value-<%= goal.id %>">0</span>%</small>
+                                </div>
+                            </div>
+
+                            <!-- Deadline -->
+                            <% 
+                            const targetDate = new Date(goal.target_date);
+                            const now = new Date();
+                            const daysRemaining = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
+                            
+                            let deadlineClass = 'text-muted';
+                            if (daysRemaining < 0) {
+                                deadlineClass = 'text-danger';
+                            } else if (daysRemaining <= 7) {
+                                deadlineClass = 'text-warning';
+                            }
+                            
+                            const formattedDate = targetDate.toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric' 
+                            });
+                            %>
+                            <div class="mb-3">
+                                <div class="d-flex align-items-center <%= deadlineClass %>">
+                                    <i class="fas fa-calendar-alt me-2"></i>
+                                    <span>
+                                        <% if (daysRemaining < 0) { %>
+                                            Overdue by <%= Math.abs(daysRemaining) %> days
+                                        <% } else if (daysRemaining === 0) { %>
+                                            Due today
+                                        <% } else { %>
+                                            <%= daysRemaining %> days remaining
+                                        <% } %>
+                                    </span>
+                                    <span class="ms-auto"><%= formattedDate %></span>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex justify-content-between mt-4">
+                                <a href="/goals/detail/<%= goal.id %>" class="btn btn-primary">
+                                    <i class="fas fa-chart-bar me-1"></i> View Details
+                                </a>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="goalActionDropdown<%= goal.id %>" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="goalActionDropdown<%= goal.id %>">
+                                        <li>
+                                            <a class="dropdown-item" href="/goals/detail/<%= goal.id %>">
+                                                <i class="fas fa-eye me-2"></i> View Details
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item edit-goal-btn" href="#" data-goal-id="<%= goal.id %>">
+                                                <i class="fas fa-edit me-2"></i> Edit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="/goals/export/<%= goal.id %>">
+                                                <i class="fas fa-file-export me-2"></i> Export Progress
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger delete-goal-btn" href="#" data-goal-id="<%= goal.id %>">
+                                                <i class="fas fa-trash-alt me-2"></i> Delete
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="col-12">
+                <div class="text-center p-5">
+                    <div class="mb-3">
+                        <i class="fas fa-clipboard-list text-warning fa-5x"></i>
+                    </div>
+                    <h3>No Goals Found</h3>
+                    <p class="text-muted mb-4">Start tracking your progress by adding a new goal</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+                        <i class="fas fa-plus-circle me-2"></i> Add Your First Goal
+                    </button>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- New Goal Modal -->
+<div class="modal fade" id="newGoalModal" tabindex="-1" aria-labelledby="newGoalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="newGoalModalLabel">Add New Goal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="new-goal-form">
+                    <div class="mb-3">
+                        <label for="goalTitle" class="form-label">Goal Title</label>
+                        <input type="text" class="form-control" id="goalTitle" placeholder="Enter goal title" required>
+                        <div class="form-text">Be specific about what you want to achieve</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="goalDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="goalDescription" rows="3" placeholder="Describe your goal in detail for better AI milestones"></textarea>
+                        <div class="form-text">More details help our AI create better milestones for you</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="goalCategory" class="form-label">Category</label>
+                        <select class="form-select" id="goalCategory" required>
+                            <option value="">Select a category</option>
+                            <option value="health">Health & Fitness</option>
+                            <option value="career">Career & Education</option>
+                            <option value="personal">Personal Development</option>
+                            <option value="finance">Financial</option>
+                            <option value="relationships">Relationships</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="goalDeadline" class="form-label">Target Date</label>
+                        <input type="date" class="form-control" id="goalDeadline" required>
+                        <div class="form-text">When do you want to achieve this goal?</div>
+                    </div>
+                </form>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-lightbulb me-2"></i> After creating your goal, AI will automatically generate detailed milestones to help you achieve it.
+                </div>
+                
+                <!-- Loading indicator (hidden by default) -->
+                <div id="ai-loading-indicator" class="text-center p-3 d-none">
+                    <div class="spinner-border text-primary mb-2" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mb-0">AI is generating your milestones...</p>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="save-goal-btn">Create Goal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Goal Modal -->
+<div class="modal fade" id="editGoalModal" tabindex="-1" aria-labelledby="editGoalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editGoalModalLabel">Edit Goal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-goal-form">
+                    <input type="hidden" id="editGoalId">
+                    <div class="mb-3">
+                        <label for="editGoalTitle" class="form-label">Goal Title</label>
+                        <input type="text" class="form-control" id="editGoalTitle" placeholder="Enter goal title" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editGoalDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="editGoalDescription" rows="3" placeholder="Describe your goal"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editGoalCategory" class="form-label">Category</label>
+                        <select class="form-select" id="editGoalCategory" required>
+                            <option value="">Select a category</option>
+                            <option value="health">Health & Fitness</option>
+                            <option value="career">Career & Education</option>
+                            <option value="personal">Personal Development</option>
+                            <option value="finance">Financial</option>
+                            <option value="relationships">Relationships</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editGoalDeadline" class="form-label">Target Date</label>
+                        <input type="date" class="form-control" id="editGoalDeadline" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editGoalStatus" class="form-label">Status</label>
+                        <select class="form-select" id="editGoalStatus" required>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="update-goal-btn">Update Goal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Goal Confirmation Modal -->
+<div class="modal fade" id="deleteGoalModal" tabindex="-1" aria-labelledby="deleteGoalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteGoalModalLabel">Delete Goal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Warning: This action cannot be undone!
+                </div>
+                <p>Are you sure you want to delete this goal? All associated milestones, logs, and notes will be permanently deleted.</p>
+                <input type="hidden" id="deleteGoalId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete-goal-btn">Delete Goal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Dashboard Functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get goal IDs from the page
+    const goalCards = document.querySelectorAll('[data-goal-id]');
+    goalCards.forEach(card => {
+        const goalId = card.getAttribute('data-goal-id');
+        fetchGoalProgress(goalId);
+    });
+    
+    // Function to fetch goal progress
+    function fetchGoalProgress(goalId) {
+        fetch(`/api/goals/${goalId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.milestones) {
+                    const totalMilestones = data.milestones.length;
+                    const completedMilestones = data.milestones.filter(m => m.status === 'completed').length;
+                    const progressPercent = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+                    
+                    // Update the progress bar
+                    const progressBar = document.querySelector(`#progress-container-${goalId} .progress-bar`);
+                    const progressValue = document.getElementById(`progress-value-${goalId}`);
+                    
+                    if (progressBar && progressValue) {
+                        progressBar.style.width = `${progressPercent}%`;
+                        progressBar.setAttribute('aria-valuenow', progressPercent);
+                        progressValue.textContent = progressPercent;
+                    }
+                }
+            })
+            .catch(error => console.error('Error fetching goal progress:', error));
+    }
+    
+    // Save new goal
+    document.getElementById('save-goal-btn').addEventListener('click', function() {
+        const title = document.getElementById('goalTitle').value;
+        const description = document.getElementById('goalDescription').value;
+        const category = document.getElementById('goalCategory').value;
+        const targetDate = document.getElementById('goalDeadline').value;
+        
+        if (!title || !targetDate || !category) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        // Show loading indicator
+        document.getElementById('ai-loading-indicator').classList.remove('d-none');
+        const saveButton = document.getElementById('save-goal-btn');
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Processing...';
+        
+        // Send request to create goal
+        fetch('/api/goals', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                description,
+                category,
+                targetDate
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Hide loading indicator (though we're navigating away)
+            document.getElementById('ai-loading-indicator').classList.add('d-none');
+            saveButton.disabled = false;
+            saveButton.innerHTML = 'Create Goal';
+            
+            // Close modal and redirect to the goal detail page
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newGoalModal'));
+            modal.hide();
+            
+            // Redirect to the goal detail page
+            window.location.href = data.redirectUrl;
+        })
+        .catch(error => {
+            // Hide loading indicator on error
+            document.getElementById('ai-loading-indicator').classList.add('d-none');
+            saveButton.disabled = false;
+            saveButton.innerHTML = 'Create Goal';
+            
+            console.error('Error creating goal:', error);
+            alert('Failed to create goal. Please try again.');
+        });
+    });
+    
+    // Edit goal button handler
+    document.querySelectorAll('.edit-goal-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const goalId = this.getAttribute('data-goal-id');
+            
+            // Fetch goal data
+            fetch(`/api/goals/${goalId}`)
+                .then(response => response.json())
+                .then(goal => {
+                    document.getElementById('editGoalId').value = goal.id;
+                    document.getElementById('editGoalTitle').value = goal.title;
+                    document.getElementById('editGoalDescription').value = goal.description || '';
+                    document.getElementById('editGoalCategory').value = goal.category || '';
+                    document.getElementById('editGoalDeadline').value = goal.target_date;
+                    document.getElementById('editGoalStatus').value = goal.status;
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('editGoalModal'));
+                    modal.show();
+                })
+                .catch(error => console.error('Error fetching goal data:', error));
+        });
+    });
+    
+    // Update goal
+    document.getElementById('update-goal-btn').addEventListener('click', function() {
+        const goalId = document.getElementById('editGoalId').value;
+        const title = document.getElementById('editGoalTitle').value;
+        const description = document.getElementById('editGoalDescription').value;
+        const category = document.getElementById('editGoalCategory').value;
+        const targetDate = document.getElementById('editGoalDeadline').value;
+        const status = document.getElementById('editGoalStatus').value;
+        
+        if (!title || !targetDate || !category) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        
+        // Send request to update goal
+        fetch(`/api/goals/${goalId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title,
+                description,
+                category,
+                targetDate,
+                status
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Close modal and refresh page to show updated goal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editGoalModal'));
+            modal.hide();
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error updating goal:', error);
+            alert('Failed to update goal. Please try again.');
+        });
+    });
+    
+    // Delete goal button handler
+    document.querySelectorAll('.delete-goal-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const goalId = this.getAttribute('data-goal-id');
+            document.getElementById('deleteGoalId').value = goalId;
+            
+            const modal = new bootstrap.Modal(document.getElementById('deleteGoalModal'));
+            modal.show();
+        });
+    });
+    
+    // Confirm delete goal
+    document.getElementById('confirm-delete-goal-btn').addEventListener('click', function() {
+        const goalId = document.getElementById('deleteGoalId').value;
+        
+        // Send request to delete goal
+        fetch(`/api/goals/${goalId}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Close modal and refresh page
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteGoalModal'));
+            modal.hide();
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error deleting goal:', error);
+            alert('Failed to delete goal. Please try again.');
+        });
+    });
+});
+</script>
+
+<style>
+.goal-card {
+    transition: all 0.3s ease;
+    border-top: 5px solid var(--primary-color);
+}
+
+.goal-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.goal-card .progress {
+    overflow: visible;
+    background-color: #f0f0f0;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.1) inset;
+}
+
+.goal-card .progress-bar {
+    position: relative;
+    overflow: visible;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+}
+
+/* Category colors */
+.goal-card[data-category="health"] {
+    border-top-color: var(--success-color);
+}
+
+.goal-card[data-category="career"] {
+    border-top-color: var(--primary-color);
+}
+
+.goal-card[data-category="personal"] {
+    border-top-color: var(--info-color);
+}
+
+.goal-card[data-category="finance"] {
+    border-top-color: var(--warning-color);
+}
+
+.goal-card[data-category="relationships"] {
+    border-top-color: var(--danger-color);
+}
+
+/* Status styles */
+.goal-card[data-status="completed"] {
+    background-color: rgba(46, 204, 113, 0.05);
+}
+
+.goal-card[data-status="archived"] {
+    opacity: 0.7;
+}
+
+/* Animation */
+@keyframes progressAnimation {
+    0% {
+        width: 0%;
+    }
+}
+
+.progress-bar {
+    animation: progressAnimation 1s ease-in-out;
+}
+</style> 

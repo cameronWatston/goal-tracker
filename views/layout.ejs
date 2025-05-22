@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <!-- Favicon -->
+    <link rel="icon" href="/img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        :root {
+            /* Professional color scheme */
+            --primary-color: #2c3e50; /* Dark blue-gray */
+            --secondary-color: #34495e; /* Slightly lighter blue-gray */
+            --accent-color: #3498db; /* Bright blue */
+            --light-color: #ecf0f1; /* Very light gray */
+            --dark-color: #2c3e50; /* Dark blue-gray */
+            --success-color: #2ecc71; /* Green */
+            --info-color: #3498db; /* Blue */
+            --warning-color: #f39c12; /* Orange */
+            --danger-color: #e74c3c; /* Red */
+            --text-dark: #2c3e50; /* Dark blue-gray */
+            --text-light: #ecf0f1; /* Very light gray */
+        }
+        
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-color);
+            color: var(--text-dark);
+        }
+        
+        .navbar {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            background-color: var(--secondary-color) !important;
+        }
+        
+        .navbar-light .navbar-brand,
+        .navbar-light .navbar-nav .nav-link {
+            color: var(--light-color);
+        }
+        
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: var(--accent-color);
+        }
+        
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--light-color) !important;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(44, 62, 80, 0.15);
+            transition: transform 0.2s ease-in-out;
+            background-color: white;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--light-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: var(--light-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+        
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+        }
+        
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+        
+        .bg-success {
+            background-color: var(--success-color) !important;
+        }
+        
+        .bg-info {
+            background-color: var(--info-color) !important;
+        }
+        
+        .bg-warning {
+            background-color: var(--warning-color) !important;
+        }
+        
+        .dropdown-menu {
+            background-color: var(--primary-color);
+        }
+        
+        .dropdown-item {
+            color: var(--light-color);
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--secondary-color);
+            color: var(--light-color);
+        }
+        
+        .input-group-text {
+            background-color: var(--primary-color);
+            color: var(--light-color);
+            border-color: var(--primary-color);
+        }
+        
+        footer {
+            margin-top: 3rem;
+            padding: 2rem 0;
+            background-color: var(--secondary-color);
+            border-top: 1px solid var(--secondary-color);
+            color: var(--light-color);
+        }
+        
+        footer .text-muted {
+            color: rgba(236, 240, 241, 0.7) !important;
+        }
+        
+        /* Fix for metrics display */
+        .metrics-list, .metrics-container {
+            list-style: none;
+            padding-left: 0;
+            margin-bottom: 0;
+            display: block;
+            width: 100%;
+        }
+        
+        .metric-item, .metrics-list li {
+            margin-bottom: 4px;
+            font-size: 0.875rem;
+            display: inline-block;
+            width: auto;
+            text-align: left;
+            white-space: normal;
+            word-break: normal;
+            line-height: 1.4;
+        }
+        
+        td .metric-item, td .metrics-list li {
+            display: block;
+            width: 100%;
+        }
+    </style>
+    <%- style %>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light py-3">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-bullseye text-info me-2"></i>Goal Tracker</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <% if (!user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Home</a>
+                        </li>
+                    <% } %>
+                    <% if (user) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/community">Community</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/subscription">Subscription</a>
+                        </li>
+                    <% } %>
+                </ul>
+                <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+                    <% if (user) { %>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <%= user.username %>
+                                <% if (user.subscription_plan === 'monthly') { %>
+                                    <span class="badge bg-success">MONTHLY</span>
+                                <% } else if (user.subscription_plan === 'annual') { %>
+                                    <span class="badge bg-success">ANNUAL</span>
+                                <% } else { %>
+                                    <span class="badge bg-secondary">FREE</span>
+                                <% } %>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/profile"><i class="fas fa-user me-2"></i> Profile</a></li>
+                                <li><a class="dropdown-item" href="/subscription"><i class="fas fa-crown me-2"></i> Subscription</a></li>
+                                <li><a class="dropdown-item" href="/community/my-posts"><i class="fas fa-file-alt me-2"></i> My Posts</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <% if (typeof message !== 'undefined' && message === 'account_deleted') { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Your account has been successfully deleted.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
+        
+        <%- body %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0">&copy; <%= new Date().getFullYear() %> Goal Tracker. All rights reserved.</p>
+            <p class="text-muted small">Achieve your goals with AI assistance</p>
+        </div>
+    </footer>
+
+    <% if (user) { %>
+    <!-- Delete Account Modal -->
+    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteAccountModalLabel">Delete Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i> Warning: This action cannot be undone!
+                    </div>
+                    <p>Are you sure you want to delete your account? All your goals and milestones will be permanently deleted.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="/auth/delete-account" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete My Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <%- script %>
+</body>
+</html> 

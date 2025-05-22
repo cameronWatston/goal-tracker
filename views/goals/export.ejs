@@ -1,0 +1,304 @@
+<!-- Export Goal Data Page -->
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center">
+                        <div>
+                            <h2 class="mb-1">Export "<%= goal.title %>" Data</h2>
+                            <p class="text-muted mb-0">Download your goal progress data in various formats</p>
+                        </div>
+                        <div class="ms-auto">
+                            <a href="/goals/detail/<%= goal.id %>" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Goal
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Options -->
+    <div class="row g-4">
+        <!-- CSV Export -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-file-csv text-primary fa-4x"></i>
+                    </div>
+                    <h3 class="card-title">CSV Export</h3>
+                    <p class="text-muted mb-4">Download your goal data in CSV format for use in spreadsheet applications</p>
+                    <div class="d-grid">
+                        <button class="btn btn-primary export-csv-btn" data-goal-id="<%= goal.id %>">
+                            <i class="fas fa-download me-1"></i> Export to CSV
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PDF Export -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-file-pdf text-danger fa-4x"></i>
+                    </div>
+                    <h3 class="card-title">Basic PDF Report</h3>
+                    <p class="text-muted mb-4">Generate a standard PDF report with milestone and progress data</p>
+                    <div class="d-grid">
+                        <button class="btn btn-danger export-pdf-btn" data-goal-id="<%= goal.id %>">
+                            <i class="fas fa-download me-1"></i> Generate PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Enhanced PDF Export -->
+        <div class="col-md-4">
+            <div class="card h-100 border-success">
+                <div class="card-header bg-success text-white py-3 text-center">
+                    <h5 class="mb-0">Premium Feature</h5>
+                </div>
+                <div class="card-body p-4 text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-robot text-success fa-4x"></i>
+                    </div>
+                    <h3 class="card-title">AI Enhanced Report</h3>
+                    <p class="text-muted mb-4">Let AI analyze your progress data and create a comprehensive report with insights and recommendations</p>
+                    <ul class="list-unstyled text-start mb-4">
+                        <li><i class="fas fa-check text-success me-2"></i> Progress analysis</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Custom insights</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Personalized recommendations</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Success probability</li>
+                    </ul>
+                    <div class="d-grid">
+                        <button class="btn btn-success ai-pdf-btn" data-goal-id="<%= goal.id %>" data-bs-toggle="modal" data-bs-target="#aiReportModal">
+                            <i class="fas fa-magic me-1"></i> Generate AI Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Preview Section -->
+    <div class="row mt-4" id="reportPreviewSection" style="display: none;">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-eye me-2"></i> Report Preview</h5>
+                    <button class="btn btn-sm btn-primary" id="downloadReportBtn">
+                        <i class="fas fa-download me-1"></i> Download Full Report
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="report-preview">
+                        <div class="text-center mb-4">
+                            <h4>Goal Progress Report</h4>
+                            <h5 class="text-muted"><%= goal.title %></h5>
+                            <p class="small text-muted">Generated on <%= new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Goal Overview</h6>
+                                        <p><strong>Category:</strong> <%= goal.category %></p>
+                                        <p><strong>Start Date:</strong> <%= new Date(goal.created_at).toLocaleDateString() %></p>
+                                        <p><strong>Target Date:</strong> <%= new Date(goal.target_date).toLocaleDateString() %></p>
+                                        <p><strong>Status:</strong> <%= goal.status %></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Progress Summary</h6>
+                                        <div class="progress mb-3" style="height: 20px;">
+                                            <div id="previewProgressBar" class="progress-bar bg-success" role="progressbar" style="width: 0%;" 
+                                                aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                                        </div>
+                                        <p><strong>Total Milestones:</strong> <span id="totalMilestones">0</span></p>
+                                        <p><strong>Completed Milestones:</strong> <span id="completedMilestones">0</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="aiInsightsSection" style="display: none;">
+                            <h5 class="border-bottom pb-2">AI Analysis & Insights</h5>
+                            <div class="card bg-light mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-chart-line text-primary me-2"></i> Progress Analysis</h6>
+                                    <p id="progressAnalysis">Based on your milestone completion rate and check-in frequency, you're making steady progress toward your goal. You've maintained consistent effort throughout the goal period.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-light mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-lightbulb text-warning me-2"></i> Recommendations</h6>
+                                    <ul id="aiRecommendations">
+                                        <li>Continue your current pace to ensure on-time completion</li>
+                                        <li>Focus on improving your progress in the "Research" milestone which is slightly behind schedule</li>
+                                        <li>Consider adjusting your approach to the "Planning" phase based on your notes from previous check-ins</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-percentage text-success me-2"></i> Success Probability</h6>
+                                    <div class="text-center">
+                                        <div class="display-4 fw-bold" id="successProbability">85%</div>
+                                        <p class="text-muted">Estimated probability of achieving your goal by the target date</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="report-preview-footer mt-4 text-center">
+                            <p class="small text-muted">This is a preview. Download the full report to see all details.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AI Report Generation Modal -->
+<div class="modal fade" id="aiReportModal" tabindex="-1" aria-labelledby="aiReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aiReportModalLabel">Generating AI Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="ai-processing-animation mb-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <h5>Analyzing Your Goal Data</h5>
+                <div class="progress mb-3">
+                    <div id="aiProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div id="aiStatusText" class="text-muted">Initializing...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Subscription Required Modal -->
+<div class="modal fade" id="subscriptionRequiredModal" tabindex="-1" aria-labelledby="subscriptionRequiredModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="subscriptionRequiredModalLabel">Premium Feature</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-4">
+                    <i class="fas fa-lock text-warning fa-5x"></i>
+                </div>
+                <h4>Subscription Required</h4>
+                <p class="mb-4">AI-enhanced reports are available to premium subscribers only.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <a href="/subscription" class="btn btn-primary">View Subscription Options</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Export Functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // CSV Export
+    document.querySelector('.export-csv-btn').addEventListener('click', function() {
+        const goalId = this.getAttribute('data-goal-id');
+        window.location.href = `/api/goals/${goalId}/export/csv`;
+    });
+    
+    // Basic PDF Export
+    document.querySelector('.export-pdf-btn').addEventListener('click', function() {
+        const goalId = this.getAttribute('data-goal-id');
+        window.location.href = `/api/goals/${goalId}/export/pdf`;
+    });
+    
+    // AI Enhanced PDF Export
+    document.querySelector('.ai-pdf-btn').addEventListener('click', function() {
+        // Check if user has premium subscription
+        // For now, we'll assume they do and show the generation process
+        
+        // In a real app, you would check the user's subscription status
+        // If they don't have a premium subscription:
+        // const subscriptionModal = new bootstrap.Modal(document.getElementById('subscriptionRequiredModal'));
+        // subscriptionModal.show();
+        // return;
+        
+        const goalId = this.getAttribute('data-goal-id');
+        
+        // Show generation modal
+        const aiReportModal = new bootstrap.Modal(document.getElementById('aiReportModal'));
+        aiReportModal.show();
+        
+        // Simulate AI analysis process with progress updates
+        let progress = 0;
+        const progressBar = document.getElementById('aiProgress');
+        const statusText = document.getElementById('aiStatusText');
+        
+        const progressInterval = setInterval(() => {
+            progress += 5;
+            progressBar.style.width = `${progress}%`;
+            
+            if (progress === 20) {
+                statusText.textContent = "Analyzing milestone completion patterns...";
+            } else if (progress === 40) {
+                statusText.textContent = "Processing check-in data and notes...";
+            } else if (progress === 60) {
+                statusText.textContent = "Generating insights and recommendations...";
+            } else if (progress === 80) {
+                statusText.textContent = "Creating personalized report...";
+            } else if (progress >= 100) {
+                clearInterval(progressInterval);
+                statusText.textContent = "Report generation complete!";
+                
+                // Hide generation modal after a brief delay
+                setTimeout(() => {
+                    aiReportModal.hide();
+                    
+                    // Show report preview
+                    document.getElementById('reportPreviewSection').style.display = 'block';
+                    document.getElementById('aiInsightsSection').style.display = 'block';
+                    
+                    // Simulate updating the progress data
+                    document.getElementById('previewProgressBar').style.width = '65%';
+                    document.getElementById('previewProgressBar').setAttribute('aria-valuenow', '65');
+                    document.getElementById('previewProgressBar').textContent = '65%';
+                    
+                    document.getElementById('totalMilestones').textContent = '8';
+                    document.getElementById('completedMilestones').textContent = '5';
+                    
+                    // Scroll to preview section
+                    document.getElementById('reportPreviewSection').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+        }, 200);
+    });
+    
+    // Download Report button
+    document.getElementById('downloadReportBtn').addEventListener('click', function() {
+        alert('In a real implementation, this would download the complete PDF report.');
+    });
+});
+</script> 

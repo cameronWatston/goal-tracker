@@ -47,13 +47,13 @@ const PRODUCTS = {
     monthly: {
         name: 'Monthly Subscription',
         price_id: process.env.STRIPE_MONTHLY_PLAN_ID,
-        amount: 1000, // £10.00 in pence
+        amount: 1299, // £12.99 in pence
         interval: 'month'
     },
     annual: {
         name: 'Annual Subscription',
         price_id: process.env.STRIPE_ANNUAL_PLAN_ID,
-        amount: 10000, // £100.00 in pence
+        amount: 11919, // £119.19 in pence
         interval: 'year'
     }
 };
@@ -316,14 +316,8 @@ async function cancelSubscription(subscriptionId) {
             throw new Error('Stripe not properly initialized');
         }
         
-        // Cancel at period end to avoid immediate cancellation
-        // const subscription = await stripe.subscriptions.update(
-        //     subscriptionId,
-        //     {cancel_at_period_end: true}
-        // );
-        
         // For immediate cancellation, use this instead:
-        const subscription = await stripe.subscriptions.del(subscriptionId);
+        const subscription = await stripe.subscriptions.cancel(subscriptionId);
         
         console.log('Successfully cancelled subscription in Stripe');
         return subscription;

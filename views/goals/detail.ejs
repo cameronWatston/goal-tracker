@@ -148,27 +148,38 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fas fa-flag-checkered me-2"></i> Milestones</h5>
-                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCustomMilestoneModal">
-                            <i class="fas fa-plus me-1"></i> Add Custom Milestone
-                        </button>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#reconfigureMilestonesModal">
+                                <i class="fas fa-sync me-1"></i> Reconfigure Milestones
+                            </button>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addCustomMilestoneModal">
+                                <i class="fas fa-plus me-1"></i> Add Custom Milestone
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="card-body p-4">
                     <% if (milestones && milestones.length > 0) { %>
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="milestones-table">
                                 <thead>
                                     <tr>
+                                        <th style="width: 5%">Order</th>
                                         <th style="width: 15%">Status</th>
-                                        <th style="width: 40%">Milestone</th>
+                                        <th style="width: 35%">Milestone</th>
                                         <th style="width: 15%">Target Date</th>
                                         <th style="width: 20%">Metrics</th>
                                         <th style="width: 10%">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <% milestones.forEach(milestone => { %>
-                                        <tr>
+                                <tbody id="milestones-tbody">
+                                    <% milestones.forEach((milestone, index) => { %>
+                                        <tr data-milestone-id="<%= milestone.id %>" class="milestone-row">
+                                            <td class="text-center">
+                                                <div class="drag-handle" style="cursor: grab;">
+                                                    <i class="fas fa-grip-vertical text-muted"></i>
+                                                </div>
+                                            </td>
                                             <td>
                                                 <% if (milestone.status === 'pending') { %>
                                                     <span class="badge bg-secondary">Pending</span>
@@ -563,9 +574,151 @@
     </div>
 </div>
 
+<!-- Reconfigure Milestones Modal -->
+<div class="modal fade" id="reconfigureMilestonesModal" tabindex="-1" aria-labelledby="reconfigureMilestonesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reconfigureMilestonesModalLabel">Reconfigure Milestones with AI</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Generate New Milestones:</strong> Describe how you'd like to approach your goal differently and our AI will create new milestones for you.
+                </div>
+                
+                <form id="reconfigure-milestones-form">
+                    <div class="mb-3">
+                        <label for="reconfigurePrompt" class="form-label">How would you like to approach your goal?</label>
+                        <textarea class="form-control" id="reconfigurePrompt" rows="4" 
+                          placeholder="Examples:
+• 'Focus more on practical exercises rather than theory'
+• 'Break it down into smaller daily tasks'
+• 'Include more social or group activities'
+• 'Emphasize building foundational skills first'
+• 'Make it more project-based with deadlines'" required></textarea>
+                        <div class="form-text">Be specific about your preferred learning style, pace, or focus areas.</div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="reconfigureStartDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="reconfigureStartDate" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="reconfigureEndDate" class="form-label">Target Date</label>
+                            <input type="date" class="form-control" id="reconfigureEndDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="replaceExistingMilestones" checked>
+                            <label class="form-check-label" for="replaceExistingMilestones">
+                                Replace existing milestones (unchecked will add to existing ones)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Loading indicator (hidden by default) -->
+                    <div id="reconfigure-loading-indicator" class="text-center p-3 d-none">
+                        <div class="spinner-border text-primary mb-2" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mb-0">AI is generating your new milestones...</p>
+                        <small class="text-muted">This may take a few seconds</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="reconfigure-milestones-btn">
+                    <i class="fas fa-magic me-1"></i> Generate New Milestones
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- JavaScript for Goal Detail Page -->
+<!-- SortableJS for drag and drop -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize milestone drag and drop
+    const milestoneTbody = document.getElementById('milestones-tbody');
+    if (milestoneTbody) {
+        const sortable = Sortable.create(milestoneTbody, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            onEnd: function(evt) {
+                // Get the new order of milestones
+                const milestoneOrder = [];
+                const rows = milestoneTbody.querySelectorAll('.milestone-row');
+                
+                rows.forEach((row, index) => {
+                    const milestoneId = row.getAttribute('data-milestone-id');
+                    milestoneOrder.push({
+                        id: milestoneId,
+                        order: index + 1
+                    });
+                });
+                
+                // Send the new order to the server
+                fetch('/api/goals/<%= goal.id %>/reorder-milestones', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        milestoneOrder: milestoneOrder
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update milestone order');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Show success message
+                    showSuccessMessage('Milestone order updated successfully!');
+                })
+                .catch(error => {
+                    console.error('Error updating milestone order:', error);
+                    // Revert the change by refreshing the page
+                    window.location.reload();
+                });
+            }
+        });
+    }
+    
+    // Function to show success message
+    function showSuccessMessage(message) {
+        // Create a temporary success alert
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-success alert-dismissible fade show position-fixed';
+        alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        document.body.appendChild(alert);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.parentNode.removeChild(alert);
+            }
+        }, 3000);
+    }
+    
     // Set progress bar widths
     document.querySelectorAll('.progress-value-bar').forEach(bar => {
         const progress = bar.getAttribute('data-progress');
@@ -825,6 +978,87 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+    
+    // Reconfigure milestones functionality
+    const reconfigureMilestonesBtn = document.getElementById('reconfigure-milestones-btn');
+    if (reconfigureMilestonesBtn) {
+        // Set default dates when modal opens
+        document.getElementById('reconfigureMilestonesModal').addEventListener('show.bs.modal', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const goalTargetDate = '<%= goal.target_date %>';
+            
+            document.getElementById('reconfigureStartDate').value = today;
+            document.getElementById('reconfigureEndDate').value = goalTargetDate;
+        });
+        
+        reconfigureMilestonesBtn.addEventListener('click', function() {
+            const prompt = document.getElementById('reconfigurePrompt').value;
+            const startDate = document.getElementById('reconfigureStartDate').value;
+            const endDate = document.getElementById('reconfigureEndDate').value;
+            const replaceExisting = document.getElementById('replaceExistingMilestones').checked;
+            const goalId = '<%= goal.id %>';
+            
+            if (!prompt || !startDate || !endDate) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (new Date(startDate) >= new Date(endDate)) {
+                alert('Start date must be before end date');
+                return;
+            }
+            
+            // Show loading indicator
+            document.getElementById('reconfigure-loading-indicator').classList.remove('d-none');
+            reconfigureMilestonesBtn.disabled = true;
+            reconfigureMilestonesBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Generating...';
+            
+            // Call API to reconfigure milestones
+            fetch(`/api/goals/${goalId}/reconfigure-milestones`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    startDate: startDate,
+                    endDate: endDate,
+                    replaceExisting: replaceExisting
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Hide loading indicator
+                document.getElementById('reconfigure-loading-indicator').classList.add('d-none');
+                reconfigureMilestonesBtn.disabled = false;
+                reconfigureMilestonesBtn.innerHTML = '<i class="fas fa-magic me-1"></i> Generate New Milestones';
+                
+                // Close the modal and reload the page to show the new milestones
+                const modal = bootstrap.Modal.getInstance(document.getElementById('reconfigureMilestonesModal'));
+                modal.hide();
+                
+                // Show success message and reload
+                showSuccessMessage('New milestones generated successfully!');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                // Hide loading indicator on error
+                document.getElementById('reconfigure-loading-indicator').classList.add('d-none');
+                reconfigureMilestonesBtn.disabled = false;
+                reconfigureMilestonesBtn.innerHTML = '<i class="fas fa-magic me-1"></i> Generate New Milestones';
+                
+                console.error('Error reconfiguring milestones:', error);
+                alert('Failed to generate new milestones. Please try again.');
+            });
+        });
+    }
 });
 </script>
 
@@ -901,5 +1135,45 @@ document.addEventListener('DOMContentLoaded', function() {
     white-space: normal;
     word-break: normal;
     line-height: 1.4;
+}
+
+/* Milestone drag and drop styling */
+.drag-handle {
+    transition: all 0.2s ease;
+}
+
+.drag-handle:hover {
+    transform: scale(1.1);
+    color: #007bff !important;
+}
+
+.sortable-ghost {
+    opacity: 0.5;
+    background-color: #f8f9fa;
+}
+
+.sortable-chosen {
+    background-color: #e3f2fd;
+}
+
+.sortable-drag {
+    transform: rotate(5deg);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.milestone-row {
+    transition: all 0.2s ease;
+}
+
+.milestone-row:hover {
+    background-color: #f8f9fa;
+}
+
+.milestone-row.sortable-chosen .drag-handle {
+    cursor: grabbing;
+}
+
+#milestones-table tbody tr {
+    cursor: default;
 }
 </style> 

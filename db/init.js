@@ -116,15 +116,15 @@ db.serialize(() => {
         
         if (!table) {
             // If table doesn't exist, create it with all columns
-            db.run(`CREATE TABLE goals (
+            db.run(`CREATE TABLE IF NOT EXISTS goals (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
                 title TEXT NOT NULL,
                 description TEXT,
                 category TEXT,
+                status TEXT DEFAULT 'active',
                 start_date DATE DEFAULT CURRENT_DATE,
                 target_date DATE NOT NULL,
-                status TEXT DEFAULT 'active',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id)
@@ -172,6 +172,17 @@ db.serialize(() => {
                         }
                     });
                 }
+                
+                // Check for start_date column
+                if (!columnNames.includes('start_date')) {
+                    db.run(`ALTER TABLE goals ADD COLUMN start_date DATE DEFAULT CURRENT_DATE`, (err) => {
+                        if (err) {
+                            console.error('Error adding start_date column:', err);
+                        } else {
+                            console.log('Added start_date column to goals table');
+                        }
+                    });
+                }
             });
         }
     });
@@ -185,6 +196,7 @@ db.serialize(() => {
         target_date DATE NOT NULL,
         metrics TEXT,
         status TEXT DEFAULT 'pending',
+        display_order INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (goal_id) REFERENCES goals(id)
@@ -210,6 +222,27 @@ db.serialize(() => {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (goal_id) REFERENCES goals(id)
     )`);
+    
+    // Migration: Add display_order column to existing milestones table if it doesn't exist
+    db.run(`PRAGMA table_info(milestones)`, (err, rows) => {
+        if (!err) {
+            db.all(`PRAGMA table_info(milestones)`, (err, columns) => {
+                if (!err) {
+                    const hasDisplayOrder = columns.some(col => col.name === 'display_order');
+                    if (!hasDisplayOrder) {
+                        console.log('Adding display_order column to milestones table...');
+                        db.run(`ALTER TABLE milestones ADD COLUMN display_order INTEGER DEFAULT 0`, (err) => {
+                            if (!err) {
+                                console.log('Successfully added display_order column to milestones table');
+                                // Set initial order based on creation date
+                                db.run(`UPDATE milestones SET display_order = id WHERE display_order = 0`);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
     
     // Create motivation items table
     db.run(`CREATE TABLE IF NOT EXISTS motivation_items (
@@ -298,4 +331,4 @@ db.serialize(() => {
     `);
 });
 
-module.exports = db; 
+module.exports = db;

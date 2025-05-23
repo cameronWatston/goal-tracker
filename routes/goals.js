@@ -168,7 +168,7 @@ router.get('/detail/:id', (req, res) => {
         const daysRemaining = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
         
         // Get the milestones for this goal
-        db.all('SELECT * FROM milestones WHERE goal_id = ? ORDER BY target_date ASC', [goalId], (err, milestones) => {
+        db.all('SELECT * FROM milestones WHERE goal_id = ? ORDER BY display_order ASC, target_date ASC', [goalId], (err, milestones) => {
             if (err) {
                 console.error('Error fetching milestones:', err);
                 milestones = [];
@@ -319,18 +319,23 @@ router.get('/:id', (req, res) => {
 // Create a new goal with AI-generated milestones
 router.post('/', checkGoalLimit, async (req, res) => {
     try {
-        const { title, description, category, targetDate } = req.body;
+        const { title, description, category, startDate, targetDate } = req.body;
         const userId = req.session.user.id;
         const subscriptionPlan = req.session.user.subscription_plan || 'free';
         
-        if (!title || !targetDate) {
-            return res.status(400).json({ error: 'Title and target date are required' });
+        if (!title || !targetDate || !startDate) {
+            return res.status(400).json({ error: 'Title, start date, and target date are required' });
+        }
+        
+        // Validate dates
+        if (new Date(startDate) >= new Date(targetDate)) {
+            return res.status(400).json({ error: 'Start date must be before target date' });
         }
         
         // Insert the goal into the database
         db.run(
-            'INSERT INTO goals (user_id, title, description, category, target_date) VALUES (?, ?, ?, ?, ?)',
-            [userId, title, description, category, targetDate],
+            'INSERT INTO goals (user_id, title, description, category, start_date, target_date) VALUES (?, ?, ?, ?, ?, ?)',
+            [userId, title, description, category, startDate, targetDate],
             async function(err) {
                 if (err) {
                     console.error('Error creating goal:', err);
@@ -348,33 +353,32 @@ router.post('/', checkGoalLimit, async (req, res) => {
                         milestones = await aiService.generateMilestones(title, description, targetDate, category, subscriptionPlan);
                     } else {
                         // Create basic default milestones for free users
-                        const startDate = new Date();
                         const endDate = new Date(targetDate);
-                        const timeSpan = endDate.getTime() - startDate.getTime();
+                        const timeSpan = endDate.getTime() - new Date(startDate).getTime();
                         
                         milestones = [
                             {
                                 title: "Get Started",
                                 description: `Begin working on your goal to ${title}`,
-                                targetDate: new Date(startDate.getTime() + timeSpan * 0.2).toISOString().split('T')[0],
+                                targetDate: new Date(new Date(startDate).getTime() + timeSpan * 0.2).toISOString().split('T')[0],
                                 metrics: [{ name: "Progress", target: 100, unit: "%" }]
                             },
                             {
                                 title: "Make Initial Progress",
                                 description: `Complete 25% of your goal: ${title}`,
-                                targetDate: new Date(startDate.getTime() + timeSpan * 0.4).toISOString().split('T')[0],
+                                targetDate: new Date(new Date(startDate).getTime() + timeSpan * 0.4).toISOString().split('T')[0],
                                 metrics: [{ name: "Progress", target: 100, unit: "%" }]
                             },
                             {
                                 title: "Reach Halfway Point",
                                 description: `Complete 50% of your goal: ${title}`,
-                                targetDate: new Date(startDate.getTime() + timeSpan * 0.6).toISOString().split('T')[0],
+                                targetDate: new Date(new Date(startDate).getTime() + timeSpan * 0.6).toISOString().split('T')[0],
                                 metrics: [{ name: "Progress", target: 100, unit: "%" }]
                             },
                             {
                                 title: "Near Completion",
                                 description: `Complete 75% of your goal: ${title}`,
-                                targetDate: new Date(startDate.getTime() + timeSpan * 0.8).toISOString().split('T')[0],
+                                targetDate: new Date(new Date(startDate).getTime() + timeSpan * 0.8).toISOString().split('T')[0],
                                 metrics: [{ name: "Progress", target: 100, unit: "%" }]
                             },
                             {
@@ -387,13 +391,13 @@ router.post('/', checkGoalLimit, async (req, res) => {
                     }
                     
                     // Insert milestones into the database
-                    const insertPromises = milestones.map(milestone => {
+                    const insertPromises = milestones.map((milestone, index) => {
                         return new Promise((resolve, reject) => {
                             const metricsJson = JSON.stringify(milestone.metrics || []);
                             
                             db.run(
-                                'INSERT INTO milestones (goal_id, title, description, target_date, metrics, status) VALUES (?, ?, ?, ?, ?, ?)',
-                                [goalId, milestone.title, milestone.description, milestone.targetDate, metricsJson, 'pending'],
+                                'INSERT INTO milestones (goal_id, title, description, target_date, metrics, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                                [goalId, milestone.title, milestone.description, milestone.targetDate, metricsJson, 'pending', index + 1],
                                 function(err) {
                                     if (err) {
                                         console.error('Error creating milestone:', err);
@@ -513,12 +517,17 @@ router.post('/:id/notes', (req, res) => {
 router.put('/:id', (req, res) => {
     const goalId = req.params.id;
     const userId = req.session.user.id;
-    const { title, description, category, targetDate, status } = req.body;
+    const { title, description, category, startDate, targetDate, status } = req.body;
+    
+    // Validate dates if both are provided
+    if (startDate && targetDate && new Date(startDate) >= new Date(targetDate)) {
+        return res.status(400).json({ error: 'Start date must be before target date' });
+    }
     
     // Update the goal
     db.run(
-        'UPDATE goals SET title = ?, description = ?, category = ?, target_date = ?, status = ? WHERE id = ? AND user_id = ?',
-        [title, description, category, targetDate, status, goalId, userId],
+        'UPDATE goals SET title = ?, description = ?, category = ?, start_date = ?, target_date = ?, status = ? WHERE id = ? AND user_id = ?',
+        [title, description, category, startDate, targetDate, status, goalId, userId],
         function(err) {
             if (err) {
                 console.error('Error updating goal:', err);
@@ -536,6 +545,7 @@ router.put('/:id', (req, res) => {
                 title,
                 description,
                 category,
+                start_date: startDate,
                 target_date: targetDate,
                 status
             });
@@ -857,27 +867,37 @@ router.post('/:id/custom-milestone', async (req, res) => {
                 // Add the milestone to the database
                 const metricsJson = JSON.stringify(milestone.metrics || []);
                 
-                db.run(
-                    'INSERT INTO milestones (goal_id, title, description, target_date, metrics, status) VALUES (?, ?, ?, ?, ?, ?)',
-                    [goalId, milestone.title, milestone.description, targetDate, metricsJson, 'pending'],
-                    function(err) {
-                        if (err) {
-                            console.error('Error creating custom milestone:', err);
-                            return res.status(500).json({ error: 'Failed to create milestone' });
-                        }
-                        
-                        // Return the created milestone
-                        res.status(201).json({
-                            id: this.lastID,
-                            goal_id: parseInt(goalId),
-                            title: milestone.title,
-                            description: milestone.description,
-                            target_date: targetDate,
-                            metrics: milestone.metrics || [],
-                            status: 'pending'
-                        });
+                // Get the next display order for this goal
+                db.get('SELECT MAX(display_order) as max_order FROM milestones WHERE goal_id = ?', [goalId], (orderErr, orderResult) => {
+                    if (orderErr) {
+                        console.error('Error getting milestone order:', orderErr);
+                        return res.status(500).json({ error: 'Failed to determine milestone order' });
                     }
-                );
+                    
+                    const nextOrder = (orderResult.max_order || 0) + 1;
+                    
+                    db.run(
+                        'INSERT INTO milestones (goal_id, title, description, target_date, metrics, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        [goalId, milestone.title, milestone.description, targetDate, metricsJson, 'pending', nextOrder],
+                        function(err) {
+                            if (err) {
+                                console.error('Error creating custom milestone:', err);
+                                return res.status(500).json({ error: 'Failed to create milestone' });
+                            }
+                            
+                            // Return the created milestone
+                            res.status(201).json({
+                                id: this.lastID,
+                                goal_id: parseInt(goalId),
+                                title: milestone.title,
+                                description: milestone.description,
+                                target_date: targetDate,
+                                metrics: milestone.metrics || [],
+                                status: 'pending'
+                            });
+                        }
+                    );
+                });
             } catch (aiError) {
                 console.error('Error generating custom milestone:', aiError);
                 
@@ -890,30 +910,212 @@ router.post('/:id/custom-milestone', async (req, res) => {
                 
                 const metricsJson = JSON.stringify(basicMilestone.metrics);
                 
-                db.run(
-                    'INSERT INTO milestones (goal_id, title, description, target_date, metrics, status) VALUES (?, ?, ?, ?, ?, ?)',
-                    [goalId, basicMilestone.title, basicMilestone.description, targetDate, metricsJson, 'pending'],
-                    function(err) {
-                        if (err) {
-                            console.error('Error creating basic milestone:', err);
-                            return res.status(500).json({ error: 'Failed to create milestone' });
-                        }
-                        
-                        res.status(201).json({
-                            id: this.lastID,
-                            goal_id: parseInt(goalId),
-                            title: basicMilestone.title,
-                            description: basicMilestone.description,
-                            target_date: targetDate,
-                            metrics: basicMilestone.metrics,
-                            status: 'pending'
-                        });
+                // Get the next display order for this goal
+                db.get('SELECT MAX(display_order) as max_order FROM milestones WHERE goal_id = ?', [goalId], (orderErr, orderResult) => {
+                    if (orderErr) {
+                        console.error('Error getting milestone order:', orderErr);
+                        return res.status(500).json({ error: 'Failed to determine milestone order' });
                     }
-                );
+                    
+                    const nextOrder = (orderResult.max_order || 0) + 1;
+                    
+                    db.run(
+                        'INSERT INTO milestones (goal_id, title, description, target_date, metrics, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        [goalId, basicMilestone.title, basicMilestone.description, targetDate, metricsJson, 'pending', nextOrder],
+                        function(err) {
+                            if (err) {
+                                console.error('Error creating basic milestone:', err);
+                                return res.status(500).json({ error: 'Failed to create milestone' });
+                            }
+                            
+                            res.status(201).json({
+                                id: this.lastID,
+                                goal_id: parseInt(goalId),
+                                title: basicMilestone.title,
+                                description: basicMilestone.description,
+                                target_date: targetDate,
+                                metrics: basicMilestone.metrics,
+                                status: 'pending'
+                            });
+                        }
+                    );
+                });
             }
         });
     } catch (error) {
         console.error('Error in custom milestone creation:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Reorder milestones
+router.post('/:id/reorder-milestones', (req, res) => {
+    try {
+        const goalId = req.params.id;
+        const userId = req.session.user.id;
+        const { milestoneOrder } = req.body;
+        
+        if (!milestoneOrder || !Array.isArray(milestoneOrder)) {
+            return res.status(400).json({ error: 'Invalid milestone order data' });
+        }
+        
+        // Verify goal ownership
+        db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [goalId, userId], (err, goal) => {
+            if (err || !goal) {
+                return res.status(404).json({ error: 'Goal not found or access denied' });
+            }
+            
+            // Update the order of each milestone
+            const updatePromises = milestoneOrder.map(item => {
+                return new Promise((resolve, reject) => {
+                    // Add order column to milestones table if it doesn't exist
+                    db.run(
+                        'UPDATE milestones SET display_order = ? WHERE id = ? AND goal_id = ?',
+                        [item.order, item.id, goalId],
+                        function(err) {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                resolve();
+                            }
+                        }
+                    );
+                });
+            });
+            
+            Promise.all(updatePromises)
+                .then(() => {
+                    res.json({ success: true, message: 'Milestone order updated successfully' });
+                })
+                .catch(error => {
+                    console.error('Error updating milestone order:', error);
+                    res.status(500).json({ error: 'Failed to update milestone order' });
+                });
+        });
+    } catch (error) {
+        console.error('Error in milestone reordering:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Reconfigure milestones with AI
+router.post('/:id/reconfigure-milestones', async (req, res) => {
+    try {
+        const goalId = req.params.id;
+        const userId = req.session.user.id;
+        const { prompt, startDate, endDate, replaceExisting } = req.body;
+        const subscriptionPlan = req.session.user.subscription_plan || 'free';
+        
+        if (!prompt || !startDate || !endDate) {
+            return res.status(400).json({ error: 'Prompt, start date, and end date are required' });
+        }
+        
+        // Verify goal ownership
+        db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [goalId, userId], async (err, goal) => {
+            if (err || !goal) {
+                return res.status(404).json({ error: 'Goal not found or access denied' });
+            }
+            
+            try {
+                let newMilestones;
+                
+                // Only use AI for premium users
+                if (subscriptionPlan === 'monthly' || subscriptionPlan === 'annual') {
+                    // Create a more detailed prompt for milestone generation
+                    const detailedPrompt = `${goal.title}: ${prompt}. The user wants to approach this differently. Generate milestones from ${startDate} to ${endDate}.`;
+                    
+                    // Generate new milestones using AI service
+                    newMilestones = await aiService.generateMilestones(
+                        goal.title,
+                        detailedPrompt,
+                        endDate,
+                        goal.category || 'personal',
+                        subscriptionPlan
+                    );
+                } else {
+                    // For free users, create basic milestones based on the prompt
+                    const timeSpan = new Date(endDate).getTime() - new Date(startDate).getTime();
+                    const numMilestones = Math.min(Math.max(Math.floor(timeSpan / (1000 * 60 * 60 * 24 * 7)), 3), 7); // Between 3-7 milestones
+                    
+                    newMilestones = [];
+                    for (let i = 0; i < numMilestones; i++) {
+                        const milestoneDate = new Date(new Date(startDate).getTime() + (timeSpan * (i + 1) / numMilestones));
+                        newMilestones.push({
+                            title: `Step ${i + 1} - ${goal.title}`,
+                            description: `Work on ${goal.title} with focus on: ${prompt.substring(0, 100)}`,
+                            targetDate: milestoneDate.toISOString().split('T')[0],
+                            metrics: [{ name: "Progress", target: 100, unit: "%" }]
+                        });
+                    }
+                }
+                
+                // If replacing existing milestones, delete them first
+                if (replaceExisting) {
+                    await new Promise((resolve, reject) => {
+                        db.run('DELETE FROM milestones WHERE goal_id = ?', [goalId], (err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        });
+                    });
+                }
+                
+                // Get the starting order number
+                let startOrder = 1;
+                if (!replaceExisting) {
+                    const maxOrderResult = await new Promise((resolve, reject) => {
+                        db.get('SELECT MAX(display_order) as max_order FROM milestones WHERE goal_id = ?', [goalId], (err, result) => {
+                            if (err) reject(err);
+                            else resolve(result);
+                        });
+                    });
+                    startOrder = (maxOrderResult.max_order || 0) + 1;
+                }
+                
+                // Insert new milestones
+                const insertPromises = newMilestones.map((milestone, index) => {
+                    return new Promise((resolve, reject) => {
+                        const metricsJson = JSON.stringify(milestone.metrics || []);
+                        
+                        db.run(
+                            'INSERT INTO milestones (goal_id, title, description, target_date, metrics, status, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                            [goalId, milestone.title, milestone.description, milestone.targetDate, metricsJson, 'pending', startOrder + index],
+                            function(err) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve(this.lastID);
+                                }
+                            }
+                        );
+                    });
+                });
+                
+                await Promise.all(insertPromises);
+                
+                // Update goal dates if needed
+                await new Promise((resolve, reject) => {
+                    db.run(
+                        'UPDATE goals SET start_date = ?, target_date = ? WHERE id = ?',
+                        [startDate, endDate, goalId],
+                        (err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        }
+                    );
+                });
+                
+                res.json({ 
+                    success: true, 
+                    message: 'Milestones reconfigured successfully',
+                    milestonesCount: newMilestones.length
+                });
+            } catch (error) {
+                console.error('Error generating new milestones:', error);
+                res.status(500).json({ error: 'Failed to generate new milestones. Please try again.' });
+            }
+        });
+    } catch (error) {
+        console.error('Error in milestone reconfiguration:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

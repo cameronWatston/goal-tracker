@@ -68,6 +68,11 @@
         </div>
     </div>
 
+    <!-- Deadline Alerts Section -->
+    <div class="row mb-4" id="deadline-alerts">
+        <!-- This will be populated by JavaScript -->
+    </div>
+
     <!-- Filter & Sort Controls -->
     <div class="row mb-4">
         <div class="col-md-8">
@@ -118,9 +123,164 @@
         </div>
     </div>
 
+    <!-- Goal Templates Section (Only show if user has no goals or wants to see templates) -->
+    <% if (!goals || goals.length === 0) { %>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-magic me-2"></i> Quick Start Templates</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="mb-4">Get started quickly with our popular goal templates:</p>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card goal-template-card h-100" data-template="fitness">
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-dumbbell fa-2x text-success"></i>
+                                    </div>
+                                    <h6 class="card-title text-center">Fitness Journey</h6>
+                                    <p class="card-text small text-muted">Get in shape with a structured workout plan</p>
+                                    <button class="btn btn-outline-success btn-sm w-100 template-btn">Use Template</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card goal-template-card h-100" data-template="learning">
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-graduation-cap fa-2x text-primary"></i>
+                                    </div>
+                                    <h6 class="card-title text-center">Learn New Skill</h6>
+                                    <p class="card-text small text-muted">Master a new skill or hobby</p>
+                                    <button class="btn btn-outline-primary btn-sm w-100 template-btn">Use Template</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card goal-template-card h-100" data-template="career">
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-briefcase fa-2x text-warning"></i>
+                                    </div>
+                                    <h6 class="card-title text-center">Career Growth</h6>
+                                    <p class="card-text small text-muted">Advance your professional development</p>
+                                    <button class="btn btn-outline-warning btn-sm w-100 template-btn">Use Template</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card goal-template-card h-100" data-template="finance">
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-piggy-bank fa-2x text-info"></i>
+                                    </div>
+                                    <h6 class="card-title text-center">Financial Goals</h6>
+                                    <p class="card-text small text-muted">Save money and build financial stability</p>
+                                    <button class="btn btn-outline-info btn-sm w-100 template-btn">Use Template</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card goal-template-card h-100" data-template="creativity">
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-paint-brush fa-2x text-danger"></i>
+                                    </div>
+                                    <h6 class="card-title text-center">Creative Project</h6>
+                                    <p class="card-text small text-muted">Complete a creative or artistic project</p>
+                                    <button class="btn btn-outline-danger btn-sm w-100 template-btn">Use Template</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card goal-template-card h-100" data-template="health">
+                                <div class="card-body p-3">
+                                    <div class="text-center mb-3">
+                                        <i class="fas fa-heart fa-2x text-success"></i>
+                                    </div>
+                                    <h6 class="card-title text-center">Health & Wellness</h6>
+                                    <p class="card-text small text-muted">Improve your overall health and wellness</p>
+                                    <button class="btn btn-outline-success btn-sm w-100 template-btn">Use Template</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
     <!-- Goals Grid -->
     <div class="row g-4 mb-5">
         <% if (goals && goals.length > 0) { %>
+            <!-- Progress Statistics (Only show if user has goals) -->
+            <div class="col-12 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Progress Overview</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="h2 text-primary mb-1" id="total-goals">-</div>
+                                    <div class="text-muted">Total Goals</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="h2 text-success mb-1" id="completed-goals">-</div>
+                                    <div class="text-muted">Completed</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="h2 text-warning mb-1" id="active-goals">-</div>
+                                    <div class="text-muted">Active</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="h2 text-info mb-1" id="completion-rate">-</div>
+                                    <div class="text-muted">Completion Rate</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="mb-3">Goal Categories</h6>
+                                <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
+                                    <canvas id="categoryChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="mb-3">Recent Progress</h6>
+                                <div id="recent-progress">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Achievements Section -->
+                        <hr class="my-4">
+                        <div class="row">
+                            <div class="col-12">
+                                <h6 class="mb-3"><i class="fas fa-trophy me-2 text-warning"></i> Achievements & Motivation</h6>
+                                <div id="achievements-section">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <% goals.forEach(goal => { %>
                 <div class="col-md-6 col-lg-4 goal-card-container">
                     <div class="card h-100 goal-card" data-goal-id="<%= goal.id %>">
@@ -280,6 +440,27 @@
     </div>
 </div>
 
+<!-- Quick Actions Floating Button -->
+<div class="quick-actions-fab">
+    <div class="fab-main" id="fab-main">
+        <i class="fas fa-plus"></i>
+    </div>
+    <div class="fab-actions" id="fab-actions">
+        <div class="fab-action" data-bs-toggle="modal" data-bs-target="#newGoalModal" title="Add New Goal">
+            <i class="fas fa-flag"></i>
+        </div>
+        <div class="fab-action" onclick="window.location.href='/goals/leaderboard'" title="View Leaderboard">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div class="fab-action" onclick="exportAllProgress()" title="Export All Progress">
+            <i class="fas fa-download"></i>
+        </div>
+        <div class="fab-action" onclick="showTips()" title="Quick Tips">
+            <i class="fas fa-lightbulb"></i>
+        </div>
+    </div>
+</div>
+
 <!-- New Goal Modal -->
 <div class="modal fade" id="newGoalModal" tabindex="-1" aria-labelledby="newGoalModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -316,10 +497,16 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="goalDeadline" class="form-label">Target Date</label>
-                                <input type="date" class="form-control" id="goalDeadline" required>
+                                <label for="goalStartDate" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="goalStartDate" required>
+                                <div class="form-text">When do you want to begin?</div>
                             </div>
                         </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="goalDeadline" class="form-label">Target Date</label>
+                        <input type="date" class="form-control" id="goalDeadline" required>
+                        <div class="form-text">When do you want to achieve this goal?</div>
                     </div>
                 </form>
                 
@@ -375,9 +562,19 @@
                             <option value="other">Other</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <label for="editGoalDeadline" class="form-label">Target Date</label>
-                        <input type="date" class="form-control" id="editGoalDeadline" required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editGoalStartDate" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="editGoalStartDate" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="editGoalDeadline" class="form-label">Target Date</label>
+                                <input type="date" class="form-control" id="editGoalDeadline" required>
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label for="editGoalStatus" class="form-label">Status</label>
@@ -420,6 +617,9 @@
     </div>
 </div>
 
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <!-- JavaScript for Dashboard Functionality -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -429,6 +629,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const goalId = card.getAttribute('data-goal-id');
         fetchGoalProgress(goalId);
     });
+    
+    // Load deadline alerts
+    loadDeadlineAlerts();
+    
+    // Load progress statistics if goals exist
+    if (goalCards.length > 0) {
+        loadProgressStatistics();
+    }
     
     // Function to fetch goal progress
     function fetchGoalProgress(goalId) {
@@ -452,6 +660,462 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => console.error('Error fetching goal progress:', error));
+    }
+    
+    // Function to load deadline alerts
+    function loadDeadlineAlerts() {
+        fetch('/api/goals')
+            .then(response => response.json())
+            .then(goals => {
+                if (goals && goals.length > 0) {
+                    // Get all milestones for analysis
+                    const milestonePromises = goals.map(goal => 
+                        fetch(`/api/goals/${goal.id}`)
+                            .then(response => response.json())
+                            .then(data => ({ ...goal, milestones: data.milestones || [] }))
+                    );
+                    
+                    Promise.all(milestonePromises)
+                        .then(goalsWithMilestones => {
+                            analyzeDeadlines(goalsWithMilestones);
+                        })
+                        .catch(error => console.error('Error loading milestones:', error));
+                }
+            })
+            .catch(error => console.error('Error loading goals for alerts:', error));
+    }
+    
+    // Function to analyze deadlines and show alerts
+    function analyzeDeadlines(goalsWithMilestones) {
+        const now = new Date();
+        const upcomingMilestones = [];
+        const overdueMilestones = [];
+        const overdueGoals = [];
+        
+        goalsWithMilestones.forEach(goal => {
+            // Check if goal is overdue
+            const goalDeadline = new Date(goal.target_date);
+            const goalDaysRemaining = Math.ceil((goalDeadline - now) / (1000 * 60 * 60 * 24));
+            
+            if (goalDaysRemaining < 0 && goal.status === 'active') {
+                overdueGoals.push({
+                    ...goal,
+                    daysOverdue: Math.abs(goalDaysRemaining)
+                });
+            }
+            
+            // Check milestones
+            goal.milestones.forEach(milestone => {
+                const milestoneDeadline = new Date(milestone.target_date);
+                const daysRemaining = Math.ceil((milestoneDeadline - now) / (1000 * 60 * 60 * 24));
+                
+                if (milestone.status !== 'completed') {
+                    if (daysRemaining < 0) {
+                        overdueMilestones.push({
+                            ...milestone,
+                            goalTitle: goal.title,
+                            goalId: goal.id,
+                            daysOverdue: Math.abs(daysRemaining)
+                        });
+                    } else if (daysRemaining <= 7) {
+                        upcomingMilestones.push({
+                            ...milestone,
+                            goalTitle: goal.title,
+                            goalId: goal.id,
+                            daysRemaining
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Display alerts
+        displayDeadlineAlerts(upcomingMilestones, overdueMilestones, overdueGoals);
+        
+        // Recent progress analysis
+        displayRecentProgress(goalsWithMilestones);
+        
+        // Calculate and display achievements
+        calculateAchievements(goalsWithMilestones);
+    }
+    
+    // Function to display deadline alerts
+    function displayDeadlineAlerts(upcoming, overdueMilestones, overdueGoals) {
+        const alertsContainer = document.getElementById('deadline-alerts');
+        
+        // Clear existing alerts
+        alertsContainer.innerHTML = '';
+        
+        if (upcoming.length === 0 && overdueMilestones.length === 0 && overdueGoals.length === 0) {
+            return; // No alerts needed
+        }
+        
+        let alertsHtml = '<div class="col-12">';
+        
+        // Overdue goals alert
+        if (overdueGoals.length > 0) {
+            alertsHtml += `
+                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Overdue Goals!</strong> You have ${overdueGoals.length} goal${overdueGoals.length > 1 ? 's' : ''} past their deadline:
+                    <ul class="mb-0 mt-2">
+                        ${overdueGoals.map(goal => 
+                            `<li><a href="/goals/detail/${goal.id}" class="text-danger fw-bold">${goal.title}</a> - ${goal.daysOverdue} day${goal.daysOverdue > 1 ? 's' : ''} overdue</li>`
+                        ).join('')}
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+        
+        // Overdue milestones alert
+        if (overdueMilestones.length > 0) {
+            alertsHtml += `
+                <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-clock me-2"></i>
+                    <strong>Overdue Milestones!</strong> You have ${overdueMilestones.length} milestone${overdueMilestones.length > 1 ? 's' : ''} past their deadline:
+                    <ul class="mb-0 mt-2">
+                        ${overdueMilestones.slice(0, 5).map(milestone => 
+                            `<li><a href="/goals/detail/${milestone.goalId}" class="text-warning fw-bold">${milestone.title}</a> (${milestone.goalTitle}) - ${milestone.daysOverdue} day${milestone.daysOverdue > 1 ? 's' : ''} overdue</li>`
+                        ).join('')}
+                        ${overdueMilestones.length > 5 ? `<li class="text-muted">...and ${overdueMilestones.length - 5} more</li>` : ''}
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+        
+        // Upcoming milestones alert
+        if (upcoming.length > 0) {
+            alertsHtml += `
+                <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
+                    <i class="fas fa-calendar-day me-2"></i>
+                    <strong>Upcoming Deadlines!</strong> You have ${upcoming.length} milestone${upcoming.length > 1 ? 's' : ''} due soon:
+                    <ul class="mb-0 mt-2">
+                        ${upcoming.slice(0, 5).map(milestone => 
+                            `<li><a href="/goals/detail/${milestone.goalId}" class="text-info fw-bold">${milestone.title}</a> (${milestone.goalTitle}) - due in ${milestone.daysRemaining} day${milestone.daysRemaining > 1 ? 's' : ''}</li>`
+                        ).join('')}
+                        ${upcoming.length > 5 ? `<li class="text-muted">...and ${upcoming.length - 5} more</li>` : ''}
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+        
+        alertsHtml += '</div>';
+        alertsContainer.innerHTML = alertsHtml;
+    }
+    
+    // Function to load progress statistics
+    function loadProgressStatistics() {
+        fetch('/api/goals')
+            .then(response => response.json())
+            .then(goals => {
+                if (goals && goals.length > 0) {
+                    // Get detailed goal data with milestones
+                    const detailedPromises = goals.map(goal => 
+                        fetch(`/api/goals/${goal.id}`)
+                            .then(response => response.json())
+                            .then(data => ({ ...goal, milestones: data.milestones || [] }))
+                    );
+                    
+                    Promise.all(detailedPromises)
+                        .then(detailedGoals => {
+                            calculateAndDisplayStatistics(detailedGoals);
+                        });
+                }
+            })
+            .catch(error => console.error('Error loading progress statistics:', error));
+    }
+    
+    // Function to calculate and display statistics
+    function calculateAndDisplayStatistics(goals) {
+        // Basic statistics
+        const totalGoals = goals.length;
+        const completedGoals = goals.filter(g => g.status === 'completed').length;
+        const activeGoals = goals.filter(g => g.status === 'active').length;
+        const completionRate = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+        
+        // Update statistics display
+        document.getElementById('total-goals').textContent = totalGoals;
+        document.getElementById('completed-goals').textContent = completedGoals;
+        document.getElementById('active-goals').textContent = activeGoals;
+        document.getElementById('completion-rate').textContent = completionRate + '%';
+        
+        // Category distribution
+        const categoryData = goals.reduce((acc, goal) => {
+            const category = goal.category || 'other';
+            acc[category] = (acc[category] || 0) + 1;
+            return acc;
+        }, {});
+        
+        // Create category chart
+        createCategoryChart(categoryData);
+        
+        // Recent progress analysis
+        displayRecentProgress(goals);
+        
+        // Calculate achievements
+        calculateAchievements(goals);
+    }
+    
+    // Function to calculate achievements
+    function calculateAchievements(goals) {
+        const achievementsContainer = document.getElementById('achievements-section');
+        if (!achievementsContainer) return;
+        
+        const achievements = [];
+        
+        // Calculate various achievement metrics
+        const totalMilestones = goals.reduce((sum, goal) => sum + goal.milestones.length, 0);
+        const completedMilestones = goals.reduce((sum, goal) => 
+            sum + goal.milestones.filter(m => m.status === 'completed').length, 0);
+        const completedGoals = goals.filter(g => g.status === 'completed').length;
+        
+        // Achievement: First Goal
+        if (goals.length >= 1) {
+            achievements.push({
+                icon: 'fa-flag',
+                title: 'Goal Setter',
+                description: 'Created your first goal',
+                earned: true,
+                color: 'success'
+            });
+        }
+        
+        // Achievement: Complete First Goal
+        if (completedGoals >= 1) {
+            achievements.push({
+                icon: 'fa-trophy',
+                title: 'First Victory',
+                description: 'Completed your first goal',
+                earned: true,
+                color: 'warning'
+            });
+        }
+        
+        // Achievement: Milestone Master
+        if (completedMilestones >= 10) {
+            achievements.push({
+                icon: 'fa-star',
+                title: 'Milestone Master',
+                description: 'Completed 10+ milestones',
+                earned: true,
+                color: 'info'
+            });
+        }
+        
+        // Achievement: Goal Achiever
+        if (completedGoals >= 5) {
+            achievements.push({
+                icon: 'fa-crown',
+                title: 'Goal Achiever',
+                description: 'Completed 5+ goals',
+                earned: true,
+                color: 'warning'
+            });
+        }
+        
+        // Achievement: Consistency
+        const recentGoals = goals.filter(g => {
+            const created = new Date(g.created_at);
+            const daysSince = Math.floor((new Date() - created) / (1000 * 60 * 60 * 24));
+            return daysSince <= 30;
+        });
+        
+        if (recentGoals.length >= 3) {
+            achievements.push({
+                icon: 'fa-fire',
+                title: 'On Fire!',
+                description: 'Created 3+ goals this month',
+                earned: true,
+                color: 'danger'
+            });
+        }
+        
+        // Potential achievements (not yet earned)
+        if (completedGoals < 1) {
+            achievements.push({
+                icon: 'fa-trophy',
+                title: 'First Victory',
+                description: 'Complete your first goal',
+                earned: false,
+                color: 'secondary'
+            });
+        }
+        
+        if (completedMilestones < 10) {
+            achievements.push({
+                icon: 'fa-star',
+                title: 'Milestone Master',
+                description: `Complete ${10 - completedMilestones} more milestones`,
+                earned: false,
+                color: 'secondary'
+            });
+        }
+        
+        // Display achievements
+        let achievementsHtml = '<div class="row g-3">';
+        
+        achievements.slice(0, 6).forEach(achievement => {
+            achievementsHtml += `
+                <div class="col-md-4">
+                    <div class="card ${achievement.earned ? 'border-' + achievement.color : 'border-light'} h-100">
+                        <div class="card-body p-3 text-center">
+                            <div class="mb-2">
+                                <i class="fas ${achievement.icon} fa-2x text-${achievement.color}"></i>
+                            </div>
+                            <h6 class="card-title">${achievement.title}</h6>
+                            <p class="card-text small text-muted">${achievement.description}</p>
+                            ${achievement.earned ? 
+                                '<span class="badge bg-' + achievement.color + '">Earned!</span>' : 
+                                '<span class="badge bg-light text-dark">Not yet earned</span>'
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        achievementsHtml += '</div>';
+        
+        // Add motivational quote
+        const motivationalQuotes = [
+            "Success is the sum of small efforts, repeated day in and day out.",
+            "A goal is a dream with a deadline.",
+            "You are never too old to set another goal or to dream a new dream.",
+            "Success is walking from failure to failure with no loss of enthusiasm.",
+            "The future depends on what you do today."
+        ];
+        
+        const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+        
+        achievementsHtml += `
+            <div class="mt-4 p-3 bg-light rounded">
+                <div class="text-center">
+                    <i class="fas fa-quote-left text-primary me-2"></i>
+                    <em class="text-muted">${randomQuote}</em>
+                    <i class="fas fa-quote-right text-primary ms-2"></i>
+                </div>
+            </div>
+        `;
+        
+        achievementsContainer.innerHTML = achievementsHtml;
+    }
+    
+    // Function to create category chart
+    function createCategoryChart(categoryData) {
+        const ctx = document.getElementById('categoryChart');
+        if (!ctx) return;
+        
+        const categories = Object.keys(categoryData);
+        const counts = Object.values(categoryData);
+        
+        const categoryLabels = {
+            health: 'Health & Fitness',
+            career: 'Career & Education',
+            personal: 'Personal Development',
+            finance: 'Financial',
+            relationships: 'Relationships',
+            other: 'Other'
+        };
+        
+        const colors = {
+            health: '#28a745',
+            career: '#007bff',
+            personal: '#17a2b8',
+            finance: '#ffc107',
+            relationships: '#dc3545',
+            other: '#6c757d'
+        };
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: categories.map(cat => categoryLabels[cat] || cat),
+                datasets: [{
+                    data: counts,
+                    backgroundColor: categories.map(cat => colors[cat] || '#6c757d'),
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                aspectRatio: 1,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 10,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                elements: {
+                    arc: {
+                        borderWidth: 2
+                    }
+                }
+            }
+        });
+    }
+    
+    // Function to display recent progress
+    function displayRecentProgress(goals) {
+        const recentProgressContainer = document.getElementById('recent-progress');
+        if (!recentProgressContainer) return;
+        
+        // Calculate progress for each goal
+        const goalsWithProgress = goals.map(goal => {
+            const totalMilestones = goal.milestones.length;
+            const completedMilestones = goal.milestones.filter(m => m.status === 'completed').length;
+            const progressPercent = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+            
+            return {
+                ...goal,
+                progressPercent,
+                totalMilestones,
+                completedMilestones
+            };
+        });
+        
+        // Sort by recent activity (you could enhance this with actual activity data)
+        goalsWithProgress.sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at));
+        
+        // Display top 5 recent goals
+        const recentGoals = goalsWithProgress.slice(0, 5);
+        
+        let progressHtml = '';
+        recentGoals.forEach(goal => {
+            const statusColor = goal.status === 'completed' ? 'success' : 
+                               goal.status === 'active' ? 'primary' : 'secondary';
+            
+            progressHtml += `
+                <div class="d-flex align-items-center mb-3">
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <a href="/goals/detail/${goal.id}" class="fw-bold text-decoration-none goal-progress-link">${goal.title}</a>
+                            <span class="badge bg-${statusColor}">${goal.progressPercent}%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-${statusColor}" style="width: ${goal.progressPercent}%"></div>
+                        </div>
+                        <small class="text-muted">${goal.completedMilestones}/${goal.totalMilestones} milestones completed</small>
+                    </div>
+                </div>
+            `;
+        });
+        
+        if (progressHtml === '') {
+            progressHtml = '<p class="text-muted">No recent progress to display.</p>';
+        }
+        
+        recentProgressContainer.innerHTML = progressHtml;
     }
     
     // AI Dashboard Assistant for premium users
@@ -659,16 +1323,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Set default dates when new goal modal opens
+    document.getElementById('newGoalModal').addEventListener('show.bs.modal', function() {
+        const today = new Date().toISOString().split('T')[0];
+        const oneMonthFromNow = new Date();
+        oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
+        const defaultTargetDate = oneMonthFromNow.toISOString().split('T')[0];
+        
+        document.getElementById('goalStartDate').value = today;
+        document.getElementById('goalDeadline').value = defaultTargetDate;
+    });
+    
     // Simplified goal creation - auto-generates milestones
     document.getElementById('save-goal-btn').addEventListener('click', function() {
         // Get goal information
         const title = document.getElementById('goalTitle').value;
         const description = document.getElementById('goalDescription').value || '';
         const category = document.getElementById('goalCategory').value;
+        const startDate = document.getElementById('goalStartDate').value;
         const targetDate = document.getElementById('goalDeadline').value;
         
-        if (!title || !targetDate || !category) {
-            alert('Please enter a goal title, select a category, and set a target date');
+        if (!title || !targetDate || !category || !startDate) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        
+        // Validate dates
+        if (new Date(startDate) >= new Date(targetDate)) {
+            alert('Start date must be before target date');
             return;
         }
 
@@ -688,6 +1370,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 title,
                 description,
                 category,
+                startDate,
                 targetDate
             })
         })
@@ -795,6 +1478,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('editGoalTitle').value = goal.title;
                     document.getElementById('editGoalDescription').value = goal.description || '';
                     document.getElementById('editGoalCategory').value = goal.category || '';
+                    document.getElementById('editGoalStartDate').value = goal.start_date;
                     document.getElementById('editGoalDeadline').value = goal.target_date;
                     document.getElementById('editGoalStatus').value = goal.status;
                     
@@ -811,11 +1495,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const title = document.getElementById('editGoalTitle').value;
         const description = document.getElementById('editGoalDescription').value;
         const category = document.getElementById('editGoalCategory').value;
+        const startDate = document.getElementById('editGoalStartDate').value;
         const targetDate = document.getElementById('editGoalDeadline').value;
         const status = document.getElementById('editGoalStatus').value;
         
-        if (!title || !targetDate || !category) {
+        if (!title || !category || !startDate || !targetDate || !status) {
             alert('Please fill in all required fields');
+            return;
+        }
+        
+        // Validate dates
+        if (new Date(startDate) >= new Date(targetDate)) {
+            alert('Start date must be before target date');
             return;
         }
         
@@ -829,6 +1520,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 title,
                 description,
                 category,
+                startDate,
                 targetDate,
                 status
             })
@@ -888,6 +1580,248 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Failed to delete goal. Please try again.');
         });
     });
+
+    // Goal Templates Data
+    const goalTemplates = {
+        fitness: {
+            title: "Get Fit and Healthy",
+            description: "Transform your health with a comprehensive fitness plan including regular exercise, proper nutrition, and lifestyle changes.",
+            category: "health",
+            duration: 3 // months
+        },
+        learning: {
+            title: "Learn a New Skill",
+            description: "Master a new skill through structured learning, practice, and consistent effort.",
+            category: "personal",
+            duration: 4
+        },
+        career: {
+            title: "Advance My Career",
+            description: "Develop professional skills, expand network, and pursue opportunities for career growth.",
+            category: "career",
+            duration: 6
+        },
+        finance: {
+            title: "Improve Financial Health",
+            description: "Build savings, reduce debt, and create a sustainable budget for long-term financial stability.",
+            category: "finance",
+            duration: 12
+        },
+        creativity: {
+            title: "Complete Creative Project",
+            description: "Finish a meaningful creative project that showcases your artistic abilities and personal expression.",
+            category: "personal",
+            duration: 2
+        },
+        health: {
+            title: "Improve Overall Wellness",
+            description: "Focus on mental and physical health through better habits, stress management, and self-care.",
+            category: "health",
+            duration: 3
+        }
+    };
+    
+    // Handle template selection
+    document.querySelectorAll('.template-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const templateCard = this.closest('.goal-template-card');
+            const templateKey = templateCard.getAttribute('data-template');
+            const template = goalTemplates[templateKey];
+            
+            if (template) {
+                // Auto-populate the goal form with template data
+                document.getElementById('goalTitle').value = template.title;
+                document.getElementById('goalDescription').value = template.description;
+                document.getElementById('goalCategory').value = template.category;
+                
+                // Set dates - start today, end based on template duration
+                const today = new Date().toISOString().split('T')[0];
+                const endDate = new Date();
+                endDate.setMonth(endDate.getMonth() + template.duration);
+                
+                document.getElementById('goalStartDate').value = today;
+                document.getElementById('goalDeadline').value = endDate.toISOString().split('T')[0];
+                
+                // Open the new goal modal
+                const modal = new bootstrap.Modal(document.getElementById('newGoalModal'));
+                modal.show();
+                
+                // Add visual indication that this was from a template
+                const modalTitle = document.querySelector('#newGoalModalLabel');
+                modalTitle.innerHTML = `<i class="fas fa-magic me-2"></i> Create Goal from Template`;
+            }
+        });
+    });
+    
+    // Reset modal title when modal is closed
+    document.getElementById('newGoalModal').addEventListener('hidden.bs.modal', function() {
+        document.querySelector('#newGoalModalLabel').innerHTML = 'Add New Goal';
+    });
+    
+    // Quick Actions Functions
+    window.exportAllProgress = function() {
+        // Create a simple CSV export of all goals
+        fetch('/api/goals')
+            .then(response => response.json())
+            .then(goals => {
+                if (goals && goals.length > 0) {
+                    let csvContent = 'Goal Title,Description,Category,Status,Target Date,Created Date\n';
+                    
+                    goals.forEach(goal => {
+                        const title = (goal.title || '').replace(/"/g, '""');
+                        const description = (goal.description || '').replace(/"/g, '""');
+                        const category = goal.category || '';
+                        const status = goal.status || '';
+                        const targetDate = goal.target_date ? new Date(goal.target_date).toLocaleDateString() : '';
+                        const createdDate = goal.created_at ? new Date(goal.created_at).toLocaleDateString() : '';
+                        
+                        csvContent += `"${title}","${description}","${category}","${status}","${targetDate}","${createdDate}"\n`;
+                    });
+                    
+                    // Create and trigger download
+                    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', `goals_export_${new Date().toISOString().split('T')[0]}.csv`);
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Show success message
+                    showNotification('Goals exported successfully!', 'success');
+                } else {
+                    showNotification('No goals to export', 'info');
+                }
+            })
+            .catch(error => {
+                console.error('Error exporting goals:', error);
+                showNotification('Failed to export goals', 'error');
+            });
+    };
+    
+    window.showTips = function() {
+        const tips = [
+            {
+                title: 'Set SMART Goals',
+                content: 'Make your goals Specific, Measurable, Achievable, Relevant, and Time-bound for better success rates.'
+            },
+            {
+                title: 'Break It Down',
+                content: 'Large goals can be overwhelming. Break them into smaller, manageable milestones.'
+            },
+            {
+                title: 'Track Progress Daily',
+                content: 'Regular check-ins help you stay on track and motivated. Use our check-in feature!'
+            },
+            {
+                title: 'Celebrate Small Wins',
+                content: 'Acknowledge and celebrate when you complete milestones. It keeps you motivated!'
+            },
+            {
+                title: 'Stay Flexible',
+                content: 'Goals can evolve. Don\'t be afraid to adjust your timeline or approach when needed.'
+            }
+        ];
+        
+        const randomTip = tips[Math.floor(Math.random() * tips.length)];
+        
+        // Create and show tip modal
+        const tipModal = document.createElement('div');
+        tipModal.className = 'modal fade';
+        tipModal.innerHTML = `
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title"><i class="fas fa-lightbulb me-2"></i>${randomTip.title}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <p class="mb-0">${randomTip.content}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Got it!</button>
+                        <button type="button" class="btn btn-primary" onclick="showTips()">Another Tip</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(tipModal);
+        const modal = new bootstrap.Modal(tipModal);
+        modal.show();
+        
+        // Remove modal from DOM when hidden
+        tipModal.addEventListener('hidden.bs.modal', function() {
+            document.body.removeChild(tipModal);
+        });
+    };
+    
+    // Notification system
+    window.showNotification = function(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
+        notification.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remove after 4 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 4000);
+    };
+
+    /* Quick Actions Floating Button */
+    const fabMain = document.getElementById('fab-main');
+    const fabActions = document.getElementById('fab-actions');
+
+    fabMain.addEventListener('click', function() {
+        fabActions.classList.toggle('active');
+    });
+
+    // Close fab actions when clicking outside
+    document.addEventListener('click', function(event) {
+        if (event.target !== fabMain && !fabMain.contains(event.target)) {
+            fabActions.classList.remove('active');
+        }
+    });
+
+    // Achievement Cards Animation
+    const achievementCards = document.querySelectorAll('.achievement-card');
+    achievementCards.forEach(card => {
+        card.addEventListener('click', function() {
+            this.classList.toggle('hovered');
+        });
+    });
+
+    // Responsive adjustments
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    function handleResponsiveDesign(event) {
+        if (event.matches) {
+            const fabMain = document.getElementById('fab-main');
+            const fabActions = document.getElementById('fab-actions');
+            fabMain.style.width = '50px';
+            fabMain.style.height = '50px';
+            fabMain.style.fontSize = '20px';
+            fabActions.style.bottom = '60px';
+        } else {
+            const fabMain = document.getElementById('fab-main');
+            const fabActions = document.getElementById('fab-actions');
+            fabMain.style.width = '60px';
+            fabMain.style.height = '60px';
+            fabMain.style.fontSize = '24px';
+            fabActions.style.bottom = '70px';
+        }
+    }
+    mediaQuery.addEventListener('change', handleResponsiveDesign);
+    handleResponsiveDesign(mediaQuery);
 });
 </script>
 
@@ -954,6 +1888,210 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .progress-bar {
     animation: progressAnimation 1s ease-in-out;
+}
+
+/* Goal Template Styles */
+.goal-template-card {
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.goal-template-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: var(--bs-primary);
+}
+
+.goal-template-card:hover .template-btn {
+    transform: scale(1.05);
+}
+
+.template-btn {
+    transition: all 0.2s ease;
+}
+
+.goal-template-card[data-template="fitness"]:hover {
+    border-color: var(--bs-success);
+}
+
+.goal-template-card[data-template="learning"]:hover {
+    border-color: var(--bs-primary);
+}
+
+.goal-template-card[data-template="career"]:hover {
+    border-color: var(--bs-warning);
+}
+
+.goal-template-card[data-template="finance"]:hover {
+    border-color: var(--bs-info);
+}
+
+.goal-template-card[data-template="creativity"]:hover {
+    border-color: var(--bs-danger);
+}
+
+.goal-template-card[data-template="health"]:hover {
+    border-color: var(--bs-success);
+}
+
+/* Quick Actions Floating Button */
+.quick-actions-fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+}
+
+.fab-main {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fab-main:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.6);
+}
+
+.fab-main i {
+    font-size: 24px;
+    transition: transform 0.3s ease;
+}
+
+.fab-main.active i {
+    transform: rotate(45deg);
+}
+
+.fab-actions {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.fab-actions.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.fab-action {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.fab-action:nth-child(1) { background: linear-gradient(135deg, #28a745, #1e7e34); }
+.fab-action:nth-child(2) { background: linear-gradient(135deg, #ffc107, #e0a800); }
+.fab-action:nth-child(3) { background: linear-gradient(135deg, #17a2b8, #138496); }
+.fab-action:nth-child(4) { background: linear-gradient(135deg, #dc3545, #c82333); }
+
+.fab-action:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.fab-action::before {
+    content: attr(title);
+    position: absolute;
+    right: 55px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.fab-action:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Achievement Cards Animation */
+.achievement-card {
+    transition: transform 0.3s ease;
+}
+
+.achievement-card:hover {
+    transform: scale(1.05);
+}
+
+/* Goal Progress Links */
+.goal-progress-link {
+    color: #495057 !important;
+    transition: all 0.2s ease;
+}
+
+.goal-progress-link:hover {
+    color: #007bff !important;
+    text-decoration: underline !important;
+    transform: translateX(3px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .quick-actions-fab {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .fab-main {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .fab-main i {
+        font-size: 20px;
+    }
+    
+    .fab-action {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .fab-actions {
+        bottom: 60px;
+    }
+}
+
+/* Chart Container Fixes */
+.chart-container {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-container canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
 }
 </style>
 

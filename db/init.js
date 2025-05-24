@@ -28,7 +28,9 @@ db.serialize(() => {
         subscription_id TEXT,
         stripe_customer_id TEXT,
         subscription_start DATETIME,
-        subscription_end DATETIME
+        subscription_end DATETIME,
+        reset_token TEXT,
+        reset_expires DATETIME
     )`);
 
     // Add missing columns to existing users table if needed
@@ -102,6 +104,28 @@ db.serialize(() => {
                     console.error('Error adding subscription_end column:', err);
                 } else {
                     console.log('Added subscription_end column to users table');
+                }
+            });
+        }
+
+        // Check for reset_token column
+        if (!columnNames.includes('reset_token')) {
+            db.run(`ALTER TABLE users ADD COLUMN reset_token TEXT`, (err) => {
+                if (err) {
+                    console.error('Error adding reset_token column:', err);
+                } else {
+                    console.log('Added reset_token column to users table');
+                }
+            });
+        }
+        
+        // Check for reset_expires column
+        if (!columnNames.includes('reset_expires')) {
+            db.run(`ALTER TABLE users ADD COLUMN reset_expires DATETIME`, (err) => {
+                if (err) {
+                    console.error('Error adding reset_expires column:', err);
+                } else {
+                    console.log('Added reset_expires column to users table');
                 }
             });
         }

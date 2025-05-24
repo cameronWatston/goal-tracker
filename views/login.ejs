@@ -12,6 +12,14 @@
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <% } %>
+                
+                <% if (typeof success !== 'undefined' && success) { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <%= success %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
 
                 <form action="/auth/login" method="POST">
                     <div class="mb-4">
@@ -36,7 +44,9 @@
                                 Remember me
                             </label>
                         </div>
-                        <a href="#" class="text-decoration-none small">Forgot password?</a>
+                        <a href="/forgot-password" class="text-decoration-none small">
+                            <i class="fas fa-key me-1"></i>Forgot password?
+                        </a>
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">Login</button>

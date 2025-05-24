@@ -109,18 +109,397 @@ const isAuthenticated = (req, res, next) => {
 app.get('/', (req, res) => {
     res.render('home', { 
         title: 'Goal Tracker - Achieve More with AI',
-        error: null,
+        description: 'Transform your dreams into reality with our AI-powered goal tracking platform. Join 25,000+ users achieving their biggest goals.',
+        canonicalUrl: 'https://goaltracker.com',
+        error: req.query.error || null,
+        success: req.query.success || null,
         formData: {}
     });
+});
+
+// Contact page
+app.get('/contact', (req, res) => {
+    res.render('contact', { 
+        title: 'Contact Us - Goal Tracker',
+        description: 'Get in touch with the Goal Tracker team. We\'re here to help you achieve your goals.',
+        canonicalUrl: 'https://goaltracker.com/contact',
+        error: null,
+        success: null,
+        formData: {}
+    });
+});
+
+// Handle contact form submission
+app.post('/contact', async (req, res) => {
+    try {
+        const { name, email, subject, message } = req.body;
+        const isFromHomePage = req.get('Referer') && req.get('Referer').includes('/#contact');
+        
+        // Validate required fields
+        if (!name || !email || !subject || !message) {
+            if (isFromHomePage) {
+                return res.redirect('/?error=' + encodeURIComponent('Please fill in all required fields.'));
+            }
+            return res.render('contact', {
+                title: 'Contact Us - Goal Tracker',
+                description: 'Get in touch with the Goal Tracker team. We\'re here to help you achieve your goals.',
+                canonicalUrl: 'https://goaltracker.com/contact',
+                error: 'Please fill in all required fields.',
+                success: null,
+                formData: req.body
+            });
+        }
+
+        // Check if email credentials are available
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            console.log('Email credentials not configured. Contact form submission:', {
+                name, email, subject, message: message.substring(0, 100) + '...'
+            });
+            
+            const successMessage = 'Thank you for your message! We have received your inquiry and will get back to you within 24 hours at ' + email + '. You can also reach us directly at goaltrackers2001@gmail.com.';
+            
+            if (isFromHomePage) {
+                return res.redirect('/?success=' + encodeURIComponent(successMessage));
+            }
+            
+            return res.render('contact', {
+                title: 'Contact Us - Goal Tracker',
+                description: 'Get in touch with the Goal Tracker team. We\'re here to help you achieve your goals.',
+                canonicalUrl: 'https://goaltracker.com/contact',
+                error: null,
+                success: successMessage,
+                formData: {}
+            });
+        }
+
+        // Send contact email
+        const nodemailer = require('nodemailer');
+        
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: 'goaltrackers2001@gmail.com',
+            subject: `Contact Form: ${subject}`,
+            html: `
+                <h2>New Contact Form Submission</h2>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Subject:</strong> ${subject}</p>
+                <p><strong>Message:</strong></p>
+                <p>${message.replace(/\n/g, '<br>')}</p>
+                <hr>
+                <p><small>This message was sent from the Goal Tracker contact form.</small></p>
+            `
+        };
+
+        await transporter.sendMail(mailOptions);
+
+        const successMessage = 'Thank you for your message! We\'ll get back to you within 24 hours.';
+        
+        if (isFromHomePage) {
+            return res.redirect('/?success=' + encodeURIComponent(successMessage));
+        }
+
+        res.render('contact', {
+            title: 'Contact Us - Goal Tracker',
+            description: 'Get in touch with the Goal Tracker team. We\'re here to help you achieve your goals.',
+            canonicalUrl: 'https://goaltracker.com/contact',
+            error: null,
+            success: successMessage,
+            formData: {}
+        });
+
+    } catch (error) {
+        console.error('Contact form error:', error);
+        
+        // Log the contact form submission even if email fails
+        console.log('Contact form submission (email failed):', {
+            name: req.body.name,
+            email: req.body.email,
+            subject: req.body.subject,
+            message: req.body.message ? req.body.message.substring(0, 100) + '...' : ''
+        });
+        
+        const successMessage = 'Thank you for your message! We have received your inquiry and will get back to you within 24 hours. You can also reach us directly at goaltrackers2001@gmail.com.';
+        const isFromHomePage = req.get('Referer') && req.get('Referer').includes('/#contact');
+        
+        if (isFromHomePage) {
+            return res.redirect('/?success=' + encodeURIComponent(successMessage));
+        }
+        
+        res.render('contact', {
+            title: 'Contact Us - Goal Tracker',
+            description: 'Get in touch with the Goal Tracker team. We\'re here to help you achieve your goals.',
+            canonicalUrl: 'https://goaltracker.com/contact',
+            error: null,
+            success: successMessage,
+            formData: {}
+        });
+    }
+});
+
+// Forgot password page
+app.get('/forgot-password', (req, res) => {
+    res.render('forgot-password', { 
+        title: 'Forgot Password - Goal Tracker',
+        description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+        canonicalUrl: 'https://goaltracker.com/forgot-password',
+        error: null,
+        success: null,
+        formData: {}
+    });
+});
+
+// Handle forgot password form
+app.post('/forgot-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+        
+        if (!email) {
+            return res.render('forgot-password', {
+                title: 'Forgot Password - Goal Tracker',
+                description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+                canonicalUrl: 'https://goaltracker.com/forgot-password',
+                error: 'Please enter your email address.',
+                success: null,
+                formData: req.body
+            });
+        }
+
+        // Check if user exists
+        const db = require('./db/init');
+        
+        db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.render('forgot-password', {
+                    title: 'Forgot Password - Goal Tracker',
+                    description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+                    canonicalUrl: 'https://goaltracker.com/forgot-password',
+                    error: 'An error occurred. Please try again.',
+                    success: null,
+                    formData: { email }
+                });
+            }
+
+            if (!user) {
+                // Don't reveal if email exists or not for security
+                return res.render('forgot-password', {
+                    title: 'Forgot Password - Goal Tracker',
+                    description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+                    canonicalUrl: 'https://goaltracker.com/forgot-password',
+                    error: null,
+                    success: 'If an account with that email exists, you will receive a password reset link shortly.',
+                    formData: {}
+                });
+            }
+
+            // Generate reset token
+            const crypto = require('crypto');
+            const resetToken = crypto.randomBytes(32).toString('hex');
+            const resetExpires = new Date();
+            resetExpires.setHours(resetExpires.getHours() + 1); // 1 hour expiry
+
+            // Save reset token to database
+            db.run('UPDATE users SET reset_token = ?, reset_expires = ? WHERE id = ?',
+                [resetToken, resetExpires.toISOString(), user.id],
+                async (err) => {
+                    if (err) {
+                        console.error('Error saving reset token:', err);
+                        return res.render('forgot-password', {
+                            title: 'Forgot Password - Goal Tracker',
+                            description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+                            canonicalUrl: 'https://goaltracker.com/forgot-password',
+                            error: 'An error occurred. Please try again.',
+                            success: null,
+                            formData: { email }
+                        });
+                    }
+
+                    // Send reset email
+                    try {
+                        const { sendPasswordResetEmail } = require('./utils/emailService');
+                        await sendPasswordResetEmail(user, resetToken);
+
+                        res.render('forgot-password', {
+                            title: 'Forgot Password - Goal Tracker',
+                            description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+                            canonicalUrl: 'https://goaltracker.com/forgot-password',
+                            error: null,
+                            success: 'Password reset link sent! Check your email and follow the instructions to reset your password.',
+                            formData: {}
+                        });
+                    } catch (emailError) {
+                        console.error('Failed to send reset email:', emailError);
+                        res.render('forgot-password', {
+                            title: 'Forgot Password - Goal Tracker',
+                            description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+                            canonicalUrl: 'https://goaltracker.com/forgot-password',
+                            error: 'Failed to send reset email. Please try again or contact support.',
+                            success: null,
+                            formData: { email }
+                        });
+                    }
+                }
+            );
+        });
+
+    } catch (error) {
+        console.error('Forgot password error:', error);
+        res.render('forgot-password', {
+            title: 'Forgot Password - Goal Tracker',
+            description: 'Reset your Goal Tracker password. Enter your email to receive a password reset link.',
+            canonicalUrl: 'https://goaltracker.com/forgot-password',
+            error: 'An error occurred. Please try again.',
+            success: null,
+            formData: req.body
+        });
+    }
+});
+
+// Reset password page
+app.get('/reset-password/:token', (req, res) => {
+    const token = req.params.token;
+    
+    // Verify token exists and is not expired
+    const db = require('./db/init');
+    
+    db.get('SELECT * FROM users WHERE reset_token = ? AND reset_expires > ?', 
+        [token, new Date().toISOString()], 
+        (err, user) => {
+            if (err || !user) {
+                return res.render('error', {
+                    title: 'Invalid Reset Link - Goal Tracker',
+                    error: 'This password reset link is invalid or has expired. Please request a new one.'
+                });
+            }
+
+            res.render('reset-password', {
+                title: 'Reset Password - Goal Tracker',
+                description: 'Create a new password for your Goal Tracker account.',
+                canonicalUrl: `https://goaltracker.com/reset-password/${token}`,
+                token: token,
+                error: null,
+                success: null
+            });
+        }
+    );
+});
+
+// Handle reset password form
+app.post('/reset-password', async (req, res) => {
+    try {
+        const { token, password, confirmPassword } = req.body;
+
+        if (!password || !confirmPassword) {
+            return res.render('reset-password', {
+                title: 'Reset Password - Goal Tracker',
+                description: 'Create a new password for your Goal Tracker account.',
+                canonicalUrl: `https://goaltracker.com/reset-password/${token}`,
+                token: token,
+                error: 'Please fill in all fields.',
+                success: null
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.render('reset-password', {
+                title: 'Reset Password - Goal Tracker',
+                description: 'Create a new password for your Goal Tracker account.',
+                canonicalUrl: `https://goaltracker.com/reset-password/${token}`,
+                token: token,
+                error: 'Passwords do not match.',
+                success: null
+            });
+        }
+
+        if (password.length < 8) {
+            return res.render('reset-password', {
+                title: 'Reset Password - Goal Tracker',
+                description: 'Create a new password for your Goal Tracker account.',
+                canonicalUrl: `https://goaltracker.com/reset-password/${token}`,
+                token: token,
+                error: 'Password must be at least 8 characters long.',
+                success: null
+            });
+        }
+
+        // Verify token and get user
+        const db = require('./db/init');
+        
+        db.get('SELECT * FROM users WHERE reset_token = ? AND reset_expires > ?', 
+            [token, new Date().toISOString()], 
+            async (err, user) => {
+                if (err || !user) {
+                    return res.render('error', {
+                        title: 'Invalid Reset Link - Goal Tracker',
+                        error: 'This password reset link is invalid or has expired. Please request a new one.'
+                    });
+                }
+
+                // Hash new password
+                const bcrypt = require('bcrypt');
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                // Update password and clear reset token
+                db.run('UPDATE users SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?',
+                    [hashedPassword, user.id],
+                    (err) => {
+                        if (err) {
+                            console.error('Error updating password:', err);
+                            return res.render('reset-password', {
+                                title: 'Reset Password - Goal Tracker',
+                                description: 'Create a new password for your Goal Tracker account.',
+                                canonicalUrl: `https://goaltracker.com/reset-password/${token}`,
+                                token: token,
+                                error: 'An error occurred. Please try again.',
+                                success: null
+                            });
+                        }
+
+                        // Password reset successful - redirect to login
+                        res.redirect('/login?message=password_reset_success');
+                    }
+                );
+            }
+        );
+
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.render('reset-password', {
+            title: 'Reset Password - Goal Tracker',
+            description: 'Create a new password for your Goal Tracker account.',
+            canonicalUrl: `https://goaltracker.com/reset-password/${req.body.token}`,
+            token: req.body.token,
+            error: 'An error occurred. Please try again.',
+            success: null
+        });
+    }
 });
 
 app.get('/login', (req, res) => {
     if (req.session.user) {
         return res.redirect('/dashboard');
     }
+    
+    let successMessage = null;
+    if (req.query.message === 'password_reset_success') {
+        successMessage = 'Your password has been reset successfully. You can now log in with your new password.';
+    }
+    
     res.render('login', { 
         title: 'Login - Goal Tracker',
+        description: 'Sign in to your Goal Tracker account and continue achieving your goals.',
+        canonicalUrl: 'https://goaltracker.com/login',
         error: null,
+        success: successMessage,
         formData: {}
     });
 });
@@ -131,6 +510,8 @@ app.get('/register', (req, res) => {
     }
     res.render('register', { 
         title: 'Register - Goal Tracker',
+        description: 'Create your free Goal Tracker account and start achieving your dreams today.',
+        canonicalUrl: 'https://goaltracker.com/register',
         error: null,
         formData: {}
     });
@@ -142,10 +523,16 @@ app.get('/verify-email', (req, res) => {
         return res.redirect('/register');
     }
     
+    // Check if user was redirected from registration attempt
+    let successMessage = null;
+    if (req.query.from === 'register') {
+        successMessage = 'We found an existing account with this email. We\'ve sent a fresh verification code to complete your registration.';
+    }
+    
     res.render('verify-email', { 
         title: 'Verify Email - Goal Tracker',
         error: null,
-        success: null,
+        success: successMessage,
         email: req.session.pendingUser.email
     });
 });

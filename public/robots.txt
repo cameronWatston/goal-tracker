@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+
+# Important pages for SEO
+Allow: /
+Allow: /register
+Allow: /login
+Allow: /contact
+Allow: /goals/
+Allow: /community/
+Allow: /subscription/
+
+# Block admin and sensitive areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /notifications
+Disallow: /profile
+Disallow: /dashboard
+
+# Allow CSS, JS, and images for proper rendering
+Allow: /css/
+Allow: /js/
+Allow: /img/
+
+# Crawl delay (optional - 1 second between requests)
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://goaltracker.com/sitemap.xml 

@@ -1,0 +1,213 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary">Contact Us</h1>
+                <p class="lead text-muted">We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+            </div>
+
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <%= success %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-5">
+                            <h3 class="card-title mb-4">
+                                <i class="fas fa-paper-plane text-primary me-2"></i>
+                                Send us a Message
+                            </h3>
+                            
+                            <form action="/contact" method="POST" id="contactForm">
+                                <div class="mb-4">
+                                    <label for="name" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Full Name
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="name" name="name" 
+                                           value="<%= typeof formData !== 'undefined' ? (formData.name || '') : '' %>" 
+                                           required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email Address
+                                    </label>
+                                    <input type="email" class="form-control form-control-lg" id="email" name="email" 
+                                           value="<%= typeof formData !== 'undefined' ? (formData.email || '') : '' %>" 
+                                           required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="subject" class="form-label">
+                                        <i class="fas fa-tag me-2"></i>Subject
+                                    </label>
+                                    <select class="form-select form-select-lg" id="subject" name="subject" required>
+                                        <option value="">Select a subject...</option>
+                                        <option value="General Inquiry" <%= typeof formData !== 'undefined' && formData.subject === 'General Inquiry' ? 'selected' : '' %>>General Inquiry</option>
+                                        <option value="Technical Support" <%= typeof formData !== 'undefined' && formData.subject === 'Technical Support' ? 'selected' : '' %>>Technical Support</option>
+                                        <option value="Feature Request" <%= typeof formData !== 'undefined' && formData.subject === 'Feature Request' ? 'selected' : '' %>>Feature Request</option>
+                                        <option value="Bug Report" <%= typeof formData !== 'undefined' && formData.subject === 'Bug Report' ? 'selected' : '' %>>Bug Report</option>
+                                        <option value="Billing Question" <%= typeof formData !== 'undefined' && formData.subject === 'Billing Question' ? 'selected' : '' %>>Billing Question</option>
+                                        <option value="Partnership" <%= typeof formData !== 'undefined' && formData.subject === 'Partnership' ? 'selected' : '' %>>Partnership Opportunity</option>
+                                        <option value="Other" <%= typeof formData !== 'undefined' && formData.subject === 'Other' ? 'selected' : '' %>>Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="message" class="form-label">
+                                        <i class="fas fa-comment me-2"></i>Message
+                                    </label>
+                                    <textarea class="form-control form-control-lg" id="message" name="message" 
+                                              rows="6" placeholder="Tell us how we can help you..." required><%= typeof formData !== 'undefined' ? (formData.message || '') : '' %></textarea>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        Send Message
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 bg-light h-100">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">
+                                <i class="fas fa-info-circle text-primary me-2"></i>
+                                Get in Touch
+                            </h4>
+                            
+                            <div class="contact-info">
+                                <div class="mb-4">
+                                    <h6 class="fw-bold">
+                                        <i class="fas fa-envelope text-primary me-2"></i>
+                                        Email
+                                    </h6>
+                                    <p class="text-muted mb-0">
+                                        <a href="mailto:goaltrackers2001@gmail.com" class="text-decoration-none">
+                                            goaltrackers2001@gmail.com
+                                        </a>
+                                    </p>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h6 class="fw-bold">
+                                        <i class="fas fa-clock text-primary me-2"></i>
+                                        Response Time
+                                    </h6>
+                                    <p class="text-muted mb-0">We typically respond within 24 hours</p>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h6 class="fw-bold">
+                                        <i class="fas fa-headset text-primary me-2"></i>
+                                        Support Hours
+                                    </h6>
+                                    <p class="text-muted mb-0">
+                                        Monday - Friday: 9:00 AM - 6:00 PM (GMT)<br>
+                                        Weekend: Emergency support only
+                                    </p>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h6 class="fw-bold">
+                                        <i class="fas fa-question-circle text-primary me-2"></i>
+                                        Quick Help
+                                    </h6>
+                                    <p class="text-muted mb-2">Looking for immediate assistance?</p>
+                                    <a href="/community" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-users me-1"></i>
+                                        Visit Community
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional Contact Features -->
+<section class="py-5 bg-light mt-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-4 mb-4">
+                <div class="contact-feature">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-rocket fa-3x text-primary"></i>
+                    </div>
+                    <h5>Feature Requests</h5>
+                    <p class="text-muted">Have an idea for a new feature? We'd love to hear it!</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="contact-feature">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-bug fa-3x text-primary"></i>
+                    </div>
+                    <h5>Bug Reports</h5>
+                    <p class="text-muted">Found a bug? Help us improve by reporting it.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="contact-feature">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-handshake fa-3x text-primary"></i>
+                    </div>
+                    <h5>Partnerships</h5>
+                    <p class="text-muted">Interested in partnering with us? Let's discuss opportunities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.contact-feature {
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.contact-feature:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    transition: all 0.3s ease;
+}
+
+.contact-feature:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+</style> 

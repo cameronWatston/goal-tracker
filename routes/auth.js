@@ -26,6 +26,7 @@ router.post('/register', async (req, res) => {
             }
 
             if (user) {
+                // Check if username is taken
                 if (user.username === username) {
                     return res.render('register', { 
                         title: 'Register - Goal Tracker',
@@ -33,10 +34,59 @@ router.post('/register', async (req, res) => {
                         formData: { email }
                     });
                 }
+                
+                // Check if email is taken
                 if (user.email === email) {
+                    // If email exists but user is not verified, redirect to verification
+                    if (!user.is_verified) {
+                        // Store user info for verification
+                        req.session.pendingUser = {
+                            id: user.id,
+                            username: user.username,
+                            email: user.email
+                        };
+                        
+                        // Generate new verification code
+                        const verificationCode = generateVerificationCode();
+                        const verificationExpires = new Date();
+                        verificationExpires.setMinutes(verificationExpires.getMinutes() + 30);
+                        
+                        // Update verification code in database
+                        db.run('UPDATE users SET verification_code = ?, verification_expires = ? WHERE id = ?',
+                            [verificationCode, verificationExpires.toISOString(), user.id],
+                            async (updateErr) => {
+                                if (updateErr) {
+                                    console.error('Error updating verification code:', updateErr);
+                                    return res.render('register', { 
+                                        title: 'Register - Goal Tracker',
+                                        error: 'Error with account verification. Please try again.',
+                                        formData: req.body
+                                    });
+                                }
+                                
+                                // Send new verification email
+                                try {
+                                    await sendVerificationEmail({
+                                        id: user.id,
+                                        username: user.username,
+                                        email: user.email
+                                    }, verificationCode);
+                                } catch (emailError) {
+                                    console.error('Failed to send verification email:', emailError);
+                                    // Continue even if email fails
+                                }
+                                
+                                // Redirect to verification page with helpful message
+                                return res.redirect('/verify-email?from=register');
+                            }
+                        );
+                        return; // Exit early to prevent further execution
+                    }
+                    
+                    // If email exists and is verified, show error
                     return res.render('register', { 
                         title: 'Register - Goal Tracker',
-                        error: 'Email already registered',
+                        error: 'Email already registered. Try logging in instead.',
                         formData: { username }
                     });
                 }

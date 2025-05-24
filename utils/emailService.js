@@ -162,7 +162,70 @@ const sendWelcomeEmail = async (user) => {
     }
 };
 
+// Password reset email template
+const sendPasswordResetEmail = async (user, resetToken) => {
+    try {
+        const resetUrl = `${process.env.APP_URL || 'http://localhost:3001'}/reset-password/${resetToken}`;
+        
+        // Email content
+        const mailOptions = {
+            from: process.env.EMAIL_USER || 'Goal Tracker <noreply@goaltracker.example.com>',
+            to: user.email,
+            subject: 'Reset Your Goal Tracker Password',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #183B4E;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h1 style="color: #27548A;">Reset Your Password</h1>
+                    </div>
+                    
+                    <p>Hello ${user.username},</p>
+                    
+                    <p>We received a request to reset your password for your Goal Tracker account. If you made this request, click the button below to create a new password:</p>
+                    
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${resetUrl}" style="background-color: #27548A; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                            Reset Your Password
+                        </a>
+                    </div>
+                    
+                    <p>Or copy and paste this link into your browser:</p>
+                    <p style="word-break: break-all; background-color: #F3F3E0; padding: 10px; border-radius: 5px; font-family: monospace;">
+                        ${resetUrl}
+                    </p>
+                    
+                    <div style="background-color: #FFE5E5; border-left: 4px solid #FF6B6B; padding: 15px; margin: 20px 0;">
+                        <p style="margin: 0; color: #D63031;">
+                            <strong>Security Notice:</strong><br>
+                            • This link will expire in 1 hour for security reasons<br>
+                            • If you didn't request this reset, please ignore this email<br>
+                            • Your password will remain unchanged unless you click the link above
+                        </p>
+                    </div>
+                    
+                    <p>If you continue to have trouble accessing your account, please contact our support team by replying to this email.</p>
+                    
+                    <p>Best regards,<br>The Goal Tracker Team</p>
+                    
+                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #DDA853; font-size: 12px; color: #777;">
+                        <p>This email was sent to ${user.email}. If you did not request a password reset, please ignore this email.</p>
+                        <p>For security questions, contact us at goaltrackers2001@gmail.com</p>
+                    </div>
+                </div>
+            `
+        };
+
+        // Send email
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Password reset email sent:', info.messageId);
+        return info;
+    } catch (error) {
+        console.error('Error sending password reset email:', error);
+        throw error; // Throw error for password reset as it's critical
+    }
+};
+
 module.exports = {
     sendVerificationEmail,
-    sendWelcomeEmail
+    sendWelcomeEmail,
+    sendPasswordResetEmail
 }; 

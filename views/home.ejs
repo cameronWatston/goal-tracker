@@ -611,6 +611,136 @@
                                 </div>
 </section>
 
+<!-- Contact Section -->
+<section class="contact-section" id="contact">
+    <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">Contact</div>
+            <h2 class="section-title">Get in Touch</h2>
+            <p class="section-subtitle">Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="contact-form-card">
+                    <!-- Success/Error Messages -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <form action="/contact" method="POST" class="contact-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="contact-name" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Full Name
+                                    </label>
+                                    <input type="text" class="form-control" id="contact-name" name="name" 
+                                           value="<%= typeof formData !== 'undefined' ? (formData.name || '') : '' %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="contact-email" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email Address
+                                    </label>
+                                    <input type="email" class="form-control" id="contact-email" name="email" 
+                                           value="<%= typeof formData !== 'undefined' ? (formData.email || '') : '' %>" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="contact-subject" class="form-label">
+                                    <i class="fas fa-tag me-2"></i>Subject
+                                </label>
+                                <select class="form-select" id="contact-subject" name="subject" required>
+                                    <option value="">Choose a subject...</option>
+                                    <option value="General Inquiry" <%= typeof formData !== 'undefined' && formData.subject === 'General Inquiry' ? 'selected' : '' %>>General Inquiry</option>
+                                    <option value="Technical Support" <%= typeof formData !== 'undefined' && formData.subject === 'Technical Support' ? 'selected' : '' %>>Technical Support</option>
+                                    <option value="Feature Request" <%= typeof formData !== 'undefined' && formData.subject === 'Feature Request' ? 'selected' : '' %>>Feature Request</option>
+                                    <option value="Partnership" <%= typeof formData !== 'undefined' && formData.subject === 'Partnership' ? 'selected' : '' %>>Partnership Opportunity</option>
+                                    <option value="Bug Report" <%= typeof formData !== 'undefined' && formData.subject === 'Bug Report' ? 'selected' : '' %>>Bug Report</option>
+                                    <option value="Billing Question" <%= typeof formData !== 'undefined' && formData.subject === 'Billing Question' ? 'selected' : '' %>>Billing Question</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="contact-message" class="form-label">
+                                    <i class="fas fa-comment me-2"></i>Message
+                                </label>
+                                <textarea class="form-control" id="contact-message" name="message" rows="5" 
+                                          placeholder="Tell us how we can help you..." required><%= typeof formData !== 'undefined' ? (formData.message || '') : '' %></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-lg-4 mb-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h5>Email Us</h5>
+                    <p>Send us an email and we'll respond within 24 hours</p>
+                    <a href="mailto:goaltrackers2001@gmail.com" class="contact-link">
+                        goaltrackers2001@gmail.com
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h5>Response Time</h5>
+                    <p>We aim to respond to all inquiries quickly</p>
+                    <span class="contact-highlight">Usually within 24 hours</span>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5>Community</h5>
+                    <p>Join our community for instant help and support</p>
+                    <a href="/community" class="contact-link">
+                        Visit Community
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Ultra-Modern CSS for Stunning Homepage -->
 <style>
 :root {
@@ -1816,6 +1946,146 @@ input:checked + .toggle-slider:before {
     color: var(--text-light);
     margin-bottom: 2rem;
     line-height: 1.6;
+}
+
+/* Contact Section Styles */
+.contact-section {
+    padding: 120px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.contact-form-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+}
+
+.contact-form .form-control,
+.contact-form .form-select {
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+.contact-form .form-control:focus,
+.contact-form .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    background-color: white;
+    transform: translateY(-2px);
+}
+
+.contact-form .form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.contact-form .btn {
+    padding: 1rem 2rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: none;
+    letter-spacing: 0.5px;
+}
+
+.contact-form .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+}
+
+.contact-info-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.contact-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 1.8rem;
+    box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+}
+
+.contact-info-card h5 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.contact-info-card p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.contact-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+    color: var(--accent-color);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.contact-highlight {
+    color: var(--success-color);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .contact-form-card {
+        padding: 2rem 1.5rem;
+        margin: 0 1rem;
+    }
+    
+    .contact-section {
+        padding: 80px 0;
+    }
 }
 </style>
 

@@ -181,6 +181,27 @@ router.post('/verify', async (req, res) => {
                         // Continue with verification even if email fails
                     }
                     
+                    // Track daily login achievements
+                    try {
+                        const AchievementTracker = require('../utils/achievements');
+                        const StreakTracker = require('../utils/streak-tracker');
+                        
+                        // Record daily activity and get current streak
+                        const currentStreak = await StreakTracker.recordDailyActivity(user.id, 'login');
+                        
+                        // Track achievements with the real streak
+                        const unlockedAchievements = await AchievementTracker.trackDailyLogin(user.id);
+                        
+                        if (unlockedAchievements.length > 0) {
+                            console.log(`🏆 User ${user.id} unlocked ${unlockedAchievements.length} achievements for daily login`);
+                        }
+                        
+                        console.log(`🔥 User ${user.id} current streak: ${currentStreak} days`);
+                    } catch (achievementError) {
+                        console.error('Error tracking daily login achievements:', achievementError);
+                        // Don't fail login if achievement tracking fails
+                    }
+                    
                     // Redirect to dashboard
                     res.redirect('/dashboard');
                 });
@@ -330,6 +351,27 @@ router.post('/login', async (req, res) => {
                     subscription_end: user.subscription_end || null,
                     is_admin: user.is_admin || 0
                 };
+
+                // Track daily login achievements
+                try {
+                    const AchievementTracker = require('../utils/achievements');
+                    const StreakTracker = require('../utils/streak-tracker');
+                    
+                    // Record daily activity and get current streak
+                    const currentStreak = await StreakTracker.recordDailyActivity(user.id, 'login');
+                    
+                    // Track achievements with the real streak
+                    const unlockedAchievements = await AchievementTracker.trackDailyLogin(user.id);
+                    
+                    if (unlockedAchievements.length > 0) {
+                        console.log(`🏆 User ${user.id} unlocked ${unlockedAchievements.length} achievements for daily login`);
+                    }
+                    
+                    console.log(`🔥 User ${user.id} current streak: ${currentStreak} days`);
+                } catch (achievementError) {
+                    console.error('Error tracking daily login achievements:', achievementError);
+                    // Don't fail login if achievement tracking fails
+                }
 
                 res.redirect('/dashboard');
             }
@@ -553,6 +595,19 @@ router.post('/profile/update', async (req, res) => {
             username,
             email
         };
+
+        // Track profile completion achievement
+        try {
+            const AchievementTracker = require('../utils/achievements');
+            const unlockedAchievements = await AchievementTracker.trackProfileCompleted(userId);
+            
+            if (unlockedAchievements.length > 0) {
+                console.log(`🏆 User ${userId} unlocked ${unlockedAchievements.length} achievements for completing profile`);
+            }
+        } catch (achievementError) {
+            console.error('Error tracking profile completion achievement:', achievementError);
+            // Don't fail the profile update if achievement tracking fails
+        }
 
         return res.redirect('/profile?success=Profile+updated+successfully');
     } catch (error) {

@@ -32,6 +32,110 @@
     <div class="row">
         <!-- Profile Info -->
         <div class="col-md-8">
+            <!-- Achievements Section -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-gradient-primary text-white">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="mb-0"><i class="fas fa-trophy me-2"></i> Achievements</h5>
+                            <small class="opacity-75">Your accomplishments and progress</small>
+                        </div>
+                        <div class="achievement-stats-mini">
+                            <span class="badge bg-light text-dark" id="achievement-count">0/50</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <!-- Achievement Stats Overview -->
+                    <div class="achievement-overview p-4 bg-light">
+                        <div class="row g-3" id="achievement-stats">
+                            <div class="col-md-2">
+                                <div class="stat-box text-center">
+                                    <div class="stat-number text-primary" id="total-points">0</div>
+                                    <div class="stat-label">Points</div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="stat-box text-center">
+                                    <div class="stat-number text-warning" id="bronze-count">0</div>
+                                    <div class="stat-label">Bronze</div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="stat-box text-center">
+                                    <div class="stat-number text-secondary" id="silver-count">0</div>
+                                    <div class="stat-label">Silver</div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="stat-box text-center">
+                                    <div class="stat-number text-warning" id="gold-count">0</div>
+                                    <div class="stat-label">Gold</div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="stat-box text-center">
+                                    <div class="stat-number text-info" id="diamond-count">0</div>
+                                    <div class="stat-label">Diamond</div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="stat-box text-center">
+                                    <div class="stat-number text-danger" id="legendary-count">0</div>
+                                    <div class="stat-label">Legendary</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mt-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Achievement Progress</span>
+                                <span class="text-muted" id="progress-text">0%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-primary" id="achievement-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievement Filters -->
+                    <div class="achievement-filters p-3 border-bottom">
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-outline-primary active" data-filter="all">All</button>
+                            <button class="btn btn-outline-success" data-filter="unlocked">Unlocked</button>
+                            <button class="btn btn-outline-secondary" data-filter="locked">Locked</button>
+                            <button class="btn btn-outline-warning" data-filter="bronze">Bronze</button>
+                            <button class="btn btn-outline-secondary" data-filter="silver">Silver</button>
+                            <button class="btn btn-outline-warning" data-filter="gold">Gold</button>
+                            <button class="btn btn-outline-info" data-filter="diamond">Diamond</button>
+                            <button class="btn btn-outline-danger" data-filter="legendary">Legendary</button>
+                        </div>
+                        
+                        <!-- Category Filters -->
+                        <div class="btn-group btn-group-sm ms-3" role="group">
+                            <button class="btn btn-outline-info" data-category="getting_started">Getting Started</button>
+                            <button class="btn btn-outline-primary" data-category="goals">Goals</button>
+                            <button class="btn btn-outline-success" data-category="completion">Completion</button>
+                            <button class="btn btn-outline-warning" data-category="engagement">Engagement</button>
+                            <button class="btn btn-outline-danger" data-category="special">Special</button>
+                            <button class="btn btn-outline-secondary" data-category="legendary">Legendary</button>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Grid -->
+                    <div class="achievements-grid p-4" id="achievements-container">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading achievements...</span>
+                            </div>
+                            <p class="text-muted mt-2">Loading your achievements...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Information -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
                     <h5 class="mb-0"><i class="fas fa-user me-2"></i> Account Information</h5>
@@ -116,3 +220,499 @@
 </div>
 
 <!-- Delete Account Confirmation Modal is already defined in layout.ejs --> 
+
+<style>
+/* Achievement System Styles */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.achievement-overview {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+}
+
+.stat-box {
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.achievement-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.achievement-card:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.achievement-card.unlocked {
+    background: linear-gradient(135deg, #f8fff8 0%, #ffffff 100%);
+    border-color: #28a745;
+}
+
+.achievement-card.locked {
+    opacity: 0.6;
+    background: #f8f9fa;
+}
+
+.achievement-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.achievement-icon.bronze {
+    background: linear-gradient(135deg, #cd7f32, #b8691a);
+}
+
+.achievement-icon.silver {
+    background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+}
+
+.achievement-icon.gold {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+}
+
+.achievement-icon.diamond {
+    background: linear-gradient(135deg, #87ceeb, #4682b4);
+}
+
+.achievement-icon.legendary {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    animation: legendary-glow 2s infinite;
+}
+
+@keyframes legendary-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(255, 107, 107, 0.5); }
+    50% { box-shadow: 0 0 20px rgba(255, 107, 107, 0.8); }
+}
+
+.achievement-content {
+    flex: 1;
+    margin-left: 1rem;
+}
+
+.achievement-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.achievement-description {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.achievement-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+}
+
+.achievement-tier {
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.achievement-tier.bronze {
+    background: rgba(205, 127, 50, 0.1);
+    color: #cd7f32;
+}
+
+.achievement-tier.silver {
+    background: rgba(192, 192, 192, 0.1);
+    color: #a8a8a8;
+}
+
+.achievement-tier.gold {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+}
+
+.achievement-tier.diamond {
+    background: rgba(135, 206, 235, 0.1);
+    color: #4682b4;
+}
+
+.achievement-tier.legendary {
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b;
+}
+
+.achievement-points {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.achievement-progress {
+    margin: 0.5rem 0;
+}
+
+.achievement-progress .progress {
+    height: 6px;
+    background: #e9ecef;
+}
+
+.achievement-progress .progress-bar {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.achievement-status {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.achievement-status.unlocked {
+    background: #28a745;
+    color: white;
+}
+
+.achievement-status.locked {
+    background: #6c757d;
+    color: white;
+}
+
+.achievement-filters .btn-group {
+    flex-wrap: wrap;
+}
+
+.achievement-filters .btn {
+    margin: 0.2rem;
+    font-size: 0.75rem;
+}
+
+/* Rarity indicators */
+.achievement-card.common {
+    border-left: 4px solid #6c757d;
+}
+
+.achievement-card.uncommon {
+    border-left: 4px solid #28a745;
+}
+
+.achievement-card.rare {
+    border-left: 4px solid #007bff;
+}
+
+.achievement-card.epic {
+    border-left: 4px solid #6f42c1;
+}
+
+.achievement-card.legendary {
+    border-left: 4px solid #dc3545;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+/* Empty state */
+.achievement-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.achievement-empty i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .achievements-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .achievement-filters .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .achievement-filters .btn {
+        margin: 0.1rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let allAchievements = [];
+    let achievementStats = {};
+    
+    // Load achievements on page load
+    loadUserAchievements();
+    
+    // Set up filter buttons
+    setupFilters();
+    
+    async function loadUserAchievements() {
+        try {
+            const response = await fetch('/api/achievements');
+            if (!response.ok) throw new Error('Failed to load achievements');
+            
+            const data = await response.json();
+            allAchievements = data.achievements;
+            achievementStats = data.stats;
+            
+            displayAchievementStats();
+            displayAchievements(allAchievements);
+            
+        } catch (error) {
+            console.error('Error loading achievements:', error);
+            showAchievementError();
+        }
+    }
+    
+    function displayAchievementStats() {
+        // Update stat numbers
+        document.getElementById('achievement-count').textContent = 
+            `${achievementStats.unlocked_achievements}/${achievementStats.total_achievements}`;
+        document.getElementById('total-points').textContent = achievementStats.total_points.toLocaleString();
+        document.getElementById('bronze-count').textContent = achievementStats.bronze_count;
+        document.getElementById('silver-count').textContent = achievementStats.silver_count;
+        document.getElementById('gold-count').textContent = achievementStats.gold_count;
+        document.getElementById('diamond-count').textContent = achievementStats.diamond_count;
+        document.getElementById('legendary-count').textContent = achievementStats.legendary_count;
+        
+        // Update progress bar
+        const progressPercent = achievementStats.completion_percentage;
+        document.getElementById('progress-text').textContent = `${progressPercent}%`;
+        document.getElementById('achievement-progress').style.width = `${progressPercent}%`;
+        
+        // Animate numbers
+        animateStatNumbers();
+    }
+    
+    function displayAchievements(achievements) {
+        const container = document.getElementById('achievements-container');
+        
+        if (achievements.length === 0) {
+            container.innerHTML = `
+                <div class="achievement-empty">
+                    <i class="fas fa-trophy"></i>
+                    <h5>No achievements found</h5>
+                    <p>Try adjusting your filters to see more achievements.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const achievementsHtml = achievements.map(achievement => {
+            const isUnlocked = achievement.unlocked;
+            const progressPercent = achievement.progress_percentage;
+            
+            return `
+                <div class="achievement-card ${isUnlocked ? 'unlocked' : 'locked'} ${achievement.rarity}" 
+                     data-tier="${achievement.tier}" 
+                     data-category="${achievement.category}"
+                     data-unlocked="${isUnlocked}">
+                    
+                    <div class="achievement-status ${isUnlocked ? 'unlocked' : 'locked'}">
+                        <i class="fas ${isUnlocked ? 'fa-check' : 'fa-lock'}"></i>
+                    </div>
+                    
+                    <div class="d-flex align-items-start">
+                        <div class="achievement-icon ${achievement.tier}">
+                            <i class="fas ${achievement.icon}"></i>
+                        </div>
+                        
+                        <div class="achievement-content">
+                            <div class="achievement-title">${achievement.title}</div>
+                            <div class="achievement-description">${achievement.description}</div>
+                            
+                            ${!isUnlocked && achievement.target_value > 1 ? `
+                                <div class="achievement-progress">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <small class="text-muted">Progress</small>
+                                        <small class="text-muted">${achievement.progress}/${achievement.target_value}</small>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="achievement-meta">
+                                <span class="achievement-tier ${achievement.tier}">${achievement.tier}</span>
+                                <span class="achievement-points">+${achievement.points} pts</span>
+                            </div>
+                            
+                            ${isUnlocked && achievement.unlocked_at ? `
+                                <div class="achievement-unlocked-date mt-2">
+                                    <small class="text-success">
+                                        <i class="fas fa-check-circle me-1"></i>
+                                        Unlocked ${new Date(achievement.unlocked_at).toLocaleDateString()}
+                                    </small>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = achievementsHtml;
+    }
+    
+    function setupFilters() {
+        // Tier filters
+        document.querySelectorAll('[data-filter]').forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('[data-filter]').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Apply filter
+                const filter = this.getAttribute('data-filter');
+                filterAchievements(filter);
+            });
+        });
+        
+        // Category filters
+        document.querySelectorAll('[data-category]').forEach(button => {
+            button.addEventListener('click', function() {
+                // Update active state
+                document.querySelectorAll('[data-category]').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Apply filter
+                const category = this.getAttribute('data-category');
+                filterAchievementsByCategory(category);
+            });
+        });
+    }
+    
+    function filterAchievements(filter) {
+        let filteredAchievements = allAchievements;
+        
+        switch(filter) {
+            case 'unlocked':
+                filteredAchievements = allAchievements.filter(a => a.unlocked);
+                break;
+            case 'locked':
+                filteredAchievements = allAchievements.filter(a => !a.unlocked);
+                break;
+            case 'bronze':
+            case 'silver':
+            case 'gold':
+            case 'diamond':
+            case 'legendary':
+                filteredAchievements = allAchievements.filter(a => a.tier === filter);
+                break;
+            default:
+                filteredAchievements = allAchievements;
+        }
+        
+        displayAchievements(filteredAchievements);
+    }
+    
+    function filterAchievementsByCategory(category) {
+        const filteredAchievements = allAchievements.filter(a => a.category === category);
+        displayAchievements(filteredAchievements);
+    }
+    
+    function animateStatNumbers() {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(element => {
+            const target = parseInt(element.textContent.replace(/,/g, ''));
+            animateNumber(element, 0, target, 1000);
+        });
+    }
+    
+    function animateNumber(element, start, end, duration) {
+        const startTime = performance.now();
+        const originalText = element.textContent;
+        
+        function updateNumber(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const currentValue = Math.floor(start + (end - start) * progress);
+            
+            if (originalText.includes('%')) {
+                element.textContent = currentValue + '%';
+            } else if (originalText.includes(',')) {
+                element.textContent = currentValue.toLocaleString();
+            } else {
+                element.textContent = currentValue;
+            }
+            
+            if (progress < 1) {
+                requestAnimationFrame(updateNumber);
+            }
+        }
+        
+        requestAnimationFrame(updateNumber);
+    }
+    
+    function showAchievementError() {
+        const container = document.getElementById('achievements-container');
+        container.innerHTML = `
+            <div class="achievement-empty">
+                <i class="fas fa-exclamation-triangle text-warning"></i>
+                <h5>Error Loading Achievements</h5>
+                <p>There was a problem loading your achievements. Please try refreshing the page.</p>
+                <button class="btn btn-primary btn-sm" onclick="location.reload()">
+                    <i class="fas fa-refresh me-1"></i> Refresh Page
+                </button>
+            </div>
+        `;
+    }
+});
+</script> 

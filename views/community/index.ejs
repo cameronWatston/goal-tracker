@@ -1,207 +1,1511 @@
-<!-- Community Home Page -->
+<!-- Modern Community Page with Stunning Design -->
+<div class="community-page">
+
+<% style = `<link rel="stylesheet" href="/css/community-ai.css">` %>
+<% script = `<script src="/js/community.js"></script>` %>
+
+    <!-- Hero Section -->
+    <section class="community-hero">
+        <div class="hero-background-animated">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h2 class="mb-1">Community</h2>
-                            <p class="text-muted mb-0">Connect with other goal achievers and share your journey</p>
+            <div class="hero-content text-center">
+                <div class="hero-badge mb-4">
+                    <span class="badge-text">
+                        <i class="fas fa-users me-2"></i>
+                        Join Our Thriving Community
+                    </span>
                         </div>
-                        <div>
-                            <a href="/community/create" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i> Create Post
+                <h1 class="hero-title">Connect. Share. Achieve.</h1>
+                <p class="hero-subtitle mb-4">
+                    Join thousands of goal achievers sharing their journeys, celebrating wins, and supporting each other every step of the way.
+                </p>
+                <div class="hero-actions">
+                    <a href="/community/create" class="btn btn-primary-gradient btn-xl">
+                        <i class="fas fa-plus me-2"></i>Create Post
+                    </a>
+                    <a href="#community-feed" class="btn btn-outline-white btn-xl">
+                        <i class="fas fa-arrow-down me-2"></i>Explore Posts
                             </a>
                         </div>
                     </div>
                 </div>
+    </section>
+
+    <!-- Advanced Search Section -->
+    <section class="community-search">
+        <div class="container">
+            <div class="search-header">
+                <h3 class="search-title">
+                    <i class="fas fa-search me-2"></i>
+                    Find Your Community
+                </h3>
+                <p class="search-subtitle">Search posts, discover hashtags, connect with goal achievers</p>
             </div>
+
+            <div class="search-container">
+                <div class="main-search">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" 
+                               class="search-input" 
+                               id="communitySearch" 
+                               placeholder="Search posts, hashtags (#fitness), or users..."
+                               value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>">
+                        <button class="search-clear" id="clearSearch" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+
+                    <div class="search-filters">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-globe"></i>
+                            <span>All Posts</span>
+                        </button>
+                        <button class="filter-btn" data-filter="hashtags">
+                            <i class="fas fa-hashtag"></i>
+                            <span>Hashtags</span>
+                        </button>
+                        <button class="filter-btn" data-filter="users">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </button>
+                        <button class="filter-btn" data-filter="goals">
+                            <i class="fas fa-target"></i>
+                            <span>Goals</span>
+                        </button>
         </div>
     </div>
 
+                <div class="trending-section">
+                    <h5 class="trending-title">
+                        <i class="fas fa-fire me-2"></i>
+                        Trending Now
+                    </h5>
+                    <div class="trending-hashtags">
+                        <span class="trending-tag" data-hashtag="fitness">#fitness</span>
+                        <span class="trending-tag" data-hashtag="productivity">#productivity</span>
+                        <span class="trending-tag" data-hashtag="learning">#learning</span>
+                        <span class="trending-tag" data-hashtag="business">#business</span>
+                        <span class="trending-tag" data-hashtag="health">#health</span>
+                        <span class="trending-tag" data-hashtag="motivation">#motivation</span>
+                        <span class="trending-tag" data-hashtag="success">#success</span>
+                        <span class="trending-tag" data-hashtag="mindfulness">#mindfulness</span>
+                    </div>
+                </div>
+
+                <!-- AI Assistant for Paid Users -->
+                <div class="ai-assistant-section">
+                    <% if (user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual')) { %>
+                        <div class="ai-assistant-card">
+                            <div class="ai-header">
+                                <div class="ai-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="ai-info">
+                                    <h6 class="ai-title">Goal Assistant AI</h6>
+                                    <p class="ai-subtitle">Get personalized advice for your goals</p>
+                                </div>
+                                <span class="pro-badge">PRO</span>
+                            </div>
+                            <button class="ai-chat-btn" id="openAiChat">
+                                <i class="fas fa-comments me-2"></i>
+                                Start AI Chat
+                            </button>
+                        </div>
+                    <% } else { %>
+                        <div class="ai-assistant-card locked">
+                            <div class="ai-header">
+                                <div class="ai-icon locked">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div class="ai-info">
+                                    <h6 class="ai-title">Goal Assistant AI</h6>
+                                    <p class="ai-subtitle">Available for Pro members</p>
+                                </div>
+                                <span class="upgrade-badge">UPGRADE</span>
+                            </div>
+                            <a href="/subscription" class="ai-upgrade-btn">
+                                <i class="fas fa-crown me-2"></i>
+                                Upgrade to Pro
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Search Results Section -->
+            <div class="search-results" id="searchResults" style="display: none;">
+                <div class="results-header">
+                    <h5 class="results-title">Search Results</h5>
+                    <span class="results-count" id="resultsCount">0 results</span>
+                </div>
+                <div class="results-container" id="resultsContainer">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Alerts -->
     <% if (typeof success !== 'undefined' && success) { %>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <%= success %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="container">
+        <div class="modern-alert success">
+            <i class="fas fa-check-circle"></i>
+            <span><%= success %></span>
+            <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     </div>
     <% } %>
 
     <% if (typeof error !== 'undefined' && error) { %>
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= error %>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="container">
+        <div class="modern-alert error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span><%= error %></span>
+            <button type="button" class="alert-close" onclick="this.parentElement.style.display='none'">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
     </div>
     <% } %>
 
-    <div class="row">
         <!-- Main Content -->
-        <div class="col-md-8">
+    <section class="community-content" id="community-feed">
+        <div class="container">
+            <div class="row">
+                <!-- Main Feed -->
+                <div class="col-lg-8">
+                    <div class="feed-header">
+                        <h2 class="feed-title">Community Feed</h2>
+                        <p class="feed-subtitle">Latest updates from our amazing community</p>
+                    </div>
+
             <% if (posts && posts.length > 0) { %>
+                        <div class="posts-container">
                 <% posts.forEach(post => { %>
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-bold"><%= post.username %></span>
-                                <small class="text-muted ms-2">
-                                    <%= new Date(post.created_at).toLocaleDateString() %>
-                                </small>
+                                <article class="post-card">
+                                    <div class="post-header">
+                                        <div class="author-info">
+                                            <div class="author-avatar">
+                                                <div class="avatar-circle">
+                                                    <%= post.username.charAt(0).toUpperCase() %>
                             </div>
                         </div>
-                        <div class="card-body p-4">
-                            <h5 class="card-title mb-3"><%= post.title %></h5>
-                            <p class="card-text">
+                                            <div class="author-details">
+                                                <h5 class="author-name"><%= post.username %></h5>
+                                                <p class="post-date">
+                                                    <i class="far fa-clock me-1"></i>
+                                                    <%= new Date(post.created_at).toLocaleDateString('en-US', { 
+                                                        month: 'short', 
+                                                        day: 'numeric', 
+                                                        year: 'numeric' 
+                                                    }) %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="post-content">
+                                        <h3 class="post-title"><%= post.title %></h3>
+                                        <p class="post-text">
                                 <%= post.content.length > 200 ? post.content.substring(0, 200) + '...' : post.content %>
                             </p>
                             
                             <% if (post.goal_id && post.goalData) { %>
-                                <div class="small mb-3 p-2 bg-light border rounded">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span><i class="fas fa-bullseye me-1 text-primary"></i> <strong>Linked Goal:</strong> <%= post.goalData.title %></span>
-                                        <span class="badge bg-<%= post.goalData.status === 'completed' ? 'success' : post.goalData.status === 'abandoned' ? 'danger' : 'primary' %>">
+                                            <div class="linked-goal">
+                                                <div class="goal-badge">
+                                                    <i class="fas fa-bullseye me-2"></i>
+                                                    <span class="goal-title">Linked Goal: <%= post.goalData.title %></span>
+                                                    <span class="goal-status status-<%= post.goalData.status %>">
                                             <%= post.goalData.status.charAt(0).toUpperCase() + post.goalData.status.slice(1) %>
                                         </span>
                                     </div>
                                 </div>
                             <% } %>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div>
-                                    <button class="btn btn-sm <%= post.user_liked ? 'btn-primary liked' : 'btn-outline-primary' %> like-btn" data-post-id="<%= post.id %>">
-                                        <i class="<%= post.user_liked ? 'fas' : 'far' %> fa-heart me-1"></i> 
-                                        <span class="like-text"><%= post.user_liked ? 'Liked' : 'Like' %></span>
+                                    </div>
+
+                                    <div class="post-actions">
+                                        <button class="action-btn like-btn <%= post.user_liked ? 'liked' : '' %>" data-post-id="<%= post.id %>">
+                                            <i class="<%= post.user_liked ? 'fas' : 'far' %> fa-heart"></i>
+                                            <span class="action-text">
+                                                <%= post.user_liked ? 'Liked' : 'Like' %>
                                         <% if (post.like_count > 0) { %>
-                                            <span class="like-count ms-1">(<%= post.like_count %>)</span>
+                                                    <span class="like-count">(<%= post.like_count %>)</span>
                                         <% } %>
+                                            </span>
                                     </button>
-                                    <a href="/community/post/<%= post.id %>" class="btn btn-sm btn-outline-secondary ms-2">
-                                        <i class="far fa-comment me-1"></i> Comment
+                                        <a href="/community/post/<%= post.id %>" class="action-btn comment-btn">
+                                            <i class="far fa-comment"></i>
+                                            <span class="action-text">
+                                                Comment
                                         <% if (post.comments && post.comments.length > 0) { %>
-                                            <span class="ms-1">(<%= post.comments.length %>)</span>
+                                                    (<%= post.comments.length %>)
                                         <% } %>
+                                            </span>
+                                        </a>
+                                        <a href="/community/post/<%= post.id %>" class="read-more-btn">
+                                            Read Full Post
+                                            <i class="fas fa-arrow-right ms-1"></i>
                                     </a>
                                 </div>
-                                <a href="/community/post/<%= post.id %>" class="text-decoration-none">Read more</a>
-                            </div>
-                        </div>
-                    </div>
+                                </article>
                 <% }); %>
+                        </div>
             <% } else { %>
-                <div class="card shadow-sm mb-4">
-                    <div class="card-body p-5 text-center">
-                        <i class="fas fa-users mb-3" style="font-size: 3rem; color: #ddd;"></i>
-                        <h5>No posts yet</h5>
-                        <p class="text-muted">Be the first to share something with the community!</p>
-                        <a href="/community/create" class="btn btn-primary mt-2">Create Post</a>
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-users"></i>
                     </div>
+                            <h3 class="empty-title">No posts yet</h3>
+                            <p class="empty-subtitle">Be the first to share something amazing with the community!</p>
+                            <a href="/community/create" class="btn btn-primary-gradient">
+                                <i class="fas fa-plus me-2"></i>Create First Post
+                            </a>
                 </div>
             <% } %>
         </div>
 
         <!-- Sidebar -->
-        <div class="col-md-4">
-            <div class="card shadow-sm mb-4">
+                <div class="col-lg-4">
+                    <div class="sidebar">
+                        <!-- Quick Actions -->
+                        <div class="sidebar-card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-bullhorn me-2"></i> Community Actions</h5>
+                                <h4 class="card-title">
+                                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                                </h4>
                 </div>
-                <div class="card-body p-4">
-                    <div class="d-grid gap-2">
-                        <a href="/community/create" class="btn btn-primary">
-                            <i class="fas fa-plus-circle me-2"></i> Create New Post
-                        </a>
-                        <a href="/community/my-posts" class="btn btn-outline-primary">
-                            <i class="fas fa-user me-2"></i> My Posts
+                            <div class="card-content">
+                                <div class="action-buttons">
+                                    <a href="/community/create" class="action-button primary">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <span>Create New Post</span>
+                                    </a>
+                                    <a href="/community/my-posts" class="action-button secondary">
+                                        <i class="fas fa-user"></i>
+                                        <span>My Posts</span>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="card shadow-sm">
+                        <!-- Community Guidelines -->
+                        <div class="sidebar-card">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> About Community</h5>
+                                <h4 class="card-title">
+                                    <i class="fas fa-info-circle me-2"></i>Community Guidelines
+                                </h4>
                 </div>
-                <div class="card-body p-4">
-                    <p>Connect with other goal achievers, share your progress, get inspired, and motivate others on their journey.</p>
-                    <p class="mb-0">Guidelines:</p>
-                    <ul class="mb-0">
-                        <li>Be respectful and supportive</li>
-                        <li>Share your achievements and challenges</li>
-                        <li>Ask for advice when needed</li>
-                        <li>Celebrate others' successes</li>
-                    </ul>
+                            <div class="card-content">
+                                <p class="guidelines-intro">Join our supportive community of goal achievers!</p>
+                                <div class="guidelines-list">
+                                    <div class="guideline-item">
+                                        <i class="fas fa-heart text-success"></i>
+                                        <span>Be respectful and supportive</span>
+                </div>
+                                    <div class="guideline-item">
+                                        <i class="fas fa-share text-primary"></i>
+                                        <span>Share achievements and challenges</span>
+            </div>
+                                    <div class="guideline-item">
+                                        <i class="fas fa-question-circle text-info"></i>
+                                        <span>Ask for advice when needed</span>
+                                    </div>
+                                    <div class="guideline-item">
+                                        <i class="fas fa-trophy text-warning"></i>
+                                        <span>Celebrate others' successes</span>
+                                    </div>
+        </div>
+    </div>
+
+                        <!-- Top Contributors -->
+                        <div class="sidebar-card">
+                            <div class="card-header">
+                                <h4 class="card-title">
+                                    <i class="fas fa-star me-2"></i>Top Contributors
+                                </h4>
+                            </div>
+                            <div class="card-content">
+                                <div class="contributors-list">
+                                    <% if (topContributors && topContributors.length > 0) { %>
+                                        <% topContributors.forEach((contributor, index) => { %>
+                                            <div class="contributor-item">
+                                                <div class="contributor-avatar"><%= contributor.avatar %></div>
+                                                <div class="contributor-info">
+                                                    <div class="contributor-name"><%= contributor.username %></div>
+                                                    <div class="contributor-stats">
+                                                        <%= contributor.community_posts %> post<%= contributor.community_posts !== 1 ? 's' : '' %>
+                                                    </div>
+                                                </div>
+                                                <div class="contributor-badge"><%= contributor.badge %></div>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <div class="empty-state text-center py-4">
+                                            <i class="fas fa-users text-muted mb-2" style="font-size: 2rem;"></i>
+                                            <p class="text-muted mb-0">No contributors yet.</p>
+                                            <small class="text-muted">Be the first to complete some goals!</small>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle like button clicks
-    const likeButtons = document.querySelectorAll('.like-btn');
+<!-- Ultra-Modern CSS for Stunning Community Page -->
+<style>
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    --text-dark: #2c3e50;
+    --text-light: #6c757d;
+    --white: #ffffff;
+    --border-radius: 20px;
+    --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Community Page Styles */
+.community-page {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+}
+
+/* Hero Section */
+.community-hero {
+    position: relative;
+    min-height: 70vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.hero-background-animated {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-gradient);
+    z-index: -1;
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 15s infinite linear;
+}
+
+.shape-1 {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 15%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 120px;
+    height: 120px;
+    top: 60%;
+    right: 20%;
+    animation-delay: 5s;
+}
+
+.shape-3 {
+    width: 60px;
+    height: 60px;
+    bottom: 30%;
+    left: 70%;
+    animation-delay: 10s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(20px, -20px) rotate(120deg); }
+    66% { transform: translate(-15px, 15px) rotate(240deg); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    padding: 60px 0;
+}
+
+.hero-badge {
+    animation: slideInDown 1s ease-out;
+}
+
+.badge-text {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    animation: slideInUp 1s ease-out 0.2s both;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    max-width: 600px;
+    margin: 0 auto;
+    animation: slideInUp 1s ease-out 0.4s both;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: slideInUp 1s ease-out 0.6s both;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-xl {
+    padding: 20px 40px;
+    font-size: 18px;
+}
+
+.btn-primary-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.6);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-outline-white {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+}
+
+.btn-outline-white:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+    color: white;
+    text-decoration: none;
+}
+
+/* Community Stats */
+.community-stats {
+    padding: 80px 0;
+    background: white;
+    margin-top: -50px;
+    position: relative;
+    z-index: 2;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.stat-card {
+    background: white;
+    padding: 2rem 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.stat-label {
+    color: var(--text-light);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Modern Alerts */
+.modern-alert {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.modern-alert.success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.modern-alert.error {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: inherit;
+    margin-left: auto;
+}
+
+/* Community Content */
+.community-content {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.feed-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.feed-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.feed-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-light);
+}
+
+/* Post Cards */
+.posts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.post-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+}
+
+.post-header {
+    padding: 1.5rem 2rem 0;
+}
+
+.author-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.author-avatar {
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.author-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.post-date {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.post-content {
+    padding: 1.5rem 2rem;
+}
+
+.post-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.post-text {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.linked-goal {
+    margin-bottom: 1rem;
+}
+
+.goal-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border-left: 4px solid #2196f3;
+    font-size: 0.9rem;
+}
+
+.goal-title {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.goal-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-completed {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.status-active {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.status-abandoned {
+    background: var(--secondary-gradient);
+    color: white;
+}
+
+.post-actions {
+    padding: 0 2rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 2px solid #e9ecef;
+    background: white;
+    color: var(--text-dark);
+    text-decoration: none;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.action-btn.liked {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+}
+
+.read-more-btn {
+    margin-left: auto;
+    background: var(--primary-gradient);
+    color: white !important;
+    border-color: transparent;
+}
+
+.read-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #ddd;
+    margin-bottom: 2rem;
+}
+
+.empty-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.empty-subtitle {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+/* Sidebar */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.sidebar-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 1.5rem 2rem;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.card-content {
+    padding: 2rem;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: var(--transition);
+    font-weight: 600;
+}
+
+.action-button.primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.action-button.secondary {
+    background: #f8f9fa;
+    color: var(--text-dark);
+    border: 2px solid #e9ecef;
+}
+
+.action-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: inherit;
+}
+
+.guidelines-intro {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+}
+
+.guidelines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.guideline-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.contributors-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.contributor-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    transition: var(--transition);
+}
+
+.contributor-item:hover {
+    background: #e9ecef;
+}
+
+.contributor-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.contributor-name {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.contributor-stats {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.contributor-badge {
+    margin-left: auto;
+    font-size: 1.2rem;
+}
+
+/* Animations */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
     
-    likeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const postId = this.getAttribute('data-post-id');
-            const isLiked = this.classList.contains('liked');
-            
-            const endpoint = isLiked 
-                ? `/community/post/${postId}/unlike` 
-                : `/community/post/${postId}/like`;
-            
-            fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Get current like count
-                    let countElement = this.querySelector('.like-count');
-                    let likeCount = countElement ? parseInt(countElement.textContent.replace(/[()]/g, '')) : 0;
-                    
-                    if (isLiked) {
-                        // Update for unlike
-                        this.classList.remove('liked', 'btn-primary');
-                        this.classList.add('btn-outline-primary');
-                        this.querySelector('i').classList.remove('fas');
-                        this.querySelector('i').classList.add('far');
-                        this.querySelector('.like-text').textContent = 'Like';
-                        
-                        // Update count
-                        likeCount -= 1;
-                    } else {
-                        // Update for like
-                        this.classList.add('liked', 'btn-primary');
-                        this.classList.remove('btn-outline-primary');
-                        this.querySelector('i').classList.remove('far');
-                        this.querySelector('i').classList.add('fas');
-                        this.querySelector('.like-text').textContent = 'Liked';
-                        
-                        // Update count
-                        likeCount += 1;
-                    }
-                    
-                    // Update or remove count display
-                    if (likeCount > 0) {
-                        if (countElement) {
-                            countElement.textContent = `(${likeCount})`;
-                        } else {
-                            const countSpan = document.createElement('span');
-                            countSpan.className = 'like-count ms-1';
-                            countSpan.textContent = `(${likeCount})`;
-                            this.appendChild(countSpan);
-                        }
-                    } else if (countElement) {
-                        countElement.remove();
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        });
-    });
-});
-</script> 
+    .feed-title {
+        font-size: 2rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .post-card {
+        margin: 0 1rem;
+    }
+    
+    .post-content,
+    .post-header,
+    .post-actions {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .post-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .read-more-btn {
+        margin-left: 0;
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .sidebar {
+        margin-top: 2rem;
+    }
+    
+    .action-buttons {
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Community Search Section */
+.community-search {
+    padding: 60px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.search-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.search-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.search-subtitle {
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.search-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.main-search {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.search-input-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3.5rem;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    border-radius: 15px;
+    background: #f8f9fa;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), 0 8px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    background: white;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #667eea;
+    font-size: 1.1rem;
+    z-index: 1;
+}
+
+.search-clear {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.search-clear:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.search-filters {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border: 2px solid transparent;
+    border-radius: 25px;
+    background: #f8f9fa;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.trending-section {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1.5rem;
+}
+
+.trending-title {
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.trending-hashtags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.trending-tag {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.trending-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+/* AI Assistant Section */
+.ai-assistant-section {
+    margin-bottom: 1.5rem;
+}
+
+.ai-assistant-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.ai-assistant-card:not(.locked) {
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.ai-assistant-card.locked {
+    background: #f8f9fa;
+    border-color: rgba(108, 117, 125, 0.2);
+}
+
+.ai-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.ai-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.ai-icon.locked {
+    background: #6c757d;
+}
+
+.ai-info {
+    flex: 1;
+}
+
+.ai-title {
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 1rem;
+}
+
+.ai-subtitle {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.85rem;
+}
+
+.pro-badge {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.upgrade-badge {
+    background: #6c757d;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ai-chat-btn {
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.ai-chat-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.ai-upgrade-btn {
+    width: 100%;
+    padding: 0.8rem 1.5rem;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.ai-upgrade-btn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(108, 117, 125, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Search Results */
+.search-results {
+    background: white;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background: #f8f9fa;
+}
+
+.results-title {
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-dark);
+}
+
+.results-count {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.results-container {
+    padding: 1.5rem 2rem;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-bottom: 0.75rem;
+    border: 1px solid transparent;
+}
+
+.search-result-item:hover {
+    background: rgba(102, 126, 234, 0.05);
+    border-color: rgba(102, 126, 234, 0.2);
+    transform: translateX(5px);
+}
+
+.result-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.result-icon.post {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.result-icon.hashtag {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.result-icon.user {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.result-icon.goal {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.result-content {
+    flex: 1;
+}
+
+.result-title {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.result-description {
+    color: var(--text-light);
+    font-size: 0.8rem;
+    margin: 0.2rem 0 0 0;
+}
+
+.result-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-filters {
+        gap: 0.5rem;
+    }
+    
+    .filter-btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .trending-hashtags {
+        gap: 0.5rem;
+    }
+    
+    .trending-tag {
+        padding: 0.3rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .main-search {
+        padding: 1.5rem;
+    }
+    
+    .ai-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .results-header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+    
+    .results-container {
+        padding: 1rem;
+    }
+}
+</style>
+
+<!-- Include Community JavaScript and AI Chat CSS -->
+<link rel="stylesheet" href="/css/community-ai.css">
+<script src="/js/community.js"></script> 

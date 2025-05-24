@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Post = require('../models/Post');
 const Goal = require('../models/Goal');
+const db = require('../db/init');
 
 // Middleware to check if user is authenticated
 const isAuthenticated = (req, res, next) => {
@@ -13,15 +14,23 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Community home - show all posts
-router.get('/', isAuthenticated, (req, res) => {
-    Post.getAllPostsWithLikeStatus(req.session.user.id, (err, posts) => {
-        if (err) {
-            console.error('Error fetching posts:', err);
-            return res.status(500).render('error', {
-                title: 'Error - Goal Tracker',
-                error: 'Failed to load community posts. Please try again.'
+router.get('/', isAuthenticated, async (req, res) => {
+    try {
+        // Get community posts
+        const posts = await new Promise((resolve, reject) => {
+            Post.getAllPostsWithLikeStatus(req.session.user.id, (err, posts) => {
+                if (err) reject(err);
+                else resolve(posts || []);
             });
-        }
+        });
+        
+        // Get real community stats
+        const CommunityStats = require('../utils/community-stats');
+        const [topContributors, communityOverview, trendingCategories] = await Promise.all([
+            CommunityStats.getTopContributors(3),
+            CommunityStats.getCommunityOverview(),
+            CommunityStats.getTrendingCategories(5)
+        ]);
         
         // If there are posts with goal_id, fetch basic goal information
         const postsWithGoalIds = posts.filter(post => post.goal_id);
@@ -34,7 +43,7 @@ router.get('/', isAuthenticated, (req, res) => {
                     Goal.getGoalById(goalId, (err, goal) => {
                         if (err) {
                             console.error(`Error fetching goal ${goalId}:`, err);
-                            resolve(null); // Resolve with null to avoid breaking the promise chain
+                            resolve(null);
                         } else {
                             resolve({ id: goalId, data: goal });
                         }
@@ -43,52 +52,47 @@ router.get('/', isAuthenticated, (req, res) => {
             });
             
             // Execute all promises
-            Promise.all(goalPromises)
-                .then(goalResults => {
-                    // Create a map of goal data by id
-                    const goalMap = {};
-                    goalResults.forEach(result => {
-                        if (result && result.data) {
-                            goalMap[result.id] = result.data;
-                        }
-                    });
-                    
-                    // Attach goal data to posts
-                    posts.forEach(post => {
-                        if (post.goal_id && goalMap[post.goal_id]) {
-                            post.goalData = goalMap[post.goal_id];
-                            post.canViewGoal = post.user_id === req.session.user.id || goalMap[post.goal_id].user_id === req.session.user.id;
-                        }
-                    });
-                    
-                    // Render with goal data
-                    res.render('community/index', {
-                        title: 'Community - Goal Tracker',
-                        posts,
-                        success: req.query.success,
-                        error: req.query.error
-                    });
-                })
-                .catch(err => {
-                    console.error('Error processing goals:', err);
-                    // Render without goal data
-                    res.render('community/index', {
-                        title: 'Community - Goal Tracker',
-                        posts,
-                        success: req.query.success,
-                        error: req.query.error
-                    });
+            try {
+                const goalResults = await Promise.all(goalPromises);
+                
+                // Create a map of goal data by id
+                const goalMap = {};
+                goalResults.forEach(result => {
+                    if (result && result.data) {
+                        goalMap[result.id] = result.data;
+                    }
                 });
-        } else {
-            // No posts with goals, render without goal data
-            res.render('community/index', {
-                title: 'Community - Goal Tracker',
-                posts,
-                success: req.query.success,
-                error: req.query.error
-            });
+                
+                // Attach goal data to posts
+                posts.forEach(post => {
+                    if (post.goal_id && goalMap[post.goal_id]) {
+                        post.goalData = goalMap[post.goal_id];
+                        post.canViewGoal = post.user_id === req.session.user.id || goalMap[post.goal_id].user_id === req.session.user.id;
+                    }
+                });
+            } catch (goalError) {
+                console.error('Error processing goals:', goalError);
+            }
         }
-    });
+        
+        // Render with real community data
+        res.render('community/index', {
+            title: 'Community - Goal Tracker',
+            posts,
+            topContributors,
+            communityOverview,
+            trendingCategories,
+            success: req.query.success,
+            error: req.query.error
+        });
+        
+    } catch (error) {
+        console.error('Error loading community page:', error);
+        res.status(500).render('error', {
+            title: 'Error - Goal Tracker',
+            error: 'Failed to load community page. Please try again.'
+        });
+    }
 });
 
 // My Posts page
@@ -214,7 +218,7 @@ router.post('/create', isAuthenticated, (req, res) => {
     }
     
     // Create the post
-    Post.createPost(userId, title, content, goalId || null, (err, postId) => {
+    Post.createPost(userId, title, content, goalId || null, async (err, postId) => {
         if (err) {
             console.error('Error creating post:', err);
             return Goal.getGoalsByUser(req.session.user.id, (err, goals) => {
@@ -225,6 +229,19 @@ router.post('/create', isAuthenticated, (req, res) => {
                     error: 'Failed to create post. Please try again.'
                 });
             });
+        }
+        
+        // Track community post achievement
+        try {
+            const AchievementTracker = require('../utils/achievements');
+            const unlockedAchievements = await AchievementTracker.trackCommunityActivity(userId, 'post');
+            
+            if (unlockedAchievements.length > 0) {
+                console.log(`🏆 User ${userId} unlocked ${unlockedAchievements.length} achievements for community posting`);
+            }
+        } catch (achievementError) {
+            console.error('Error tracking community post achievements:', achievementError);
+            // Don't fail the post creation if achievement tracking fails
         }
         
         res.redirect('/community?success=Post+created+successfully');
@@ -299,11 +316,45 @@ router.post('/post/:id/comment', isAuthenticated, (req, res) => {
     }
     
     // Add the comment
-    Post.addComment(postId, userId, content, (err) => {
+    Post.addComment(postId, userId, content, async (err) => {
         if (err) {
             console.error('Error adding comment:', err);
             return res.redirect(`/community/post/${postId}?error=Failed+to+add+comment`);
         }
+        
+        // Track community comment achievement
+        try {
+            const AchievementTracker = require('../utils/achievements');
+            const unlockedAchievements = await AchievementTracker.trackCommunityActivity(userId, 'comment');
+            
+            if (unlockedAchievements.length > 0) {
+                console.log(`🏆 User ${userId} unlocked ${unlockedAchievements.length} achievements for community commenting`);
+            }
+        } catch (achievementError) {
+            console.error('Error tracking community comment achievements:', achievementError);
+            // Don't fail the comment if achievement tracking fails
+        }
+
+        // Get post info to create notification
+        db.get('SELECT posts.*, users.username FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id = ?', [postId], (err, postInfo) => {
+            if (!err && postInfo && postInfo.user_id !== userId) {
+                // Create notification for post author (don't notify yourself)
+                db.run(
+                    'INSERT INTO notifications (user_id, type, title, message, icon, action_url) VALUES (?, ?, ?, ?, ?, ?)',
+                    [
+                        postInfo.user_id,
+                        'comment',
+                        'New comment on your post! 💬',
+                        `${req.session.user.username} commented on your post "${postInfo.title}"`,
+                        '💬',
+                        `/community/post/${postId}`
+                    ],
+                    (err) => {
+                        if (err) console.error('Error creating comment notification:', err);
+                    }
+                );
+            }
+        });
         
         res.redirect(`/community/post/${postId}?success=Comment+added`);
     });
@@ -314,17 +365,75 @@ router.post('/post/:id/like', isAuthenticated, (req, res) => {
     const postId = req.params.id;
     const userId = req.session.user.id;
     
-    Post.likePost(postId, userId, (err) => {
+    // Check if post is already liked
+    Post.checkUserLike(postId, userId, (err, isLiked) => {
         if (err) {
-            console.error('Error liking post:', err);
-            return res.status(500).json({ success: false, message: 'Failed to like post' });
+            console.error('Error checking like status:', err);
+            return res.status(500).json({ success: false, message: 'Failed to check like status' });
         }
         
-        res.json({ success: true });
+        if (isLiked) {
+            // Unlike the post
+            Post.unlikePost(postId, userId, (err) => {
+                if (err) {
+                    console.error('Error unliking post:', err);
+                    return res.status(500).json({ success: false, message: 'Failed to unlike post' });
+                }
+                
+                // Get updated like count
+                db.get('SELECT COUNT(*) as count FROM post_likes WHERE post_id = ?', [postId], (err, result) => {
+                    if (err) {
+                        console.error('Error getting like count:', err);
+                        return res.json({ success: true, liked: false, likeCount: 0 });
+                    }
+                    
+                    res.json({ success: true, liked: false, likeCount: result.count });
+                });
+            });
+        } else {
+            // Like the post
+            Post.likePost(postId, userId, (err) => {
+                if (err) {
+                    console.error('Error liking post:', err);
+                    return res.status(500).json({ success: false, message: 'Failed to like post' });
+                }
+                
+                // Get post info to create notification
+                db.get('SELECT posts.*, users.username FROM posts JOIN users ON posts.user_id = users.id WHERE posts.id = ?', [postId], (err, postInfo) => {
+                    if (!err && postInfo && postInfo.user_id !== userId) {
+                        // Create notification for post author (don't notify yourself)
+                        db.run(
+                            'INSERT INTO notifications (user_id, type, title, message, icon, action_url) VALUES (?, ?, ?, ?, ?, ?)',
+                            [
+                                postInfo.user_id,
+                                'like',
+                                'Someone liked your post! ❤️',
+                                `${req.session.user.username} liked your post "${postInfo.title}"`,
+                                '❤️',
+                                `/community/post/${postId}`
+                            ],
+                            (err) => {
+                                if (err) console.error('Error creating like notification:', err);
+                            }
+                        );
+                    }
+                    
+                    // Get updated like count
+                    db.get('SELECT COUNT(*) as count FROM post_likes WHERE post_id = ?', [postId], (err, result) => {
+                        if (err) {
+                            console.error('Error getting like count:', err);
+                            return res.json({ success: true, liked: true, likeCount: 1 });
+                        }
+                        
+                        res.json({ success: true, liked: true, likeCount: result.count });
+                    });
+                });
+            });
+        }
     });
 });
 
-// Unlike a post
+// Unlike a post (keeping for backward compatibility)
 router.post('/post/:id/unlike', isAuthenticated, (req, res) => {
     const postId = req.params.id;
     const userId = req.session.user.id;
@@ -335,7 +444,15 @@ router.post('/post/:id/unlike', isAuthenticated, (req, res) => {
             return res.status(500).json({ success: false, message: 'Failed to unlike post' });
         }
         
-        res.json({ success: true });
+        // Get updated like count
+        db.get('SELECT COUNT(*) as count FROM post_likes WHERE post_id = ?', [postId], (err, result) => {
+            if (err) {
+                console.error('Error getting like count:', err);
+                return res.json({ success: true, liked: false, likeCount: 0 });
+            }
+            
+            res.json({ success: true, liked: false, likeCount: result.count });
+        });
     });
 });
 

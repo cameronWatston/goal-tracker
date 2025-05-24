@@ -5,12 +5,36 @@ const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
 const dotenv = require('dotenv');
 const { loadEnvVariables } = require('./utils/envLoader');
-const db = require('./db/init');
 const helmet = require('helmet');
+const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
 
 // Load environment variables
 console.log('====== Starting Goal Tracker Application ======');
 loadEnvVariables();
+
+// Check if database exists and conditionally initialize
+const dbPath = path.join(__dirname, 'db', 'database.sqlite');
+const dbExists = fs.existsSync(dbPath);
+
+if (!dbExists) {
+    console.log('Database does not exist, initializing for first time...');
+    // Initialize database for first time
+    require('./db/init');
+} else {
+    console.log('Database exists, skipping recreation (prevents data loss on deploys)');
+    // Just verify connection without recreating tables
+    const testDb = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+            console.error('Error connecting to existing database:', err);
+            console.log('Attempting to reinitialize database...');
+            require('./db/init');
+        } else {
+            console.log('Successfully connected to existing SQLite database');
+        }
+        testDb.close();
+    });
+}
 
 const app = express();
 
@@ -137,6 +161,7 @@ const subscriptionRoutes = require('./routes/subscription');
 const communityRoutes = require('./routes/community');
 const adminRoutes = require('./routes/admin');
 const aiRoutes = require('./routes/ai');
+const apiRoutes = require('./routes/api');
 
 app.use('/auth', authRoutes);
 app.use('/api/goals', goalRoutes);
@@ -145,6 +170,7 @@ app.use('/subscription', subscriptionRoutes); // Add subscription routes
 app.use('/community', communityRoutes); // Add community routes
 app.use('/admin', adminRoutes); // Add admin routes
 app.use('/api/ai', aiRoutes); // Add AI feature routes
+app.use('/api', apiRoutes); // Add API routes for search and chat
 
 // Add profile route
 app.get('/profile', (req, res) => {
@@ -152,6 +178,31 @@ app.get('/profile', (req, res) => {
         return res.redirect('/login');
     }
     res.redirect('/auth/profile');
+});
+
+// Add notifications route
+app.get('/notifications', isAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    const db = require('./db/init');
+    
+    db.all(
+        'SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC',
+        [userId],
+        (err, notifications) => {
+            if (err) {
+                console.error('Error fetching notifications:', err);
+                return res.status(500).render('error', {
+                    title: 'Error - Goal Tracker',
+                    error: 'Failed to load notifications. Please try again.'
+                });
+            }
+            
+            res.render('notifications', {
+                title: 'Notifications - Goal Tracker',
+                notifications: notifications || []
+            });
+        }
+    );
 });
 
 // Error handling middleware

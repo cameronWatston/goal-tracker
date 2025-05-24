@@ -576,36 +576,42 @@ async function processNaturalLanguageUpdate(userInput, goalDetails) {
 /**
  * Generates milestone suggestions for a goal - direct ChatGPT integration
  */
-async function generateMilestones(title, description, targetDate, category, subscriptionPlan) {
+async function generateMilestones(title, description, startDate, targetDate, category, subscriptionPlan) {
   // Simple prompt to pass user's goal directly to ChatGPT
   const prompt = `Create a detailed plan with milestones for: ${title} ${description ? '- ' + description : ''}
   
-  The user wants to learn/accomplish this goal by ${targetDate}.
+  The user wants to start working on this goal from ${startDate} and accomplish it by ${targetDate}.
   
-  Please provide a complete breakdown of exactly what steps they should take to achieve this goal, with specific milestones.
+  Please provide a complete breakdown of exactly what steps they should take to achieve this goal, with specific milestones distributed evenly between the start date (${startDate}) and target date (${targetDate}).
   
   Format your response as a JSON array of milestone objects with these properties:
   - title: The milestone name
   - description: Detailed instructions for this milestone
-  - targetDate: When this milestone should be completed by (in YYYY-MM-DD format)
+  - targetDate: When this milestone should be completed by (in YYYY-MM-DD format, between ${startDate} and ${targetDate})
   - metrics: An array of metrics to track (each with name, target, and unit properties)
   
-  IMPORTANT: Your response must be valid JSON only. Do not include markdown formatting or code blocks.
+  IMPORTANT: 
+  - Your response must be valid JSON only. Do not include markdown formatting or code blocks.
+  - Distribute milestone dates evenly between ${startDate} and ${targetDate}
+  - Create 3-6 milestones depending on the timeframe
   
   Be specific to the exact goal mentioned. For example, if they want to learn guitar, include actual guitar techniques, practice routines, etc.`;
 
-  // Default milestones in case of error
+  // Default milestones in case of error - now properly using start and end dates
+  const startDateObj = new Date(startDate);
+  const targetDateObj = new Date(targetDate);
+  
   const defaultMilestones = [
     {
       title: "Get Started",
       description: `Start your journey to ${title}`,
-      targetDate: getDateBetween(new Date(), new Date(targetDate), 0.2),
+      targetDate: getDateBetween(startDateObj, targetDateObj, 0.2),
       metrics: [{ name: "Progress", target: 1, unit: "completion" }]
     },
     {
       title: "Make Progress",
       description: `Continue working on ${title}`,
-      targetDate: getDateBetween(new Date(), new Date(targetDate), 0.5),
+      targetDate: getDateBetween(startDateObj, targetDateObj, 0.5),
       metrics: [{ name: "Progress", target: 50, unit: "percent" }]
     },
     {

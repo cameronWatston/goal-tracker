@@ -1,456 +1,483 @@
-<!-- Subscription Page -->
-<div class="container-fluid">
-    <!-- Mock Mode Notice - Only shown in mock mode -->
+<!-- Enhanced Subscription Page with Modern Design & Animations -->
+<div class="subscription-page">
+    <!-- Mock Mode Notice -->
     <% if (typeof useMockMode !== 'undefined' && useMockMode) { %>
-    <div class="row mb-4">
-        <div class="col-12">
+    <div class="mock-mode-notice">
+        <div class="container">
             <div class="alert alert-warning">
                 <i class="fas fa-info-circle me-2"></i>
-                <strong>Test Mode:</strong> The application is running in mock mode. No real charges will be processed.
-                Subscriptions will be simulated for testing purposes.
+                <strong>Test Mode:</strong> No real charges will be processed. Subscriptions will be simulated.
             </div>
         </div>
     </div>
     <% } %>
 
-    <!-- Header Section -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 bg-gradient" style="background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);">
-                <div class="card-body p-5 text-center">
-                    <h1 class="display-5 fw-bold mb-3">Supercharge Your Goals with AI</h1>
-                    <p class="lead mb-0 mx-auto" style="max-width: 700px;">Unlock our AI-powered goal tracking system to achieve your dreams faster and smarter than ever before.</p>
+    <!-- Animated Hero Section -->
+    <section class="hero-section">
+        <div class="hero-background">
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row align-items-center min-vh-80">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <div class="hero-badge animate-slide-up">
+                            <i class="fas fa-sparkles me-2"></i>
+                            AI-Powered Goal Achievement
+                        </div>
+                        <h1 class="hero-title animate-slide-up">
+                            Turn Your Dreams Into 
+                            <span class="text-gradient">Reality</span>
+                            <br>With AI Precision
+                        </h1>
+                        <p class="hero-description animate-slide-up">
+                            Join thousands who've achieved their biggest goals using our revolutionary AI coach. 
+                            Get personalized strategies, real-time insights, and the motivation you need to succeed.
+                        </p>
+                        <div class="hero-stats animate-slide-up">
+                            <div class="stat-item">
+                                <div class="stat-number">94%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">10k+</div>
+                                <div class="stat-label">Goals Achieved</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">4.9★</div>
+                                <div class="stat-label">User Rating</div>
+                            </div>
+                        </div>
+                        <div class="hero-cta animate-slide-up">
+                            <a href="#pricing" class="btn btn-primary btn-hero">
+                                Start Your Transformation
+                                <i class="fas fa-arrow-right ms-2"></i>
+                            </a>
+                            <div class="social-proof">
+                                <div class="avatar-stack">
+                                    <div class="avatar avatar-1"></div>
+                                    <div class="avatar avatar-2"></div>
+                                    <div class="avatar avatar-3"></div>
+                                    <div class="avatar avatar-4"></div>
+                                    <div class="avatar-count">+1,247</div>
+                                </div>
+                                <span class="social-text">people achieved their goals this week</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-visual animate-fade-in">
+                        <div class="demo-dashboard">
+                            <div class="dashboard-header">
+                                <div class="dashboard-dots">
+                                    <span class="dot dot-red"></span>
+                                    <span class="dot dot-yellow"></span>
+                                    <span class="dot dot-green"></span>
+                                </div>
+                                <div class="dashboard-title">AI Goal Coach</div>
+                            </div>
+                            <div class="dashboard-content">
+                                <div class="progress-ring">
+                                    <svg class="progress-svg" viewBox="0 0 120 120">
+                                        <circle class="progress-circle-bg" cx="60" cy="60" r="50"/>
+                                        <circle class="progress-circle" cx="60" cy="60" r="50"/>
+                                    </svg>
+                                    <div class="progress-content">
+                                        <div class="progress-percentage">87%</div>
+                                        <div class="progress-label">Goal Complete</div>
+                                    </div>
+                                </div>
+                                <div class="goal-cards">
+                                    <div class="goal-card goal-card-1">
+                                        <div class="goal-icon">🏃‍♂️</div>
+                                        <div class="goal-text">Run Marathon</div>
+                                        <div class="goal-progress">85% Complete</div>
+                                    </div>
+                                    <div class="goal-card goal-card-2">
+                                        <div class="goal-icon">🎸</div>
+                                        <div class="goal-text">Learn Guitar</div>
+                                        <div class="goal-progress">72% Complete</div>
+                                    </div>
+                                </div>
+                                <div class="ai-message">
+                                    <div class="ai-avatar">🤖</div>
+                                    <div class="ai-text">Great progress! You're 2 weeks ahead of schedule.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Subscription Plans -->
-    <div class="row justify-content-center subscription-plans">
-        <!-- Free Plan -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-light py-3">
-                    <h4 class="mb-0 text-center">Free</h4>
-                </div>
-                <div class="card-body d-flex flex-column p-4">
-                    <div class="text-center mb-4">
-                        <span class="display-4 fw-bold">£0</span>
-                        <span class="text-muted">/forever</span>
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Choose Your Success Plan</h2>
+                <p class="section-description">Start free, upgrade when you're ready to unlock your full potential</p>
+            </div>
+            
+            <div class="pricing-cards">
+                <!-- Free Plan -->
+                <div class="pricing-card pricing-free">
+                    <div class="pricing-header">
+                        <h3 class="plan-name">Free Starter</h3>
+                        <div class="plan-price">
+                            <span class="price-amount">£0</span>
+                            <span class="price-period">/forever</span>
+                        </div>
+                        <p class="plan-description">Perfect for getting started</p>
                     </div>
-                    <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
+                    <div class="pricing-features">
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
                             <span>Track 1 goal at a time</span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
                             <span>Basic AI milestone generation</span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center text-muted py-3">
-                            <i class="fas fa-times text-danger me-3"></i>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span>Community access</span>
+                        </div>
+                        <div class="feature-item not-included">
+                            <i class="fas fa-times"></i>
                             <span>AI Goal Coach chatbot</span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center text-muted py-3">
-                            <i class="fas fa-times text-danger me-3"></i>
+                        </div>
+                        <div class="feature-item not-included">
+                            <i class="fas fa-times"></i>
                             <span>Unlimited goals</span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center text-muted py-3">
-                            <i class="fas fa-times text-danger me-3"></i>
-                            <span>Advanced analytics dashboard</span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center text-muted py-3">
-                            <i class="fas fa-times text-danger me-3"></i>
-                            <span>AI-powered progress insights</span>
-                        </li>
-                    </ul>
-                    <div class="mt-auto">
-                        <div class="d-grid">
-                            <% if (!user.subscription_plan || user.subscription_plan === 'free') { %>
-                                <button class="btn btn-outline-secondary py-3" disabled>Current Plan</button>
-                            <% } else { %>
-                                <button class="btn btn-outline-secondary py-3 subscribe-btn" data-plan="free">Downgrade to Free</button>
-                            <% } %>
+                        </div>
+                        <div class="feature-item not-included">
+                            <i class="fas fa-times"></i>
+                            <span>Advanced analytics</span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Monthly Plan -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-primary position-relative" style="overflow: visible;">
-                <div class="popular-badge position-absolute" style="top: -15px; right: 15px; z-index: 10;">
-                    <div class="badge bg-warning px-3 py-2 rounded-pill fw-bold">
-                        <i class="fas fa-star me-1"></i> Popular Choice
+                    <div class="pricing-cta">
+                        <% if (!user.subscription_plan || user.subscription_plan === 'free') { %>
+                            <button class="btn btn-plan current-plan" disabled>Current Plan</button>
+                        <% } else { %>
+                            <button class="btn btn-plan subscribe-btn" data-plan="free">Downgrade to Free</button>
+                        <% } %>
                     </div>
                 </div>
-                <div class="card-header bg-primary text-white py-3">
-                    <h4 class="mb-0 text-center">Monthly</h4>
-                </div>
-                <div class="card-body d-flex flex-column p-4">
-                    <div class="text-center mb-4">
-                        <span class="display-4 fw-bold">£12.99</span>
-                        <span class="text-muted">/month</span>
+
+                <!-- Monthly Plan -->
+                <div class="pricing-card pricing-pro popular">
+                    <div class="popular-badge">
+                        <i class="fas fa-star"></i>
+                        Most Popular
                     </div>
-                    <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
+                    <div class="pricing-header">
+                        <h3 class="plan-name">Pro Monthly</h3>
+                        <div class="plan-price">
+                            <span class="price-amount">£12.99</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <p class="plan-description">Unlock your potential</p>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
                             <span><strong>Unlimited</strong> goals</span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>AI SMART Goal Generator</strong></span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>AI Action Plan Generator</strong></span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>AI Motivational Nudges</strong></span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>Goal Completion Forecasting</strong></span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span>PDF exports & social sharing</span>
-                        </li>
-                    </ul>
-                    <div class="mt-auto">
-                        <div class="d-grid">
-                            <% if (user.subscription_plan === 'monthly') { %>
-                                <button class="btn btn-outline-primary py-3" disabled>Current Plan</button>
-                            <% } else { %>
-                                <button class="btn btn-primary py-3 subscribe-btn" data-plan="monthly">Subscribe Now</button>
-                            <% } %>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>AI Goal Coach</strong> chatbot</span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>SMART Goal Generator</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>AI Action Plans</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>Success Forecasting</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span>PDF exports & sharing</span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Annual Plan -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow border-success position-relative">
-                <div class="popular-badge position-absolute" style="top: -12px; right: 20px; z-index: 10;">
-                    <div class="badge bg-danger px-3 py-2 rounded-pill fw-bold">
-                        <i class="fas fa-tags me-1"></i> Save 23%
+                    <div class="pricing-cta">
+                        <% if (user.subscription_plan === 'monthly') { %>
+                            <button class="btn btn-plan current-plan" disabled>Current Plan</button>
+                        <% } else { %>
+                            <button class="btn btn-plan subscribe-btn" data-plan="monthly">Start Free Trial</button>
+                        <% } %>
+                        <div class="trial-notice">14-day free trial • No commitment</div>
                     </div>
                 </div>
-                <div class="card-header bg-success text-white py-3">
-                    <h4 class="mb-0 text-center">Annual</h4>
-                </div>
-                <div class="card-body d-flex flex-column p-4">
-                    <div class="text-center mb-4">
-                        <div class="position-relative">
-                            <span class="text-decoration-line-through text-muted me-2">£155.88</span>
-                            <span class="display-4 fw-bold">£119.19</span>
-                        </div>
-                        <span class="text-muted">/year</span>
-                        <div class="small text-success fw-bold mt-1">Save £36.69 per year!</div>
+
+                <!-- Annual Plan -->
+                <div class="pricing-card pricing-premium">
+                    <div class="savings-badge">
+                        <i class="fas fa-tags"></i>
+                        Save £36.69/year
                     </div>
-                    <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>Everything in Monthly</strong> plan</span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>AI Progress Insights & Reports</strong></span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>Natural Language Progress Logging</strong></span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span><strong>Advanced AI Analytics Dashboard</strong></span>
-                        </li>
-                        <li class="list-group-item border-0 d-flex align-items-center py-3">
-                            <i class="fas fa-check text-success me-3"></i>
-                            <span>Annual progress report & insights</span>
-                        </li>
-                    </ul>
-                    <div class="mt-auto">
-                        <div class="d-grid">
-                            <% if (user.subscription_plan === 'annual') { %>
-                                <button class="btn btn-outline-success py-3" disabled>Current Plan</button>
-                            <% } else { %>
-                                <button class="btn btn-success py-3 subscribe-btn" data-plan="annual">Subscribe Now</button>
-                            <% } %>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- AI Assistant Demo Section -->
-    <div class="row my-5">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 overflow-hidden">
-                <div class="row g-0">
-                    <div class="col-md-6 p-5 d-flex flex-column justify-content-center">
-                        <h2 class="mb-3">Meet Your AI Goal Coach</h2>
-                        <p class="lead mb-4">Our AI-powered Goal Coach adapts to your personal style and helps you overcome obstacles, stay motivated, and achieve breakthrough results.</p>
-                        <ul class="list-unstyled mb-4">
-                            <li class="mb-2"><i class="fas fa-robot text-primary me-2"></i> 24/7 personalized coaching</li>
-                            <li class="mb-2"><i class="fas fa-brain text-primary me-2"></i> Smart goal refinement suggestions</li>
-                            <li class="mb-2"><i class="fas fa-chart-line text-primary me-2"></i> Progress analysis and insights</li>
-                            <li><i class="fas fa-trophy text-primary me-2"></i> Achievement celebration and motivation</li>
-                        </ul>
-                        <div class="mt-2">
-                            <button class="btn btn-primary" disabled>Available with Premium Plans</button>
-                        </div>
-                    </div>
-                    <div class="col-md-6 bg-light">
-                        <div class="p-4" style="background-color: #f8f9fa; height: 100%;">
-                            <div class="chat-demo p-3 bg-white rounded shadow-sm" style="height: 350px; overflow-y: auto;">
-                                <div class="d-flex mb-3">
-                                    <div class="flex-shrink-0">
-                                        <div class="avatar bg-primary text-white rounded-circle p-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-robot"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3 p-3 rounded" style="background-color: #e9ecef;">
-                                        <p class="mb-0">Hi there! I'm your AI Goal Coach. What goal are you working on today?</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-end mb-3">
-                                    <div class="flex-grow-1 me-3 p-3 rounded text-white" style="background-color: #3b82f6; max-width: 80%;">
-                                        <p class="mb-0">I want to learn Spanish in 6 months but I'm struggling to stay consistent.</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <div class="avatar bg-info text-white rounded-circle p-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex mb-3">
-                                    <div class="flex-shrink-0">
-                                        <div class="avatar bg-primary text-white rounded-circle p-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-robot"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3 p-3 rounded" style="background-color: #e9ecef;">
-                                        <p class="mb-0">That's a great goal! Based on your profile, I recommend breaking this down into daily 15-minute sessions. I've analyzed your schedule and noticed you have free time in the mornings.</p>
-                                        <p class="mb-0 mt-2">Would you like me to create a personalized learning plan with specific milestones?</p>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-end mb-3">
-                                    <div class="flex-grow-1 me-3 p-3 rounded text-white" style="background-color: #3b82f6; max-width: 80%;">
-                                        <p class="mb-0">Yes, that would be perfect!</p>
-                                    </div>
-                                    <div class="flex-shrink-0">
-                                        <div class="avatar bg-info text-white rounded-circle p-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="pricing-header">
+                        <h3 class="plan-name">Pro Annual</h3>
+                        <div class="plan-price">
+                            <div class="price-comparison">
+                                <span class="price-original">£155.88</span>
+                                <span class="price-amount">£119.19</span>
                             </div>
+                            <span class="price-period">/year</span>
                         </div>
+                        <p class="plan-description">Maximum value & features</p>
+                    </div>
+                    <div class="pricing-features">
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>Everything in Monthly</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>AI Progress Reports</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>Natural Language Logging</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>Advanced Analytics</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span><strong>Annual Report</strong></span>
+                        </div>
+                        <div class="feature-item included">
+                            <i class="fas fa-check"></i>
+                            <span>Priority support</span>
+                        </div>
+                    </div>
+                    <div class="pricing-cta">
+                        <% if (user.subscription_plan === 'annual') { %>
+                            <button class="btn btn-plan current-plan" disabled>Current Plan</button>
+                        <% } else { %>
+                            <button class="btn btn-plan subscribe-btn" data-plan="annual">Get Best Value</button>
+                        <% } %>
+                        <div class="trial-notice">14-day free trial • No commitment</div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- Analytics Demo Section -->
-    <div class="row mb-5">
-        <div class="col-12 mb-4 text-center">
-            <h2>Advanced AI Analytics</h2>
-            <p class="lead">Get deep insights into your goal progress with our premium AI analytics</p>
-        </div>
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body p-4">
-                    <h4 class="mb-3"><i class="fas fa-chart-pie text-primary me-2"></i> Smart Progress Analysis</h4>
-                    <p>Our AI analyzes your progress patterns to identify what works best for you, predicting future success rates and suggesting optimization strategies.</p>
-                    <div class="text-center mt-4">
-                        <img src="https://via.placeholder.com/400x200?text=Progress+Analytics+Dashboard" class="img-fluid rounded shadow-sm" alt="Analytics Dashboard">
+    </section>
+
+    <!-- Success Stories -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2 class="section-title">Real People, Real Results</h2>
+                <p class="section-description">Join thousands who've transformed their lives with AI-powered goal achievement</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <blockquote class="testimonial-quote">
+                        "I've tried every goal-setting app out there. This AI coach is different – it actually understands me and adapts to my style. I've achieved more in 3 months than in the past 2 years."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <div class="avatar-placeholder">SJ</div>
+                        </div>
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Entrepreneur • Lost 30lbs, Launched 2 businesses</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-achievement">
+                        <span class="achievement-badge">🏆 3 Major Goals Completed</span>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card featured">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <blockquote class="testimonial-quote">
+                        "The AI predicted my motivation dips and had perfect suggestions ready. It's like having a mind reader as your personal coach. Game-changing technology."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <div class="avatar-placeholder">MC</div>
+                        </div>
+                        <div class="author-info">
+                            <h4>Michael Chen</h4>
+                            <p>Software Engineer • Learned 3 languages, Ran marathon</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-achievement">
+                        <span class="achievement-badge">🚀 127% Goal Success Rate</span>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <blockquote class="testimonial-quote">
+                        "Finally found something that works! The AI breaks everything down so I never feel overwhelmed. My friends are asking what changed – it's this app."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">
+                            <div class="avatar-placeholder">ER</div>
+                        </div>
+                        <div class="author-info">
+                            <h4>Emily Rodriguez</h4>
+                            <p>Teacher • Wrote a book, Started side business</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-achievement">
+                        <span class="achievement-badge">📚 2 Life-Changing Goals</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body p-4">
-                    <h4 class="mb-3"><i class="fas fa-brain text-primary me-2"></i> AI Habit Formation</h4>
-                    <p>Our machine learning algorithms identify your habit formation patterns and create personalized strategies to make your goal-oriented habits stick.</p>
-                    <div class="text-center mt-4">
-                        <img src="https://via.placeholder.com/400x200?text=Habit+Formation+Analysis" class="img-fluid rounded shadow-sm" alt="Habit Formation">
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta-section">
+        <div class="container">
+            <div class="cta-content text-center">
+                <h2 class="cta-title">Ready to Transform Your Life?</h2>
+                <p class="cta-description">
+                    Join thousands who've achieved their biggest dreams with AI-powered guidance. 
+                    Your future self is waiting.
+                </p>
+                <div class="cta-buttons">
+                    <a href="#pricing" class="btn btn-primary btn-lg">
+                        Start Your Free Trial
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                    <div class="cta-guarantee">
+                        <i class="fas fa-shield-alt"></i>
+                        14-day money-back guarantee
+                    </div>
+                </div>
+                <div class="cta-features">
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>No credit card required</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Cancel anytime</span>
+                    </div>
+                    <div class="cta-feature">
+                        <i class="fas fa-check"></i>
+                        <span>Instant access</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-    <!-- FAQ Section -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-light py-3">
-                    <h3 class="mb-0"><i class="fas fa-question-circle me-2"></i> Frequently Asked Questions</h3>
-                </div>
-                <div class="card-body p-4">
-                    <div class="accordion" id="subscriptionFAQ">
-                        <div class="accordion-item border-0 mb-3 shadow-sm">
-                            <h2 class="accordion-header" id="faqOne">
-                                <button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    <strong>How does billing work?</strong>
-                                </button>
-                            </h2>
-                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="faqOne">
-                                <div class="accordion-body">
-                                    Your subscription will be billed immediately, and then at the beginning of each billing period. You can cancel at any time.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item border-0 mb-3 shadow-sm">
-                            <h2 class="accordion-header" id="faqTwo">
-                                <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    <strong>What payment methods do you accept?</strong>
-                                </button>
-                            </h2>
-                            <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="faqTwo">
-                                <div class="accordion-body">
-                                    We accept all major credit cards (Visa, Mastercard, American Express) and PayPal.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item border-0 mb-3 shadow-sm">
-                            <h2 class="accordion-header" id="faqThree">
-                                <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    <strong>Can I change plans later?</strong>
-                                </button>
-                            </h2>
-                            <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="faqThree">
-                                <div class="accordion-body">
-                                    Yes! You can upgrade, downgrade, or cancel your subscription at any time from your account settings.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="accordion-item border-0 shadow-sm">
-                            <h2 class="accordion-header" id="faqFour">
-                                <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                                    <strong>Is there a refund policy?</strong>
-                                </button>
-                            </h2>
-                            <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="faqFour">
-                                <div class="accordion-body">
-                                    We offer a 14-day money-back guarantee if you're not satisfied with our premium service. Contact our support team for assistance.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Testimonials Section -->
-    <div class="row mt-5 mb-4">
-        <div class="col-12 text-center">
-            <h2 class="mb-4">What Our Subscribers Say</h2>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body p-4">
-                    <div class="d-flex mb-3">
-                        <div class="text-warning">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="card-text mb-4">"The AI Goal Coach has been a game-changer! It's like having a personal coach available 24/7. I've completed 3 major goals in just 2 months."</p>
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-user-circle fa-2x text-primary"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">Sarah Johnson</h6>
-                            <small class="text-muted">Monthly Subscriber</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body p-4">
-                    <div class="d-flex mb-3">
-                        <div class="text-warning">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                        </div>
-                    </div>
-                    <p class="card-text mb-4">"The annual plan's AI analytics completely transformed my approach to goal setting. The habit formation insights are incredibly accurate."</p>
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-user-circle fa-2x text-primary"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">Michael Chen</h6>
-                            <small class="text-muted">Annual Subscriber</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm border-0">
-                <div class="card-body p-4">
-                    <div class="d-flex mb-3">
-                        <div class="text-warning">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                    </div>
-                    <p class="card-text mb-4">"The chatbot feels like it really understands me. It's suggested adjustments to my goals that I hadn't even considered but were exactly what I needed."</p>
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <i class="fas fa-user-circle fa-2x text-primary"></i>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="mb-0">Emily Rodriguez</h6>
-                            <small class="text-muted">Monthly Subscriber</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 </div>
 
-<!-- Add Stripe.js before the closing body tag -->
+<!-- Scripts -->
 <script src="https://js.stripe.com/v3/"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Stripe with error handling
+    // Initialize Stripe
     let stripe;
     try {
         stripe = Stripe('<%= stripePublishableKey %>');
     } catch (error) {
         console.error('Error initializing Stripe:', error);
-        // If Stripe fails to initialize, we'll handle it gracefully in the button click handler
     }
     
-    // Handle subscription button clicks
-    const subscribeButtons = document.querySelectorAll('.subscribe-btn');
+    // Animated counters
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number');
+        counters.forEach(counter => {
+            const target = counter.textContent;
+            const isPercentage = target.includes('%');
+            const isRating = target.includes('★');
+            const isNumber = target.includes('k+');
+            
+            let endValue = 0;
+            if (isPercentage) endValue = parseInt(target);
+            else if (isRating) endValue = 4.9;
+            else if (isNumber) endValue = 10;
+            
+            animateValue(counter, 0, endValue, 2000, isPercentage, isRating, isNumber);
+        });
+    }
     
+    function animateValue(element, start, end, duration, isPercentage, isRating, isNumber) {
+        const startTime = Date.now();
+        
+        function update() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const current = start + (end - start) * easeOutQuart(progress);
+            
+            if (isPercentage) {
+                element.textContent = Math.round(current) + '%';
+            } else if (isRating) {
+                element.textContent = current.toFixed(1) + '★';
+            } else if (isNumber) {
+                element.textContent = Math.round(current) + 'k+';
+            }
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+        
+        update();
+    }
+    
+    function easeOutQuart(t) {
+        return 1 - (1 - t) ** 4;
+    }
+    
+    // Progress ring animation
+    function animateProgressRing() {
+        const circle = document.querySelector('.progress-circle');
+        if (circle) {
+            const circumference = 2 * Math.PI * 50;
+            circle.style.strokeDasharray = circumference;
+            circle.style.strokeDashoffset = circumference;
+            
+            setTimeout(() => {
+                const progress = 87;
+                const offset = circumference - (progress / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+            }, 1000);
+        }
+    }
+    
+    // Subscription button handlers
+    const subscribeButtons = document.querySelectorAll('.subscribe-btn');
     subscribeButtons.forEach(button => {
         button.addEventListener('click', function() {
             const plan = this.getAttribute('data-plan');
@@ -460,87 +487,893 @@ document.addEventListener('DOMContentLoaded', function() {
             this.disabled = true;
             this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
             
-            // Call our server to create a Stripe checkout session
+            // Create checkout session
             fetch('/subscription/create-checkout-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    plan: plan
-                })
+                body: JSON.stringify({ plan: plan })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
                     alert('Error: ' + data.error);
-                    // Reset button
                     this.disabled = false;
                     this.innerHTML = originalText;
                     return;
                 }
                 
-                // Handle the free plan downgrade which returns a direct URL
                 if (data.success && data.url) {
                     window.location.href = data.url;
                     return;
                 }
                 
-                // Redirect to Stripe Checkout
                 if (data.url) {
                     window.location.href = data.url;
                 } else if (data.id && stripe) {
-                    // If we get a session ID but no URL, use Stripe.js to redirect
                     stripe.redirectToCheckout({
                         sessionId: data.id
                     }).then(function (result) {
                         if (result.error) {
-                            // If `redirectToCheckout` fails due to a browser or network
-                            // error, display the localized error message to your customer.
                             alert(result.error.message);
-                            
-                            // Reset button
                             button.disabled = false;
                             button.innerHTML = originalText;
                         }
                     });
                 } else {
                     alert('Something went wrong. Please try again.');
-                    // Reset button
                     this.disabled = false;
                     this.innerHTML = originalText;
                 }
             })
             .catch(error => {
-                console.error('Error creating checkout session:', error);
+                console.error('Error:', error);
                 alert('There was an error processing your request. Please try again.');
-                
-                // Reset button
                 this.disabled = false;
                 this.innerHTML = originalText;
             });
         });
     });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Initialize animations
+    setTimeout(animateCounters, 500);
+    setTimeout(animateProgressRing, 1000);
 });
 </script>
 
 <style>
-/* Subscription card styling */
-.subscription-plans .col-md-4 {
+/* Enhanced Subscription Page Styles */
+.subscription-page {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: #1a202c;
+    overflow-x: hidden;
+}
+
+/* Mock Mode Notice */
+.mock-mode-notice {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.shape {
+    position: absolute;
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    top: 10%;
+    left: 10%;
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    top: 20%;
+    right: 15%;
+    width: 60px;
+    height: 60px;
+    background: white;
+    transform: rotate(45deg);
+    animation-delay: 1s;
+}
+
+.shape-3 {
+    bottom: 20%;
+    left: 20%;
+    width: 100px;
+    height: 100px;
+    background: white;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    animation-delay: 2s;
+}
+
+.shape-4 {
+    bottom: 30%;
+    right: 10%;
+    width: 70px;
+    height: 70px;
+    background: white;
+    border-radius: 20px;
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.min-vh-80 {
+    min-height: 80vh;
+}
+
+.hero-content {
+    color: white;
+    z-index: 2;
+    position: relative;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-description {
+    font-size: 1.25rem;
     margin-bottom: 2rem;
-    padding-top: 1rem; /* Add padding to accommodate badges */
+    opacity: 0.9;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    display: block;
+    color: #ffd700;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.hero-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.btn-hero {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    align-self: flex-start;
+}
+
+.btn-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    color: white;
+}
+
+.social-proof {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.avatar-stack {
+    display: flex;
+    align-items: center;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+    margin-right: -10px;
+    background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+}
+
+.avatar-1 { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+.avatar-2 { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+.avatar-3 { background: linear-gradient(135deg, #667eea, #764ba2); }
+.avatar-4 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+
+.avatar-count {
+    background: #ff6b6b;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.social-text {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Hero Visual */
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.demo-dashboard {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 100%;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.dashboard-dots {
+    display: flex;
+    gap: 5px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27ca3f; }
+
+.dashboard-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.progress-ring {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.progress-svg {
+    width: 120px;
+    height: 120px;
+    transform: rotate(-90deg);
+}
+
+.progress-circle-bg {
+    fill: none;
+    stroke: #f0f0f0;
+    stroke-width: 8;
+}
+
+.progress-circle {
+    fill: none;
+    stroke: #667eea;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.5s ease;
+}
+
+.progress-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.progress-percentage {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.progress-label {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.goal-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.goal-card {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.goal-card:hover {
+    transform: translateX(5px);
+    background: #e9ecef;
+}
+
+.goal-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.goal-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+.goal-progress {
+    font-size: 0.8rem;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.ai-message {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.9rem;
+}
+
+.ai-avatar {
+    font-size: 1.2rem;
+    margin-right: 0.75rem;
+}
+
+/* Animations */
+.animate-slide-up {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideUp 0.8s ease forwards;
+}
+
+.animate-slide-up:nth-child(2) { animation-delay: 0.2s; }
+.animate-slide-up:nth-child(3) { animation-delay: 0.4s; }
+.animate-slide-up:nth-child(4) { animation-delay: 0.6s; }
+
+.animate-fade-in {
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 0.5s;
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Pricing Section */
+.pricing-section {
+    padding: 6rem 0;
+    background: white;
+}
+
+.section-header {
+    margin-bottom: 4rem;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #1a202c;
+}
+
+.section-description {
+    font-size: 1.25rem;
+    color: #4a5568;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.pricing-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: visible;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.pricing-free:hover {
+    border-color: #e2e8f0;
+}
+
+.pricing-pro {
+    transform: scale(1.05);
+    border-color: #667eea;
+}
+
+.pricing-pro:hover {
+    border-color: #5a67d8;
+}
+
+.pricing-premium:hover {
+    border-color: #38a169;
+}
+
+.popular-badge,
+.savings-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .popular-badge {
-    white-space: nowrap;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
 }
 
-.card.position-relative {
-    overflow: visible !important;
+.savings-badge {
+    background: linear-gradient(135deg, #38a169, #2f855a);
 }
 
-/* Ensure badges don't get cut off */
-.row.justify-content-center {
-    padding-top: 20px;
+.pricing-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.plan-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1a202c;
+}
+
+.plan-price {
+    margin-bottom: 0.5rem;
+}
+
+.price-amount {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1a202c;
+}
+
+.price-period {
+    font-size: 1rem;
+    color: #4a5568;
+}
+
+.price-comparison {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.price-original {
+    font-size: 1.5rem;
+    color: #a0aec0;
+    text-decoration: line-through;
+}
+
+.plan-description {
+    color: #4a5568;
+    font-size: 1rem;
+}
+
+.pricing-features {
+    margin-bottom: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f7fafc;
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+.feature-item i {
+    width: 20px;
+    margin-right: 1rem;
+    font-size: 1rem;
+}
+
+.feature-item.included i {
+    color: #38a169;
+}
+
+.feature-item.not-included {
+    opacity: 0.5;
+}
+
+.feature-item.not-included i {
+    color: #e53e3e;
+}
+
+.pricing-cta {
+    text-align: center;
+}
+
+.btn-plan {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    border: none;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.pricing-free .btn-plan {
+    background: #f7fafc;
+    color: #4a5568;
+    border: 2px solid #e2e8f0;
+}
+
+.pricing-pro .btn-plan {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.pricing-premium .btn-plan {
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    color: white;
+    box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+}
+
+.btn-plan:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.current-plan {
+    background: #e2e8f0 !important;
+    color: #4a5568 !important;
+    cursor: not-allowed;
+    box-shadow: none !important;
+}
+
+.trial-notice {
+    font-size: 0.85rem;
+    color: #4a5568;
+    margin-top: 0.5rem;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    padding: 6rem 0;
+    background: #f8fafc;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.testimonial-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f2f5;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.testimonial-card.featured {
+    border-color: #667eea;
+    transform: scale(1.05);
+}
+
+.testimonial-rating {
+    color: #fbbf24;
+    margin-bottom: 1rem;
+}
+
+.testimonial-quote {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    border: 2px solid #e2e8f0;
+}
+
+.avatar-placeholder {
+    font-size: 1rem;
+}
+
+.author-info h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a202c;
+}
+
+.author-info p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+.testimonial-achievement {
+    text-align: center;
+}
+
+.achievement-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Final CTA Section */
+.final-cta-section {
+    padding: 6rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.cta-description {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-buttons {
+    margin-bottom: 2rem;
+}
+
+.cta-guarantee {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.cta-features {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.cta-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-stats {
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 1rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .pricing-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-pro {
+        transform: none;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta-features {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .pricing-card {
+        margin: 0;
+    }
+    
+    .shape {
+        display: none;
+    }
 }
 </style> 

@@ -1,15 +1,94 @@
 <!-- AI Insights Dashboard Panel (Premium) -->
 <% if (user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual')) { %>
+
+<!-- Enhanced Dashboard Header with Live Stats -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="dashboard-hero-section">
+            <div class="hero-background"></div>
+            <div class="hero-content">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="hero-text">
+                                <h1 class="hero-title">
+                                    <span id="greeting-text">Good morning</span>, <%= user.username %>! 
+                                    <span class="wave-emoji">👋</span>
+                                </h1>
+                                <p class="hero-subtitle" id="motivational-message">
+                                    Ready to conquer your goals today?
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="hero-stats">
+                                <div class="stat-card">
+                                    <div class="stat-icon">🎯</div>
+                                    <div class="stat-number" data-target="0" id="hero-active-goals">0</div>
+                                    <div class="stat-label">Active Goals</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🏆</div>
+                                    <div class="stat-number" data-target="0" id="hero-completion-rate">0%</div>
+                                    <div class="stat-label">Success Rate</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🔥</div>
+                                    <div class="stat-number" data-target="0" id="hero-streak">0</div>
+                                    <div class="stat-label">Day Streak</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mb-4">
     <div class="col-12">
         <div class="card shadow-sm border-primary">
             <div class="card-header bg-primary text-white py-3">
                 <div class="d-flex align-items-center">
                     <div>
-                        <h4 class="mb-0"><i class="fas fa-robot me-2"></i> AI Goal Assistant</h4>
+                        <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i> Goal Insights</h4>
                     </div>
                     <div class="ms-auto">
-                        <span class="badge bg-warning">Premium Feature</span>
+                        <span class="badge bg-light text-primary">Real-time Analysis</span>
+                        <button class="btn btn-light btn-sm ms-2" id="refresh-ai-insights">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div id="ai-dashboard-assistant-premium">
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% } else { %>
+<!-- Basic Insights for Free Users -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-info">
+            <div class="card-header bg-info text-white py-3">
+                <div class="d-flex align-items-center">
+                    <div>
+                        <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i> Goal Insights</h4>
+                    </div>
+                    <div class="ms-auto">
+                        <span class="badge bg-light text-info">Basic Analysis</span>
+                        <button class="btn btn-light btn-sm ms-2" id="refresh-ai-insights">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -25,17 +104,17 @@
         </div>
     </div>
 </div>
-<% } else { %>
-<!-- AI Premium Promo Banner -->
+
+<!-- Upgrade Promo Banner -->
 <div class="row mb-4">
     <div class="col-12">
         <div class="card shadow-sm border-warning">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
                     <div>
-                        <h4 class="mb-2"><i class="fas fa-robot me-2"></i> Upgrade for AI Assistance</h4>
-                        <p class="mb-0">Get personalized goal insights, AI-generated custom milestones, action plans, and more!</p>
-                        <p class="mt-2 mb-0"><span class="badge bg-info">Free users</span> receive basic milestones. <span class="badge bg-warning">Premium users</span> get AI-powered custom milestones tailored to your specific goal.</p>
+                        <h5 class="mb-2"><i class="fas fa-star me-2"></i> Upgrade for Enhanced Features</h5>
+                        <p class="mb-0">Get AI-powered recommendations, advanced analytics, smart goal suggestions, and priority alerts!</p>
+                        <p class="mt-2 mb-0"><span class="badge bg-info">Free users</span> get basic insights. <span class="badge bg-warning">Pro users</span> get AI-powered analysis and personalized coaching.</p>
                     </div>
                     <div class="ms-auto">
                         <a href="/subscription" class="btn btn-warning">Upgrade Now</a>
@@ -189,7 +268,7 @@
                                         <i class="fas fa-paint-brush fa-2x text-danger"></i>
                                     </div>
                                     <h6 class="card-title text-center">Creative Project</h6>
-                                    <p class="card-text small text-muted">Complete a creative or artistic project</p>
+                                    <p class="card-text small text-muted">Complete a meaningful creative project that showcases your artistic abilities and personal expression.</p>
                                     <button class="btn btn-outline-danger btn-sm w-100 template-btn">Use Template</button>
                                 </div>
                             </div>
@@ -216,71 +295,6 @@
     <!-- Goals Grid -->
     <div class="row g-4 mb-5">
         <% if (goals && goals.length > 0) { %>
-            <!-- Progress Statistics (Only show if user has goals) -->
-            <div class="col-12 mb-4">
-                <div class="card shadow-sm">
-                    <div class="card-header">
-                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Progress Overview</h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="row g-4">
-                            <div class="col-md-3">
-                                <div class="text-center">
-                                    <div class="h2 text-primary mb-1" id="total-goals">-</div>
-                                    <div class="text-muted">Total Goals</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="text-center">
-                                    <div class="h2 text-success mb-1" id="completed-goals">-</div>
-                                    <div class="text-muted">Completed</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="text-center">
-                                    <div class="h2 text-warning mb-1" id="active-goals">-</div>
-                                    <div class="text-muted">Active</div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="text-center">
-                                    <div class="h2 text-info mb-1" id="completion-rate">-</div>
-                                    <div class="text-muted">Completion Rate</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <hr class="my-4">
-                        
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h6 class="mb-3">Goal Categories</h6>
-                                <div class="chart-container" style="position: relative; height: 250px; width: 100%;">
-                                    <canvas id="categoryChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h6 class="mb-3">Recent Progress</h6>
-                                <div id="recent-progress">
-                                    <!-- Will be populated by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Achievements Section -->
-                        <hr class="my-4">
-                        <div class="row">
-                            <div class="col-12">
-                                <h6 class="mb-3"><i class="fas fa-trophy me-2 text-warning"></i> Achievements & Motivation</h6>
-                                <div id="achievements-section">
-                                    <!-- Will be populated by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
             <% goals.forEach(goal => { %>
                 <div class="col-md-6 col-lg-4 goal-card-container">
                     <div class="card h-100 goal-card" data-goal-id="<%= goal.id %>">
@@ -510,16 +524,26 @@
                     </div>
                 </form>
                 
+                <% if (user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual')) { %>
                 <div class="alert alert-info mt-3">
-                    <i class="fas fa-magic me-2"></i> We'll automatically generate 6 milestones to help you achieve your goal!
+                    <i class="fas fa-magic me-2"></i> We'll automatically generate AI-powered milestones to help you achieve your goal!
                 </div>
+                <% } else { %>
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-tasks me-2"></i> We'll automatically generate 6 basic milestones to help you achieve your goal!
+                </div>
+                <% } %>
                 
                 <!-- Loading indicator (hidden by default) -->
                 <div id="ai-loading-indicator" class="text-center p-3 d-none">
                     <div class="spinner-border text-primary mb-2" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
-                    <p class="mb-0">Creating your personalized milestones...</p>
+                    <% if (user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual')) { %>
+                    <p class="mb-0">Creating your personalized AI milestones...</p>
+                    <% } else { %>
+                    <p class="mb-0">Creating your milestones...</p>
+                    <% } %>
                 </div>
                 
             </div>
@@ -570,9 +594,9 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="editGoalDeadline" class="form-label">Target Date</label>
-                                <input type="date" class="form-control" id="editGoalDeadline" required>
+                    <div class="mb-3">
+                        <label for="editGoalDeadline" class="form-label">Target Date</label>
+                        <input type="date" class="form-control" id="editGoalDeadline" required>
                             </div>
                         </div>
                     </div>
@@ -620,387 +644,601 @@
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Pass data to JavaScript -->
+<script type="application/json" id="goals-data"><%- JSON.stringify(goals || []) %></script>
+<script type="application/json" id="user-data"><%- JSON.stringify({subscription_plan: user ? user.subscription_plan : ''}) %></script>
+
 <!-- JavaScript for Dashboard Functionality -->
 <script>
+// Get goals data from JSON script tag
+const pageGoalsData = JSON.parse(document.getElementById('goals-data').textContent);
+const currentUser = JSON.parse(document.getElementById('user-data').textContent);
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Get goal IDs from the page
+    console.log('Dashboard loaded, initializing...'); // Debug log
+    
+    // Get goal IDs from the page first
     const goalCards = document.querySelectorAll('[data-goal-id]');
-    goalCards.forEach(card => {
-        const goalId = card.getAttribute('data-goal-id');
-        fetchGoalProgress(goalId);
-    });
+    console.log('Found goal cards:', goalCards.length); // Debug log
     
     // Load deadline alerts
     loadDeadlineAlerts();
     
-    // Load progress statistics if goals exist
-    if (goalCards.length > 0) {
-        loadProgressStatistics();
+    // Setup refresh button
+    setupRefreshButton();
+    
+    // Update greeting and motivational message
+    updateGreeting();
+    loadMotivationalMessage();
+    
+    // Start real-time updates for hero stats
+    startRealTimeUpdates();
+    
+    // Load Goal Insights for everyone (both premium and free users)
+    const dashboardAssistantElement = document.getElementById('ai-dashboard-assistant-premium') || document.getElementById('ai-dashboard-assistant');
+    if (dashboardAssistantElement) {
+        console.log('Loading AI dashboard insights...'); // Debug log
+        loadAIDashboardInsights();
     }
     
-    // Function to fetch goal progress
-    function fetchGoalProgress(goalId) {
-        fetch(`/api/goals/${goalId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.milestones) {
-                    const totalMilestones = data.milestones.length;
-                    const completedMilestones = data.milestones.filter(m => m.status === 'completed').length;
-                    const progressPercent = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
-                    
-                    // Update the progress bar
-                    const progressBar = document.querySelector(`#progress-container-${goalId} .progress-bar`);
-                    const progressValue = document.getElementById(`progress-value-${goalId}`);
-                    
-                    if (progressBar && progressValue) {
-                        progressBar.style.width = `${progressPercent}%`;
-                        progressBar.setAttribute('aria-valuenow', progressPercent);
-                        progressValue.textContent = progressPercent;
-                    }
-                }
-            })
-            .catch(error => console.error('Error fetching goal progress:', error));
+    // Load individual goal progress
+    goalCards.forEach(card => {
+        const goalId = card.getAttribute('data-goal-id');
+        if (goalId) {
+        fetchGoalProgress(goalId);
+        }
+    });
+    
+    // Setup refresh button
+    function setupRefreshButton() {
+        const refreshBtn = document.getElementById('refresh-ai-insights');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', function() {
+                console.log('Refreshing insights...'); // Debug log
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                // Reload Goal Insights
+                loadAIDashboardInsights();
+                
+                // Reset button after delay
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt"></i>';
+                    showNotification('Insights refreshed!', 'success');
+                }, 1000);
+            });
+        }
     }
     
-    // Function to load deadline alerts
-    function loadDeadlineAlerts() {
-        fetch('/api/goals')
-            .then(response => response.json())
-            .then(goals => {
-                if (goals && goals.length > 0) {
-                    // Get all milestones for analysis
-                    const milestonePromises = goals.map(goal => 
-                        fetch(`/api/goals/${goal.id}`)
-                            .then(response => response.json())
-                            .then(data => ({ ...goal, milestones: data.milestones || [] }))
-                    );
-                    
-                    Promise.all(milestonePromises)
-                        .then(goalsWithMilestones => {
-                            analyzeDeadlines(goalsWithMilestones);
-                        })
-                        .catch(error => console.error('Error loading milestones:', error));
-                }
-            })
-            .catch(error => console.error('Error loading goals for alerts:', error));
-    }
-    
-    // Function to analyze deadlines and show alerts
-    function analyzeDeadlines(goalsWithMilestones) {
-        const now = new Date();
-        const upcomingMilestones = [];
-        const overdueMilestones = [];
-        const overdueGoals = [];
+    // Dynamic greeting function
+    function updateGreeting() {
+        const hour = new Date().getHours();
+        let greeting, emoji;
         
-        goalsWithMilestones.forEach(goal => {
-            // Check if goal is overdue
-            const goalDeadline = new Date(goal.target_date);
-            const goalDaysRemaining = Math.ceil((goalDeadline - now) / (1000 * 60 * 60 * 24));
+        if (hour < 12) {
+            greeting = 'Good morning';
+            emoji = '🌅';
+        } else if (hour < 17) {
+            greeting = 'Good afternoon';
+            emoji = '☀️';
+        } else {
+            greeting = 'Good evening';
+            emoji = '🌙';
+        }
+        
+        const greetingElement = document.getElementById('greeting-text');
+        if (greetingElement) {
+            greetingElement.textContent = greeting;
             
-            if (goalDaysRemaining < 0 && goal.status === 'active') {
-                overdueGoals.push({
-                    ...goal,
-                    daysOverdue: Math.abs(goalDaysRemaining)
-                });
+            // Add emoji to the end of the greeting
+            const emojiSpan = document.querySelector('.wave-emoji');
+            if (emojiSpan) {
+                emojiSpan.textContent = emoji;
+            }
+        }
+    }
+    
+    // Load motivational message based on page data
+    function loadMotivationalMessage() {
+        const messageElement = document.getElementById('motivational-message');
+        if (!messageElement) return;
+        
+        // Use page data directly instead of API call
+        const goals = pageGoalsData || [];
+        const messages = generateMotivationalMessages(goals);
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        
+        // Simple message update
+        messageElement.textContent = randomMessage;
+    }
+    
+    // Generate contextual motivational messages
+    function generateMotivationalMessages(goals) {
+        const activeGoals = goals.filter(g => g.status === 'active').length;
+        const completedGoals = goals.filter(g => g.status === 'completed').length;
+        const totalGoals = goals.length;
+        
+        const messages = [
+            "Ready to conquer your goals today? 🚀",
+            "Every step forward is progress! ✨",
+            "Your future self will thank you! 💪",
+            "Turn your dreams into plans! 🎯"
+        ];
+        
+        if (completedGoals > 0) {
+            messages.push(`Amazing! You've completed ${completedGoals} goals! 🏆`);
+        }
+        
+        if (activeGoals > 0) {
+            messages.push(`You have ${activeGoals} active goals to crush! 💥`);
+        }
+        
+        if (totalGoals === 0) {
+            return ["Let's create your first goal and start your journey! 🌟"];
+        }
+        
+        return messages;
+    }
+    
+    // Real-time updates
+    function startRealTimeUpdates() {
+        // Update stats every 30 seconds
+        setInterval(() => {
+            updateLiveStats();
+        }, 30000);
+        
+        // Initial load with delay to let page load
+        setTimeout(() => {
+            updateLiveStats();
+        }, 2000);
+    }
+    
+    // Update live statistics
+    function updateLiveStats() {
+        // Fetch real user stats from API
+        fetch('/api/user/stats')
+            .then(response => response.json())
+            .then(stats => {
+                // Update hero stats with real data
+                updateHeroStat('hero-active-goals', stats.goals || 0);
+                updateHeroStat('hero-completion-rate', stats.successRate || 0, '%');
+                updateHeroStat('hero-streak', stats.streak || 0);
+                
+                console.log('📊 Updated dashboard with real stats:', stats);
+            })
+            .catch(error => {
+                console.error('Error fetching user stats:', error);
+                // Fallback to goal-based calculation
+                fetch('/api/goals')
+                    .then(response => response.json())
+                    .then(goals => {
+                        const activeGoals = goals.filter(g => g.status === 'active').length;
+                        const completedGoals = goals.filter(g => g.status === 'completed').length;
+                        const totalGoals = goals.length;
+                        const completionRate = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+                        
+                        // Update hero stats with fallback data (no fake streak)
+                        updateHeroStat('hero-active-goals', activeGoals);
+                        updateHeroStat('hero-completion-rate', completionRate, '%');
+                        updateHeroStat('hero-streak', 0); // Show 0 if we can't get real streak
+                    })
+                    .catch(err => console.error('Error updating fallback stats:', err));
+            });
+    }
+    
+    // Update hero stat
+    function updateHeroStat(elementId, newValue, suffix = '') {
+        const element = document.getElementById(elementId);
+        if (element) {
+            const currentValue = parseInt(element.textContent.replace(/\D/g, '')) || 0;
+            
+            if (currentValue !== newValue) {
+                animateCounter(element, currentValue, newValue, 800);
+            }
+        }
+    }
+    
+    // Animate counter function
+    function animateCounter(element, start, end, duration) {
+        if (start === end) return;
+        
+        const range = end - start;
+        const minTimer = 50;
+        const stepTime = Math.abs(Math.floor(duration / range));
+        const timer = Math.max(stepTime, minTimer);
+        
+        element.classList.add('counting');
+        
+        const startTime = new Date().getTime();
+        const endTime = startTime + duration;
+        
+        function run() {
+            const now = new Date().getTime();
+            const remaining = Math.max((endTime - now) / duration, 0);
+            const value = Math.round(end - (remaining * range));
+            
+            if (element.id.includes('completion-rate')) {
+                element.textContent = value + '%';
+            } else {
+                element.textContent = value;
             }
             
-            // Check milestones
-            goal.milestones.forEach(milestone => {
-                const milestoneDeadline = new Date(milestone.target_date);
-                const daysRemaining = Math.ceil((milestoneDeadline - now) / (1000 * 60 * 60 * 24));
-                
-                if (milestone.status !== 'completed') {
-                    if (daysRemaining < 0) {
-                        overdueMilestones.push({
-                            ...milestone,
-                            goalTitle: goal.title,
-                            goalId: goal.id,
-                            daysOverdue: Math.abs(daysRemaining)
-                        });
-                    } else if (daysRemaining <= 7) {
-                        upcomingMilestones.push({
-                            ...milestone,
-                            goalTitle: goal.title,
-                            goalId: goal.id,
-                            daysRemaining
-                        });
-                    }
-                }
-            });
-        });
+            if (value === end) {
+                element.classList.remove('counting');
+            }
+            
+            if (remaining > 0) {
+                setTimeout(run, timer);
+            }
+        }
         
-        // Display alerts
-        displayDeadlineAlerts(upcomingMilestones, overdueMilestones, overdueGoals);
-        
-        // Recent progress analysis
-        displayRecentProgress(goalsWithMilestones);
-        
-        // Calculate and display achievements
-        calculateAchievements(goalsWithMilestones);
+        run();
     }
     
-    // Function to display deadline alerts
-    function displayDeadlineAlerts(upcoming, overdueMilestones, overdueGoals) {
-        const alertsContainer = document.getElementById('deadline-alerts');
+    // Load Goal Insights using page data (no API calls)
+    function loadAIDashboardInsights() {
+        const aiContainer = document.getElementById('ai-dashboard-assistant-premium') || document.getElementById('ai-dashboard-assistant');
+        if (!aiContainer) return;
         
-        // Clear existing alerts
-        alertsContainer.innerHTML = '';
+        console.log('Loading insights from page data...', pageGoalsData); // Debug log
         
-        if (upcoming.length === 0 && overdueMilestones.length === 0 && overdueGoals.length === 0) {
-            return; // No alerts needed
-        }
-        
-        let alertsHtml = '<div class="col-12">';
-        
-        // Overdue goals alert
-        if (overdueGoals.length > 0) {
-            alertsHtml += `
-                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>Overdue Goals!</strong> You have ${overdueGoals.length} goal${overdueGoals.length > 1 ? 's' : ''} past their deadline:
-                    <ul class="mb-0 mt-2">
-                        ${overdueGoals.map(goal => 
-                            `<li><a href="/goals/detail/${goal.id}" class="text-danger fw-bold">${goal.title}</a> - ${goal.daysOverdue} day${goal.daysOverdue > 1 ? 's' : ''} overdue</li>`
-                        ).join('')}
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        // Show loading state briefly for visual feedback
+        aiContainer.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading insights...</span>
                 </div>
-            `;
-        }
+                <p class="text-muted">Loading statistics and charts...</p>
+            </div>
+        `;
         
-        // Overdue milestones alert
-        if (overdueMilestones.length > 0) {
-            alertsHtml += `
-                <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
-                    <i class="fas fa-clock me-2"></i>
-                    <strong>Overdue Milestones!</strong> You have ${overdueMilestones.length} milestone${overdueMilestones.length > 1 ? 's' : ''} past their deadline:
-                    <ul class="mb-0 mt-2">
-                        ${overdueMilestones.slice(0, 5).map(milestone => 
-                            `<li><a href="/goals/detail/${milestone.goalId}" class="text-warning fw-bold">${milestone.title}</a> (${milestone.goalTitle}) - ${milestone.daysOverdue} day${milestone.daysOverdue > 1 ? 's' : ''} overdue</li>`
-                        ).join('')}
-                        ${overdueMilestones.length > 5 ? `<li class="text-muted">...and ${overdueMilestones.length - 5} more</li>` : ''}
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-        }
-        
-        // Upcoming milestones alert
-        if (upcoming.length > 0) {
-            alertsHtml += `
-                <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
-                    <i class="fas fa-calendar-day me-2"></i>
-                    <strong>Upcoming Deadlines!</strong> You have ${upcoming.length} milestone${upcoming.length > 1 ? 's' : ''} due soon:
-                    <ul class="mb-0 mt-2">
-                        ${upcoming.slice(0, 5).map(milestone => 
-                            `<li><a href="/goals/detail/${milestone.goalId}" class="text-info fw-bold">${milestone.title}</a> (${milestone.goalTitle}) - due in ${milestone.daysRemaining} day${milestone.daysRemaining > 1 ? 's' : ''}</li>`
-                        ).join('')}
-                        ${upcoming.length > 5 ? `<li class="text-muted">...and ${upcoming.length - 5} more</li>` : ''}
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
-        }
-        
-        alertsHtml += '</div>';
-        alertsContainer.innerHTML = alertsHtml;
+        // Use page data directly (small delay for visual feedback)
+        setTimeout(() => {
+            const goals = pageGoalsData || [];
+            
+            if (goals.length > 0) {
+                // Generate simple insights from page data
+                const insights = generateSimpleInsights(goals);
+                renderSimpleInsights(insights);
+            } else {
+                // No goals found - display empty state
+                renderEmptyInsights();
+            }
+        }, 500);
     }
     
-    // Function to load progress statistics
-    function loadProgressStatistics() {
-        fetch('/api/goals')
-            .then(response => response.json())
-            .then(goals => {
-                if (goals && goals.length > 0) {
-                    // Get detailed goal data with milestones
-                    const detailedPromises = goals.map(goal => 
-                        fetch(`/api/goals/${goal.id}`)
-                            .then(response => response.json())
-                            .then(data => ({ ...goal, milestones: data.milestones || [] }))
-                    );
-                    
-                    Promise.all(detailedPromises)
-                        .then(detailedGoals => {
-                            calculateAndDisplayStatistics(detailedGoals);
-                        });
-                }
-            })
-            .catch(error => console.error('Error loading progress statistics:', error));
-    }
-    
-    // Function to calculate and display statistics
-    function calculateAndDisplayStatistics(goals) {
+    // Generate simple, working insights from real goal data
+    function generateSimpleInsights(goals) {
+        const now = new Date();
+        
         // Basic statistics
         const totalGoals = goals.length;
-        const completedGoals = goals.filter(g => g.status === 'completed').length;
-        const activeGoals = goals.filter(g => g.status === 'active').length;
-        const completionRate = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+        const activeGoals = goals.filter(g => g.status === 'active');
+        const completedGoals = goals.filter(g => g.status === 'completed');
+        const completionRate = totalGoals > 0 ? Math.round((completedGoals.length / totalGoals) * 100) : 0;
         
-        // Update statistics display
-        document.getElementById('total-goals').textContent = totalGoals;
-        document.getElementById('completed-goals').textContent = completedGoals;
-        document.getElementById('active-goals').textContent = activeGoals;
-        document.getElementById('completion-rate').textContent = completionRate + '%';
-        
-        // Category distribution
-        const categoryData = goals.reduce((acc, goal) => {
+        // Category analysis
+        const categories = {};
+        goals.forEach(goal => {
             const category = goal.category || 'other';
-            acc[category] = (acc[category] || 0) + 1;
-            return acc;
-        }, {});
-        
-        // Create category chart
-        createCategoryChart(categoryData);
-        
-        // Recent progress analysis
-        displayRecentProgress(goals);
-        
-        // Calculate achievements
-        calculateAchievements(goals);
-    }
-    
-    // Function to calculate achievements
-    function calculateAchievements(goals) {
-        const achievementsContainer = document.getElementById('achievements-section');
-        if (!achievementsContainer) return;
-        
-        const achievements = [];
-        
-        // Calculate various achievement metrics
-        const totalMilestones = goals.reduce((sum, goal) => sum + goal.milestones.length, 0);
-        const completedMilestones = goals.reduce((sum, goal) => 
-            sum + goal.milestones.filter(m => m.status === 'completed').length, 0);
-        const completedGoals = goals.filter(g => g.status === 'completed').length;
-        
-        // Achievement: First Goal
-        if (goals.length >= 1) {
-            achievements.push({
-                icon: 'fa-flag',
-                title: 'Goal Setter',
-                description: 'Created your first goal',
-                earned: true,
-                color: 'success'
-            });
-        }
-        
-        // Achievement: Complete First Goal
-        if (completedGoals >= 1) {
-            achievements.push({
-                icon: 'fa-trophy',
-                title: 'First Victory',
-                description: 'Completed your first goal',
-                earned: true,
-                color: 'warning'
-            });
-        }
-        
-        // Achievement: Milestone Master
-        if (completedMilestones >= 10) {
-            achievements.push({
-                icon: 'fa-star',
-                title: 'Milestone Master',
-                description: 'Completed 10+ milestones',
-                earned: true,
-                color: 'info'
-            });
-        }
-        
-        // Achievement: Goal Achiever
-        if (completedGoals >= 5) {
-            achievements.push({
-                icon: 'fa-crown',
-                title: 'Goal Achiever',
-                description: 'Completed 5+ goals',
-                earned: true,
-                color: 'warning'
-            });
-        }
-        
-        // Achievement: Consistency
-        const recentGoals = goals.filter(g => {
-            const created = new Date(g.created_at);
-            const daysSince = Math.floor((new Date() - created) / (1000 * 60 * 60 * 24));
-            return daysSince <= 30;
+            categories[category] = (categories[category] || 0) + 1;
         });
         
-        if (recentGoals.length >= 3) {
-            achievements.push({
-                icon: 'fa-fire',
-                title: 'On Fire!',
-                description: 'Created 3+ goals this month',
-                earned: true,
-                color: 'danger'
+        // Deadline analysis
+        const upcomingDeadlines = activeGoals.filter(goal => {
+            if (!goal.target_date) return false;
+            const deadline = new Date(goal.target_date);
+            const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+            return daysUntil <= 30 && daysUntil > 0;
+        }).map(goal => {
+            const deadline = new Date(goal.target_date);
+            const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+            return { ...goal, daysUntil };
+        });
+        
+        // Overdue goals
+        const overdueGoals = activeGoals.filter(goal => {
+            if (!goal.target_date) return false;
+            const deadline = new Date(goal.target_date);
+            return deadline < now;
+        });
+        
+        // Generate summary
+        let summary = "";
+        if (totalGoals === 0) {
+            summary = "Welcome to Goal Tracker! Ready to create your first goal and start your journey?";
+        } else if (completionRate >= 80) {
+            summary = `Outstanding progress! You've completed ${completionRate}% of your goals. Keep up the excellent work!`;
+        } else if (completionRate >= 60) {
+            summary = `Great momentum! You have a solid ${completionRate}% completion rate with ${activeGoals.length} active goals.`;
+        } else if (activeGoals.length > 0) {
+            summary = `You have ${activeGoals.length} active goals to focus on. Let's build momentum together!`;
+        } else {
+            summary = `You've completed ${completedGoals.length} goals! Time to set new challenges and continue growing.`;
+        }
+        
+        // Generate recommendations
+        const recommendations = [];
+        
+        if (overdueGoals.length > 0) {
+            recommendations.push({
+                text: `${overdueGoals.length} goal${overdueGoals.length > 1 ? 's are' : ' is'} overdue. Consider revising deadlines or breaking them into smaller steps.`,
+                category: "Urgent",
+                icon: "fa-exclamation-triangle"
             });
         }
         
-        // Potential achievements (not yet earned)
-        if (completedGoals < 1) {
-            achievements.push({
-                icon: 'fa-trophy',
-                title: 'First Victory',
-                description: 'Complete your first goal',
-                earned: false,
-                color: 'secondary'
+        if (upcomingDeadlines.length > 0) {
+            recommendations.push({
+                text: `${upcomingDeadlines.length} goal${upcomingDeadlines.length > 1 ? 's have' : ' has'} deadlines in the next 30 days. Time to accelerate!`,
+                category: "Focus",
+                icon: "fa-calendar-day"
             });
         }
         
-        if (completedMilestones < 10) {
-            achievements.push({
-                icon: 'fa-star',
-                title: 'Milestone Master',
-                description: `Complete ${10 - completedMilestones} more milestones`,
-                earned: false,
-                color: 'secondary'
+        if (activeGoals.length === 0 && completedGoals.length > 0) {
+            recommendations.push({
+                text: "All goals completed! Consider setting new challenges to maintain momentum.",
+                category: "Growth",
+                icon: "fa-plus-circle"
             });
         }
         
-        // Display achievements
-        let achievementsHtml = '<div class="row g-3">';
+        // Default recommendations if none above apply
+        if (recommendations.length === 0) {
+            if (totalGoals > 0) {
+                recommendations.push({
+                    text: "Break down large goals into smaller milestones for better tracking.",
+                    category: "Strategy",
+                    icon: "fa-tasks"
+                });
+            } else {
+                recommendations.push({
+                    text: "Start with a SMART goal: Specific, Measurable, Achievable, Relevant, Time-bound.",
+                    category: "Getting Started",
+                    icon: "fa-lightbulb"
+                });
+            }
+        }
         
-        achievements.slice(0, 6).forEach(achievement => {
-            achievementsHtml += `
-                <div class="col-md-4">
-                    <div class="card ${achievement.earned ? 'border-' + achievement.color : 'border-light'} h-100">
-                        <div class="card-body p-3 text-center">
-                            <div class="mb-2">
-                                <i class="fas ${achievement.icon} fa-2x text-${achievement.color}"></i>
+        // Priority goal (most urgent deadline)
+        let topPriority = null;
+        let priorityGoalId = null;
+        
+        if (upcomingDeadlines.length > 0) {
+            const mostUrgent = upcomingDeadlines.reduce((prev, current) => 
+                prev.daysUntil < current.daysUntil ? prev : current
+            );
+            topPriority = `"${mostUrgent.title}" is due in ${mostUrgent.daysUntil} day${mostUrgent.daysUntil > 1 ? 's' : ''}. Make this your focus!`;
+            priorityGoalId = mostUrgent.id;
+        } else if (overdueGoals.length > 0) {
+            const firstOverdue = overdueGoals[0];
+            topPriority = `"${firstOverdue.title}" is overdue. Time to take action!`;
+            priorityGoalId = firstOverdue.id;
+        }
+        
+        return {
+            summary,
+            topPriority,
+            priorityGoalId,
+            recommendations: recommendations.slice(0, 4),
+            completionRate,
+            activeGoals: activeGoals.length,
+            completedGoals: completedGoals.length,
+            categories,
+            overdueCount: overdueGoals.length
+        };
+    }
+    
+    // Render simple insights with statistics and charts
+    function renderSimpleInsights(insights) {
+        const aiContainer = document.getElementById('ai-dashboard-assistant-premium') || document.getElementById('ai-dashboard-assistant');
+        if (!aiContainer) return;
+        
+        const html = `
+            <div class="statistics-dashboard">
+                <!-- Statistics Overview -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-primary">
+                                <i class="fas fa-flag"></i>
                             </div>
-                            <h6 class="card-title">${achievement.title}</h6>
-                            <p class="card-text small text-muted">${achievement.description}</p>
-                            ${achievement.earned ? 
-                                '<span class="badge bg-' + achievement.color + '">Earned!</span>' : 
-                                '<span class="badge bg-light text-dark">Not yet earned</span>'
-                            }
+                            <div class="stat-number">${insights.activeGoals + insights.completedGoals}</div>
+                            <div class="stat-label">Total Goals</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-number">${insights.completedGoals}</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-warning">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <div class="stat-number">${insights.activeGoals}</div>
+                            <div class="stat-label">Active</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-info">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stat-number">${insights.completionRate}%</div>
+                            <div class="stat-label">Success Rate</div>
                         </div>
                     </div>
                 </div>
-            `;
-        });
-        
-        achievementsHtml += '</div>';
-        
-        // Add motivational quote
-        const motivationalQuotes = [
-            "Success is the sum of small efforts, repeated day in and day out.",
-            "A goal is a dream with a deadline.",
-            "You are never too old to set another goal or to dream a new dream.",
-            "Success is walking from failure to failure with no loss of enthusiasm.",
-            "The future depends on what you do today."
-        ];
-        
-        const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
-        
-        achievementsHtml += `
-            <div class="mt-4 p-3 bg-light rounded">
-                <div class="text-center">
-                    <i class="fas fa-quote-left text-primary me-2"></i>
-                    <em class="text-muted">${randomQuote}</em>
-                    <i class="fas fa-quote-right text-primary ms-2"></i>
+
+                <!-- Charts Section -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="chart-card">
+                            <h6 class="chart-title">Goal Completion Progress</h6>
+                            <div class="chart-container">
+                                <canvas id="completionChart" width="300" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="chart-card">
+                            <h6 class="chart-title">Goals by Category</h6>
+                            <div class="chart-container">
+                                <canvas id="categoryChart" width="300" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Section -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="summary-section">
+                            <h6><i class="fas fa-lightbulb me-2"></i>Summary</h6>
+                            <p class="mb-3">${insights.summary}</p>
+                            
+                            ${insights.topPriority ? `
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-flag me-2"></i><strong>Priority:</strong> ${insights.topPriority}
+                                </div>
+                            ` : ''}
+                            
+                            ${insights.recommendations.length > 0 ? `
+                                <div class="recommendations">
+                                    <h6><i class="fas fa-compass me-2"></i>Recommendations</h6>
+                                    <ul class="list-unstyled">
+                                        ${insights.recommendations.map(rec => `
+                                            <li class="mb-2">
+                                                <i class="fas ${rec.icon} me-2 text-muted"></i>
+                                                <strong>${rec.category}:</strong> ${rec.text}
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
         
-        achievementsContainer.innerHTML = achievementsHtml;
+        aiContainer.innerHTML = html;
+        
+        // Create charts after DOM is updated
+        setTimeout(() => {
+            createCompletionChart(insights);
+            createCategoryChart(insights.categories);
+        }, 100);
+    }
+    
+    // Render empty state
+    function renderEmptyInsights() {
+        const aiContainer = document.getElementById('ai-dashboard-assistant-premium') || document.getElementById('ai-dashboard-assistant');
+        if (!aiContainer) return;
+        
+        aiContainer.innerHTML = `
+            <div class="empty-insights">
+                <div class="text-center py-5">
+                    <div class="empty-icon mb-3">
+                        <i class="fas fa-compass fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="empty-title">Ready to Start Your Journey?</h5>
+                    <p class="text-muted mb-4">Create your first goal to see personalized insights and recommendations.</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+                        <i class="fas fa-plus-circle me-2"></i> Create Your First Goal
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Render error state
+    function renderInsightsError(errorMessage) {
+        const aiContainer = document.getElementById('ai-dashboard-assistant-premium') || document.getElementById('ai-dashboard-assistant');
+        if (!aiContainer) return;
+        
+        let helpText = 'Please try refreshing the page or checking your connection.';
+        let actionButton = `
+            <button class="btn btn-outline-primary" onclick="loadAIDashboardInsights()">
+                <i class="fas fa-sync me-2"></i> Try Again
+            </button>
+        `;
+        
+        // Provide specific help based on error type
+        if (errorMessage.includes('log in')) {
+            helpText = 'Please log in to your account to view goal insights.';
+            actionButton = `
+                <a href="/auth/login" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt me-2"></i> Log In
+                </a>
+            `;
+        } else if (errorMessage.includes('Access denied')) {
+            helpText = 'There was an authentication issue. Please try logging in again.';
+            actionButton = `
+                <a href="/auth/login" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt me-2"></i> Log In Again
+                </a>
+            `;
+        }
+        
+        aiContainer.innerHTML = `
+            <div class="error-insights">
+                <div class="text-center py-4">
+                    <div class="error-icon mb-3">
+                        <i class="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                    </div>
+                    <h5>Unable to Load Insights</h5>
+                    <p class="text-muted mb-3">${errorMessage}</p>
+                    <p class="text-muted small mb-3">${helpText}</p>
+                    ${actionButton}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Function to create completion progress chart
+    function createCompletionChart(insights) {
+        const ctx = document.getElementById('completionChart');
+        if (!ctx) return;
+        
+        const total = insights.activeGoals + insights.completedGoals;
+        const completed = insights.completedGoals;
+        const active = insights.activeGoals;
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Active'],
+                datasets: [{
+                    data: [completed, active],
+                    backgroundColor: ['#28a745', '#ffc107'],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            usePointStyle: true,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
     
     // Function to create category chart
@@ -1010,6 +1248,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const categories = Object.keys(categoryData);
         const counts = Object.values(categoryData);
+        
+        if (categories.length === 0) {
+            ctx.parentNode.innerHTML = '<p class="text-muted text-center">No category data available</p>';
+            return;
+        }
         
         const categoryLabels = {
             health: 'Health & Fitness',
@@ -1030,7 +1273,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         new Chart(ctx, {
-            type: 'doughnut',
+            type: 'pie',
             data: {
                 labels: categories.map(cat => categoryLabels[cat] || cat),
                 datasets: [{
@@ -1043,22 +1286,16 @@ document.addEventListener('DOMContentLoaded', function() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                aspectRatio: 1,
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            padding: 10,
+                            padding: 15,
                             usePointStyle: true,
                             font: {
                                 size: 12
                             }
                         }
-                    }
-                },
-                elements: {
-                    arc: {
-                        borderWidth: 2
                     }
                 }
             }
@@ -1118,124 +1355,10 @@ document.addEventListener('DOMContentLoaded', function() {
         recentProgressContainer.innerHTML = progressHtml;
     }
     
-    // AI Dashboard Assistant for premium users
-    const aiDashboardAssistant = document.getElementById('ai-dashboard-assistant');
+    // AI Dashboard Assistant for both premium and free users
+    const aiDashboardAssistant = document.getElementById('ai-dashboard-assistant-premium') || document.getElementById('ai-dashboard-assistant');
     if (aiDashboardAssistant) {
         loadAIDashboardInsights();
-    }
-    
-    // Function to load AI dashboard insights
-    function loadAIDashboardInsights() {
-        // Fetch all goals first to provide context to the AI
-        fetch('/api/goals')
-            .then(response => response.json())
-            .then(goals => {
-                if (goals && goals.length > 0) {
-                    // Get AI insights based on goals
-                    return fetch('/api/ai/dashboard-insights', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ goals })
-                    });
-                } else {
-                    // No goals found - display empty state
-                    renderEmptyAIAssistant();
-                    throw new Error('No goals found');
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && data.data) {
-                    renderAIAssistant(data.data);
-                } else {
-                    // Handle error
-                    renderAIAssistantError(data.error || 'Failed to load AI insights');
-                }
-            })
-            .catch(error => {
-                console.error('Error loading AI insights:', error);
-                if (error.message !== 'No goals found') {
-                    renderAIAssistantError('Failed to load AI insights. Please try again later.');
-                }
-            });
-    }
-    
-    // Function to render AI assistant insights
-    function renderAIAssistant(insights) {
-        // Format can vary based on your AI service response
-        const html = `
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="ai-message mb-3">
-                        <div class="d-flex">
-                            <div class="ai-avatar bg-primary text-white rounded-circle p-2 me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-robot"></i>
-                            </div>
-                            <div>
-                                <p class="mb-1 fw-bold">Hello ${insights.username || 'there'}!</p>
-                                <p class="mb-3">${insights.summary}</p>
-                                
-                                ${insights.topPriority ? `
-                                <div class="card border-warning mb-3">
-                                    <div class="card-body p-3">
-                                        <h5 class="card-title"><i class="fas fa-exclamation-circle text-warning me-2"></i> Priority Focus</h5>
-                                        <p class="card-text">${insights.topPriority}</p>
-                                        ${insights.priorityGoalId ? `<a href="/goals/detail/${insights.priorityGoalId}" class="btn btn-sm btn-warning">View Goal</a>` : ''}
-                                    </div>
-                                </div>
-                                ` : ''}
-                                
-                                <h5 class="mt-3">Recommendations</h5>
-                                <ul class="list-group">
-                                    ${insights.recommendations.map(rec => `
-                                        <li class="list-group-item">
-                                            <i class="fas ${rec.icon || 'fa-lightbulb'} text-primary me-2"></i>
-                                            ${rec.text}
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm mb-3">
-                        <div class="card-body p-3">
-                            <h5 class="card-title"><i class="fas fa-chart-line me-2"></i> Goal Progress</h5>
-                            <div class="progress-chart">
-                                <canvas id="aiGoalProgress" width="100%" height="200"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-body p-3">
-                            <h5 class="card-title"><i class="fas fa-calendar-check me-2"></i> Upcoming</h5>
-                            ${insights.upcomingMilestones && insights.upcomingMilestones.length > 0 ? `
-                                <ul class="list-group list-group-flush">
-                                    ${insights.upcomingMilestones.map(milestone => `
-                                        <li class="list-group-item px-0">
-                                            <div class="d-flex w-100 justify-content-between">
-                                                <p class="mb-1">${milestone.title}</p>
-                                                <small class="text-muted">${milestone.dueIn}</small>
-                                            </div>
-                                            <small>${milestone.goalTitle}</small>
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            ` : `
-                                <p class="text-muted">No upcoming milestones</p>
-                            `}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        aiDashboardAssistant.innerHTML = html;
     }
     
     // Function to render empty state
@@ -1822,6 +1945,85 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     mediaQuery.addEventListener('change', handleResponsiveDesign);
     handleResponsiveDesign(mediaQuery);
+
+    // Load deadline alerts function
+    function loadDeadlineAlerts() {
+        // Simple deadline alerts using page data
+        const goals = pageGoalsData || [];
+        const now = new Date();
+        
+        const urgentGoals = goals.filter(goal => {
+            if (!goal.target_date || goal.status !== 'active') return false;
+            const deadline = new Date(goal.target_date);
+            const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+            return daysUntil <= 7 && daysUntil >= 0; // Next 7 days
+        });
+        
+        const overdueGoals = goals.filter(goal => {
+            if (!goal.target_date || goal.status !== 'active') return false;
+            const deadline = new Date(goal.target_date);
+            return deadline < now;
+        });
+        
+        const alertsContainer = document.getElementById('deadline-alerts');
+        if (!alertsContainer) return;
+        
+        let alertsHtml = '';
+        
+        // Show overdue goals first
+        if (overdueGoals.length > 0) {
+            alertsHtml += `
+                <div class="col-12">
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Overdue Goals</h5>
+                        <ul class="mb-0">
+                            ${overdueGoals.map(goal => `
+                                <li><strong>${goal.title}</strong> - ${Math.abs(Math.ceil((new Date(goal.target_date) - now) / (1000 * 60 * 60 * 24)))} days overdue</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show upcoming deadlines
+        if (urgentGoals.length > 0) {
+            alertsHtml += `
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-clock me-2"></i>Upcoming Deadlines</h5>
+                        <ul class="mb-0">
+                            ${urgentGoals.map(goal => {
+                                const daysUntil = Math.ceil((new Date(goal.target_date) - now) / (1000 * 60 * 60 * 24));
+                                return `<li><strong>${goal.title}</strong> - ${daysUntil === 0 ? 'Due today!' : `${daysUntil} day${daysUntil > 1 ? 's' : ''} remaining`}</li>`;
+                            }).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        alertsContainer.innerHTML = alertsHtml;
+    }
+    
+    // Fetch goal progress function
+    function fetchGoalProgress(goalId) {
+        // Simple progress calculation using milestones if available
+        // For now, we'll just set a placeholder since we don't have milestone data easily accessible
+        const progressContainer = document.getElementById(`progress-container-${goalId}`);
+        const progressValue = document.getElementById(`progress-value-${goalId}`);
+        
+        if (!progressContainer || !progressValue) return;
+        
+        // You can enhance this later with actual API call to get milestone progress
+        // For now, just set a default progress of 0%
+        const progressBar = progressContainer.querySelector('.progress-bar');
+        if (progressBar) {
+            progressBar.style.width = '0%';
+            progressBar.setAttribute('aria-valuenow', '0');
+        }
+        progressValue.textContent = '0';
+    }
 });
 </script>
 
@@ -2092,6 +2294,1625 @@ document.addEventListener('DOMContentLoaded', function() {
 .chart-container canvas {
     max-width: 100% !important;
     max-height: 100% !important;
+}
+
+/* Enhanced Dashboard Hero Section */
+.dashboard-hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    color: white;
+    min-height: 200px;
+    margin-bottom: 2rem;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" patternUnits="userSpaceOnUse" width="100" height="100"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 3rem 2rem;
+}
+
+.hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #ffffff, #f0f8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.wave-emoji {
+    display: inline-block;
+    animation: wave 1s ease-in-out infinite;
+}
+
+@keyframes wave {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(20deg); }
+}
+
+.hero-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    justify-content: end;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-stats .stat-card .stat-label,
+.stat-card .stat-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    text-transform: uppercase;
+    color: #ffffff !important;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+/* Animated Counter */
+@keyframes countUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.stat-number.counting {
+    animation: countUp 0.6s ease-out;
+}
+
+/* Enhanced AI Assistant Panel */
+.ai-avatar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+/* Enhanced Progress Bars */
+.goal-card .progress {
+    background: linear-gradient(90deg, #f0f2f5, #e9ecef);
+    border-radius: 10px;
+    overflow: visible;
+    height: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.goal-card .progress-bar {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 10px;
+    position: relative;
+    overflow: visible;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    transition: width 1s ease-in-out;
+}
+
+.goal-card .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -8px;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.goal-card:hover .progress-bar::after {
+    opacity: 1;
+}
+
+/* Responsive Hero Section */
+@media (max-width: 768px) {
+    .dashboard-hero-section {
+        min-height: 150px;
+    }
+    
+    .hero-content {
+        padding: 2rem 1rem;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .hero-stats {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1rem 0.5rem;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .stat-icon {
+        font-size: 1.5rem;
+    }
+}
+
+/* AI Insights Panel Styles */
+.ai-insights-panel {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.ai-insights-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.insights-header {
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    padding-bottom: 1rem;
+}
+
+.ai-status-indicator {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.status-dot {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 12px;
+    height: 12px;
+    background: #10b981;
+    border: 2px solid white;
+    border-radius: 50%;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.insights-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.insights-subtitle {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.analysis-timestamp {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+}
+
+/* Summary Card */
+.insights-summary {
+    margin: 1.5rem 0;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(200%) rotate(45deg); }
+}
+
+.summary-icon {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+
+.summary-content h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.summary-content p {
+    font-size: 1.1rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Priority Focus Card */
+.priority-focus {
+    margin: 1.5rem 0;
+}
+
+.priority-card {
+    background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid #f59e0b;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+}
+
+.priority-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.priority-icon {
+    color: #f59e0b;
+    font-size: 1.2rem;
+}
+
+.priority-label {
+    font-weight: 600;
+    color: #92400e;
+    flex: 1;
+}
+
+.urgency-badge {
+    background: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    animation: urgent-pulse 2s infinite;
+}
+
+@keyframes urgent-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.priority-content p {
+    color: #92400e;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.priority-action-btn {
+    background: #f59e0b;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.priority-action-btn:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+    color: white;
+    text-decoration: none;
+}
+
+/* Recommendations Grid */
+.smart-recommendations {
+    margin: 2rem 0;
+}
+
+.recommendations-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.recommendation-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.recommendation-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.rec-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.rec-content {
+    flex: 1;
+}
+
+.rec-text {
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.rec-category {
+    font-size: 0.75rem;
+    color: #667eea;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* AI Sidebar Analytics */
+.ai-sidebar-analytics {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 1.5rem;
+}
+
+.analytics-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.analytics-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.progress-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.metric-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    margin-left: 1rem;
+}
+
+.metric-fill {
+    height: 6px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 3px;
+    transition: width 1s ease;
+    position: relative;
+    flex: 1;
+    max-width: 100px;
+}
+
+.metric-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #667eea;
+    min-width: 35px;
+    text-align: right;
+}
+
+.metric-number {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #667eea;
+}
+
+/* Upcoming Reminders */
+.upcoming-reminders {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.reminders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reminder-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.reminder-item:hover {
+    background: #e3f2fd;
+    transform: translateX(3px);
+}
+
+.reminder-dot {
+    width: 8px;
+    height: 8px;
+    background: #667eea;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.reminder-content {
+    flex: 1;
+}
+
+.reminder-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.reminder-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reminder-goal {
+    font-size: 0.75rem;
+    color: #6c757d;
+    flex: 1;
+}
+
+.reminder-time {
+    font-size: 0.75rem;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.view-more-reminders {
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+.view-more-link {
+    font-size: 0.8rem;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-more-link:hover {
+    text-decoration: underline;
+    color: #5a67d8;
+}
+
+/* AI Actions */
+.ai-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.ai-action-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.ai-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.ai-action-btn.secondary {
+    background: white;
+    color: #667eea;
+    border: 1px solid #667eea;
+}
+
+.ai-action-btn.secondary:hover {
+    background: #667eea;
+    color: white;
+}
+
+/* Animations */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fade-in-up 0.6s ease-out forwards;
+}
+
+/* Responsive Design for AI Panel */
+@media (max-width: 768px) {
+    .ai-insights-panel {
+        padding: 1.5rem;
+    }
+    
+    .insights-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .summary-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .priority-header {
+        flex-wrap: wrap;
+    }
+    
+    .ai-actions {
+        flex-direction: row;
+    }
+    
+    .reminder-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Patterns Analysis Modal Styles */
+.patterns-analysis {
+    padding: 1rem 0;
+}
+
+.pattern-stat {
+    text-align: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9ff, #ffffff);
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.pattern-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+}
+
+.pattern-stat .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+}
+
+.pattern-stat .stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.category-list, .insights-list {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.category-item:last-child {
+    border-bottom: none;
+}
+
+.category-name {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.category-count {
+    font-size: 0.85rem;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.insight-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+    line-height: 1.5;
+}
+
+.insight-item:last-child {
+    border-bottom: none;
+}
+
+/* Weekly Plan Modal Styles */
+.weekly-plan {
+    padding: 1rem 0;
+}
+
+.plan-header h6 {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    margin: 0;
+    font-weight: 600;
+}
+
+.priorities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.priority-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #fef3c7, #fcd34d);
+    border-radius: 10px;
+    border-left: 4px solid #f59e0b;
+}
+
+.priority-number {
+    background: #f59e0b;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.priority-content {
+    flex: 1;
+}
+
+.priority-title {
+    font-weight: 600;
+    color: #92400e;
+    margin-bottom: 0.25rem;
+}
+
+.priority-reason {
+    font-size: 0.85rem;
+    color: #b45309;
+}
+
+.daily-plan {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.day-plan {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.day-plan:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.day-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.day-tasks {
+    padding: 1rem;
+    min-height: 80px;
+}
+
+.task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.task-item:last-child {
+    margin-bottom: 0;
+}
+
+.task-bullet {
+    color: #667eea;
+    font-size: 0.5rem;
+    margin-top: 0.3rem;
+    flex-shrink: 0;
+}
+
+.task-item.high .task-bullet {
+    color: #dc3545;
+}
+
+.task-item.medium .task-bullet {
+    color: #ffc107;
+}
+
+.task-item.rest {
+    color: #6c757d;
+    font-style: italic;
+    justify-content: center;
+    text-align: center;
+}
+
+.recommendations {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.recommendation {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.5;
+}
+
+.recommendation:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive adjustments for modals */
+@media (max-width: 768px) {
+    .daily-plan {
+        grid-template-columns: 1fr;
+    }
+    
+    .pattern-stat .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .priority-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .category-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+ }
+
+/* Simple Insights Panel Styles */
+.simple-insights {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.insights-main {
+    background: transparent;
+}
+
+.insights-header {
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.insight-icon {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.insights-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.insights-subtitle {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.update-time {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    background: rgba(102, 126, 234, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+}
+
+/* Summary Card */
+.insight-summary {
+    margin: 1.5rem 0;
+}
+
+.summary-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    color: white;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.summary-icon {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+
+.summary-content h6 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.summary-content p {
+    font-size: 1.1rem;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Priority Alert */
+.priority-alert {
+    margin: 1.5rem 0;
+}
+
+.priority-card {
+    background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid #f59e0b;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+}
+
+.priority-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.priority-icon {
+    color: #f59e0b;
+    font-size: 1.2rem;
+}
+
+.priority-label {
+    font-weight: 600;
+    color: #92400e;
+    flex: 1;
+}
+
+.urgency-badge {
+    background: #f59e0b;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.urgency-badge.urgent {
+    background: #dc3545;
+    animation: urgent-pulse 2s infinite;
+}
+
+@keyframes urgent-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.priority-content p {
+    color: #92400e;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.priority-action-btn {
+    background: #f59e0b;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.priority-action-btn:hover {
+    background: #d97706;
+    transform: translateY(-1px);
+    color: white;
+    text-decoration: none;
+}
+
+/* Recommendations Section */
+.recommendations-section {
+    margin: 2rem 0;
+}
+
+.recommendations-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.recommendation-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.recommendation-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.rec-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.rec-content {
+    flex: 1;
+}
+
+.rec-text {
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.rec-category {
+    font-size: 0.75rem;
+    color: #667eea;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Insights Sidebar */
+.insights-sidebar {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 1.5rem;
+}
+
+.stats-card, .categories-card, .deadlines-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.stats-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Categories List */
+.categories-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.category-item:last-child {
+    border-bottom: none;
+}
+
+.category-name {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.category-count {
+    background: #667eea;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Deadlines List */
+.deadlines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.deadline-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.deadline-item:hover {
+    background: #e3f2fd;
+    transform: translateX(3px);
+}
+
+.deadline-dot {
+    width: 8px;
+    height: 8px;
+    background: #667eea;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+}
+
+.deadline-content {
+    flex: 1;
+}
+
+.deadline-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.25rem;
+}
+
+.deadline-time {
+    font-size: 0.75rem;
+    color: #667eea;
+    font-weight: 500;
+}
+
+.view-more-deadlines {
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+.view-more-link {
+    font-size: 0.8rem;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-more-link:hover {
+    text-decoration: underline;
+    color: #5a67d8;
+}
+
+/* Empty and Error States */
+.empty-insights, .error-insights {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.empty-icon i, .error-icon i {
+    opacity: 0.7;
+}
+
+.empty-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .simple-insights {
+        padding: 1.5rem;
+    }
+    
+    .insights-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .summary-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .recommendations-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .priority-header {
+        flex-wrap: wrap;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Goal Progress Links */
+.goal-progress-link {
+    color: #495057 !important;
+    transition: all 0.2s ease;
+}
+
+.goal-progress-link:hover {
+    color: #007bff !important;
+    text-decoration: underline !important;
+    transform: translateX(3px);
+}
+
+/* Dashboard Achievement Cards */
+.achievement-card-mini {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.achievement-card-mini:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.achievement-icon-mini {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    margin: 0 auto;
+}
+
+.achievement-icon-mini-small {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.achievement-icon-mini.bronze, .achievement-icon-mini-small.bronze {
+    background: linear-gradient(135deg, #cd7f32, #b8691a);
+}
+
+.achievement-icon-mini.silver, .achievement-icon-mini-small.silver {
+    background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+}
+
+.achievement-icon-mini.gold, .achievement-icon-mini-small.gold {
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+}
+
+.achievement-icon-mini.diamond, .achievement-icon-mini-small.diamond {
+    background: linear-gradient(135deg, #87ceeb, #4682b4);
+}
+
+.achievement-icon-mini.legendary, .achievement-icon-mini-small.legendary {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    animation: mini-legendary-glow 2s infinite;
+}
+
+@keyframes mini-legendary-glow {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 107, 107, 0.5); }
+    50% { box-shadow: 0 0 15px rgba(255, 107, 107, 0.8); }
+}
+
+.achievement-meta-mini {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.badge-bronze {
+    background: rgba(205, 127, 50, 0.1);
+    color: #cd7f32;
+    border: 1px solid rgba(205, 127, 50, 0.3);
+}
+
+.badge-silver {
+    background: rgba(192, 192, 192, 0.1);
+    color: #a8a8a8;
+    border: 1px solid rgba(192, 192, 192, 0.3);
+}
+
+.badge-gold {
+    background: rgba(255, 215, 0, 0.1);
+    color: #ffd700;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.badge-diamond {
+    background: rgba(135, 206, 235, 0.1);
+    color: #4682b4;
+    border: 1px solid rgba(135, 206, 235, 0.3);
+}
+
+.badge-legendary {
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.achievement-summary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.achievement-dashboard-header {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 1rem;
+}
+
+/* Statistics Dashboard Styles */
+.statistics-dashboard .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+
+.statistics-dashboard .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.statistics-dashboard .stat-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.statistics-dashboard .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.statistics-dashboard .stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+.statistics-dashboard .chart-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+    height: 100%;
+}
+
+.statistics-dashboard .chart-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.statistics-dashboard .chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+.statistics-dashboard .summary-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border: 1px solid #e9ecef;
+}
+
+.statistics-dashboard .summary-section h6 {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.statistics-dashboard .recommendations ul li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.statistics-dashboard .recommendations ul li:last-child {
+    border-bottom: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .statistics-dashboard .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .statistics-dashboard .chart-container {
+        height: 200px;
+    }
+    
+    .statistics-dashboard .stat-number {
+        font-size: 2rem;
+    }
+    
+    .statistics-dashboard .stat-icon {
+        font-size: 1.5rem;
+    }
 }
 </style>
 

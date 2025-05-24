@@ -438,6 +438,37 @@ db.serialize(() => {
             console.log('✅ Users table streak column ready');
         }
     });
+
+    // Create IP tracking table for admin analytics
+    db.run(`CREATE TABLE IF NOT EXISTS ip_visits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ip_address TEXT NOT NULL,
+        user_agent TEXT,
+        referer TEXT,
+        page_path TEXT,
+        country TEXT,
+        city TEXT,
+        first_visit DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_visit DATETIME DEFAULT CURRENT_TIMESTAMP,
+        visit_count INTEGER DEFAULT 1,
+        is_unique INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating ip_visits table:', err);
+        } else {
+            console.log('✅ IP visits tracking table ready');
+        }
+    });
+
+    // Create unique index on ip_address for faster lookups
+    db.run(`CREATE INDEX IF NOT EXISTS idx_ip_visits_ip ON ip_visits(ip_address)`, (err) => {
+        if (err) {
+            console.error('Error creating IP index:', err);
+        } else {
+            console.log('✅ IP visits index ready');
+        }
+    });
 });
 
 // Initialize all achievements in the database

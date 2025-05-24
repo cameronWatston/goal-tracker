@@ -191,6 +191,104 @@
             </div>
         </div>
 
+        <!-- IP Analytics Row -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-lg-6 mb-3">
+                <div class="metric-card metric-ips">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="metric-menu">
+                            <button class="btn btn-sm" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/admin/ip-analytics">View IP Analytics</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="showIPTrends()">IP Trends</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-number" data-target="<%= ipAnalytics.unique_ips %>"><%= ipAnalytics.unique_ips %></h3>
+                        <p class="metric-label">Unique Visitors</p>
+                        <div class="metric-change">
+                            <span class="change-indicator positive">
+                                <i class="fas fa-eye"></i>
+                                <span><%= ipAnalytics.total_visits %></span>
+                            </span>
+                            <span class="change-period">total visits</span>
+                        </div>
+                    </div>
+                    <div class="metric-chart">
+                        <canvas id="ipsChart" height="40"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 mb-3">
+                <div class="metric-card metric-new-ips">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-number" data-target="<%= ipAnalytics.new_ips_today %>"><%= ipAnalytics.new_ips_today %></h3>
+                        <p class="metric-label">New IPs Today</p>
+                        <div class="metric-change">
+                            <span class="change-indicator positive">
+                                <i class="fas fa-calendar-week"></i>
+                                <span><%= ipAnalytics.new_ips_week %></span>
+                            </span>
+                            <span class="change-period">this week</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 mb-3">
+                <div class="metric-card metric-active-ips">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-signal"></i>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-number" data-target="<%= ipAnalytics.active_ips_today %>"><%= ipAnalytics.active_ips_today %></h3>
+                        <p class="metric-label">Active Today</p>
+                        <div class="metric-change">
+                            <span class="change-indicator positive">
+                                <i class="fas fa-clock"></i>
+                                <span><%= ipAnalytics.avg_visits_per_ip %></span>
+                            </span>
+                            <span class="change-period">avg visits/IP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 mb-3">
+                <div class="metric-card metric-visit-analytics">
+                    <div class="metric-header">
+                        <div class="metric-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                    </div>
+                    <div class="metric-content">
+                        <h3 class="metric-number" data-target="<%= ipAnalytics.max_visits_from_single_ip %>"><%= ipAnalytics.max_visits_from_single_ip %></h3>
+                        <p class="metric-label">Max Visits/IP</p>
+                        <div class="metric-change">
+                            <a href="/admin/ip-analytics" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-external-link-alt"></i>
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Analytics and Management Row -->
         <div class="row mb-4">
             <!-- Real-time Analytics -->
@@ -328,6 +426,19 @@
                                 <div class="item-content">
                                     <h6>Backup & Security</h6>
                                     <p>Database backups and security monitoring</p>
+                                </div>
+                                <div class="item-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                            </div>
+
+                            <div class="management-item" onclick="window.location.href='/admin/ip-analytics'">
+                                <div class="item-icon analytics">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div class="item-content">
+                                    <h6>IP Analytics</h6>
+                                    <p>Monitor unique visitors and analyze traffic patterns</p>
                                 </div>
                                 <div class="item-arrow">
                                     <i class="fas fa-arrow-right"></i>
@@ -1456,6 +1567,7 @@ document.getElementById('confirmUpgrade').addEventListener('click', function() {
 .item-icon.email { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
 .item-icon.reports { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
 .item-icon.backup { background: linear-gradient(135deg, #06b6d4, #0891b2); }
+.item-icon.analytics { background: linear-gradient(135deg, #667eea, #764ba2); }
 
 .item-content {
     flex: 1;

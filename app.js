@@ -81,6 +81,17 @@ app.use(session({
     }
 }));
 
+// Make user data available to all views
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    res.locals.stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY || null;
+    next();
+});
+
+// IP tracking middleware for admin analytics
+const { trackIP } = require('./middleware/ipTracking');
+app.use(trackIP);
+
 // Set view engine and layout
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -88,13 +99,6 @@ app.use(expressLayouts);
 app.set('layout', 'layout');
 app.set("layout extractScripts", true);
 app.set("layout extractStyles", true);
-
-// Make user data available to all views
-app.use((req, res, next) => {
-    res.locals.user = req.session.user || null;
-    res.locals.stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY || null;
-    next();
-});
 
 // Middleware to check if user is authenticated
 const isAuthenticated = (req, res, next) => {
@@ -126,6 +130,24 @@ app.get('/contact', (req, res) => {
         error: null,
         success: null,
         formData: {}
+    });
+});
+
+// Privacy Policy page
+app.get('/privacy', (req, res) => {
+    res.render('privacy-policy', { 
+        title: 'Privacy Policy - Goal Tracker',
+        description: 'Learn how Goal Tracker protects your privacy and handles your data.',
+        canonicalUrl: 'https://goaltracker.com/privacy'
+    });
+});
+
+// Terms of Service page
+app.get('/terms', (req, res) => {
+    res.render('terms-of-service', { 
+        title: 'Terms of Service - Goal Tracker',
+        description: 'Read our Terms of Service and user agreement for Goal Tracker.',
+        canonicalUrl: 'https://goaltracker.com/terms'
     });
 });
 

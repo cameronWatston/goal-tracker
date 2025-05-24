@@ -1129,6 +1129,56 @@
         main.container {
             margin-top: 70px;
         }
+
+        /* Footer Links Styling */
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            text-decoration: none;
+        }
+
+        .footer-link.admin-link {
+            color: #ffd700;
+        }
+
+        .footer-link.admin-link:hover {
+            color: #fff;
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .footer-separator {
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 300;
+        }
+
+        @media (max-width: 576px) {
+            .footer-links {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .footer-separator {
+                display: none;
+            }
+        }
     </style>
     <%- style %>
 </head>
@@ -1353,8 +1403,23 @@
     <!-- Footer -->
     <footer class="text-center">
         <div class="container">
-            <p class="mb-0">&copy; <%= new Date().getFullYear() %> Goal Tracker. All rights reserved.</p>
-            <p class="text-muted small mt-2">Achieve your goals with AI assistance</p>
+            <div class="row">
+                <div class="col-12">
+                    <div class="footer-links mb-3">
+                        <a href="/terms" class="footer-link">Terms of Service</a>
+                        <span class="footer-separator">•</span>
+                        <a href="/privacy" class="footer-link">Privacy Policy</a>
+                        <span class="footer-separator">•</span>
+                        <a href="/contact" class="footer-link">Contact Us</a>
+                        <% if (user && user.is_admin) { %>
+                            <span class="footer-separator">•</span>
+                            <a href="/admin" class="footer-link admin-link">Admin</a>
+                        <% } %>
+                    </div>
+                    <p class="mb-0">&copy; <%= new Date().getFullYear() %> Goal Tracker. All rights reserved.</p>
+                    <p class="text-muted small mt-2">Achieve your goals with AI assistance</p>
+                </div>
+            </div>
         </div>
     </footer>
 

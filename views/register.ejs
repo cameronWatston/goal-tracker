@@ -39,12 +39,41 @@
                         </div>
                         <div class="form-text">At least 6 characters long</div>
                     </div>
+
+                    <!-- User Agreement Section -->
                     <div class="mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
-                            <label class="form-check-label" for="terms">
-                                I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
-                            </label>
+                        <div class="agreement-section">
+                            <h6 class="mb-3 text-dark">User Agreement</h6>
+                            
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    I have read and agree to the 
+                                    <a href="/terms" target="_blank" class="text-primary text-decoration-none fw-medium">
+                                        Terms of Service <i class="fas fa-external-link-alt fa-xs"></i>
+                                    </a>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="agreePrivacy" name="agreePrivacy" required>
+                                <label class="form-check-label" for="agreePrivacy">
+                                    I have read and agree to the 
+                                    <a href="/privacy" target="_blank" class="text-primary text-decoration-none fw-medium">
+                                        Privacy Policy <i class="fas fa-external-link-alt fa-xs"></i>
+                                    </a>
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="agreeEmails" name="agreeEmails">
+                                <label class="form-check-label" for="agreeEmails">
+                                    <small class="text-muted">
+                                        I would like to receive occasional updates and goal achievement tips via email 
+                                        <span class="text-muted">(optional)</span>
+                                    </small>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="d-grid">
@@ -57,4 +86,63 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
+
+<style>
+.agreement-section {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.agreement-section h6 {
+    color: #495057;
+    font-weight: 600;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-check-label {
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+.form-check-label a {
+    font-weight: 500;
+}
+
+.form-check-label a:hover {
+    text-decoration: underline !important;
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-check-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+.text-muted small {
+    font-size: 0.8rem;
+}
+
+.bg-light.rounded {
+    border-left: 4px solid #667eea;
+}
+
+@media (max-width: 576px) {
+    .agreement-section {
+        padding: 1rem;
+    }
+    
+    .form-check-label {
+        font-size: 0.85rem;
+    }
+}
+</style> 

@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../db/init');
 const { isAdmin } = require('../middleware/auth');
 const stripeService = require('../utils/stripeService');
+const { getIPAnalytics, getTopIPs, getRecentIPVisits, getIPTrends } = require('../middleware/ipTracking');
 
 // Apply admin middleware to all routes
 router.use(isAdmin);
@@ -10,7 +11,7 @@ router.use(isAdmin);
 // Admin dashboard
 router.get('/', async (req, res) => {
     try {
-        // Get comprehensive real metrics
+        // Get comprehensive real metrics including IP analytics
         const [
             userCount, 
             goalCount, 
@@ -21,7 +22,8 @@ router.get('/', async (req, res) => {
             goalCompletionData,
             revenueData,
             communityStats,
-            systemStats
+            systemStats,
+            ipAnalytics
         ] = await Promise.all([
             getUserCount(),
             getGoalCount(),
@@ -32,7 +34,8 @@ router.get('/', async (req, res) => {
             getGoalCompletionMetrics(),
             getRevenueMetrics(),
             getCommunityStats(),
-            getSystemStats()
+            getSystemStats(),
+            getIPAnalytics()
         ]);
         
         res.render('admin/dashboard', {
@@ -47,6 +50,7 @@ router.get('/', async (req, res) => {
             revenueData,
             communityStats,
             systemStats,
+            ipAnalytics,
             user: req.session.user
         });
     } catch (error) {
@@ -353,6 +357,39 @@ router.post('/posts/:id/delete', async (req, res) => {
     } catch (error) {
         console.error('Error deleting post:', error);
         res.status(500).json({ error: 'Failed to delete post' });
+    }
+});
+
+// IP Analytics page
+router.get('/ip-analytics', async (req, res) => {
+    try {
+        // Get comprehensive IP analytics data
+        const [
+            ipAnalytics,
+            topIPs,
+            recentVisits,
+            ipTrends
+        ] = await Promise.all([
+            getIPAnalytics(),
+            getTopIPs(20),
+            getRecentIPVisits(50),
+            getIPTrends()
+        ]);
+
+        res.render('admin/ip-analytics', {
+            title: 'IP Analytics - Admin',
+            ipAnalytics,
+            topIPs,
+            recentVisits,
+            ipTrends,
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Error loading IP analytics:', error);
+        res.status(500).render('error', {
+            title: 'Error - Goal Tracker',
+            error: 'Failed to load IP analytics'
+        });
     }
 });
 
@@ -845,6 +882,67 @@ router.get('/system/status', async (req, res) => {
     } catch (error) {
         console.error('Error getting system status:', error);
         res.status(500).json({ error: 'Failed to get system status' });
+    }
+});
+
+// IP tracking test endpoint
+router.get('/test/ip-tracking', async (req, res) => {
+    try {
+        // Get recent IP tracking activity
+        const recentActivity = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT 
+                    COUNT(*) as total_tracked_ips,
+                    COUNT(CASE WHEN DATE(first_visit) = DATE('now') THEN 1 END) as new_today,
+                    COUNT(CASE WHEN DATE(last_visit) >= DATE('now', '-1 hour') THEN 1 END) as active_last_hour,
+                    MAX(last_visit) as most_recent_visit
+                FROM ip_visits
+            `, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows[0]);
+            });
+        });
+
+        // Get latest IP entries
+        const latestIPs = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT ip_address, visit_count, last_visit, page_path
+                FROM ip_visits 
+                ORDER BY last_visit DESC 
+                LIMIT 5
+            `, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        const isWorking = recentActivity.total_tracked_ips > 0;
+        
+        res.json({
+            status: isWorking ? 'working' : 'no_data',
+            message: isWorking ? 'IP tracking is active and collecting data' : 'No IP data found - tracking may not be working',
+            data: {
+                total_tracked_ips: recentActivity.total_tracked_ips || 0,
+                new_today: recentActivity.new_today || 0,
+                active_last_hour: recentActivity.active_last_hour || 0,
+                most_recent_visit: recentActivity.most_recent_visit || null,
+                latest_ips: latestIPs || []
+            },
+            privacy_note: 'IPs are anonymized by removing the last octet for privacy compliance',
+            compliance: {
+                anonymized: true,
+                retention_days: 90,
+                excludes_bots: true,
+                excludes_admin: true
+            }
+        });
+    } catch (error) {
+        console.error('Error testing IP tracking:', error);
+        res.status(500).json({ 
+            status: 'error',
+            message: 'Failed to test IP tracking',
+            error: error.message 
+        });
     }
 });
 

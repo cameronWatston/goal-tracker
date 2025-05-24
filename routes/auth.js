@@ -12,7 +12,43 @@ const generateVerificationCode = () => {
 // Register route - Step 1: Initial registration
 router.post('/register', async (req, res) => {
     try {
-        const { username, email, password } = req.body;
+        const { username, email, password, agreeTerms, agreePrivacy, agreeEmails } = req.body;
+        
+        // Validate required agreements
+        if (!agreeTerms || !agreePrivacy) {
+            return res.render('register', { 
+                title: 'Register - Goal Tracker',
+                error: 'You must agree to the Terms of Service and Privacy Policy to create an account.',
+                formData: req.body
+            });
+        }
+        
+        // Basic validation
+        if (!username || username.length < 3) {
+            return res.render('register', { 
+                title: 'Register - Goal Tracker',
+                error: 'Username must be at least 3 characters long.',
+                formData: req.body
+            });
+        }
+        
+        if (!password || password.length < 6) {
+            return res.render('register', { 
+                title: 'Register - Goal Tracker',
+                error: 'Password must be at least 6 characters long.',
+                formData: req.body
+            });
+        }
+        
+        // Email format validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || !emailRegex.test(email)) {
+            return res.render('register', { 
+                title: 'Register - Goal Tracker',
+                error: 'Please provide a valid email address.',
+                formData: req.body
+            });
+        }
         
         // Check if user already exists
         db.get('SELECT * FROM users WHERE username = ? OR email = ?', [username, email], async (err, user) => {

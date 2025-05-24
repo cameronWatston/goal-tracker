@@ -281,83 +281,39 @@
     <section class="testimonials-section">
         <div class="container">
             <div class="section-header text-center">
-                <h2 class="section-title">Real People, Real Results</h2>
-                <p class="section-description">Join thousands who've transformed their lives with AI-powered goal achievement</p>
+                <h2 class="section-title">Building Real Success Stories</h2>
+                <p class="section-description">We're committed to featuring only authentic achievements from real users</p>
             </div>
-            <div class="testimonials-grid">
-                <div class="testimonial-card">
-                    <div class="testimonial-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
+            
+            <div class="authentic-promise">
+                <div class="promise-content text-center">
+                    <div class="promise-icon">
+                        <i class="fas fa-shield-check"></i>
                     </div>
-                    <blockquote class="testimonial-quote">
-                        "I've tried every goal-setting app out there. This AI coach is different – it actually understands me and adapts to my style. I've achieved more in 3 months than in the past 2 years."
-                    </blockquote>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <div class="avatar-placeholder">SJ</div>
+                    <h3 class="promise-title">Our Authenticity Promise</h3>
+                    <p class="promise-description">
+                        As a growing platform, we believe in transparency and genuine user experiences. 
+                        We don't use fake reviews or inflated numbers. When our users achieve real results, 
+                        we'll celebrate those authentic victories here.
+                    </p>
+                    <div class="promise-features">
+                        <div class="promise-feature">
+                            <i class="fas fa-user-check"></i>
+                            <span>Verified user stories only</span>
                         </div>
-                        <div class="author-info">
-                            <h4>Sarah Johnson</h4>
-                            <p>Entrepreneur • Lost 30lbs, Launched 2 businesses</p>
+                        <div class="promise-feature">
+                            <i class="fas fa-ban"></i>
+                            <span>No fake testimonials</span>
                         </div>
-                    </div>
-                    <div class="testimonial-achievement">
-                        <span class="achievement-badge">🏆 3 Major Goals Completed</span>
-                    </div>
-                </div>
-                
-                <div class="testimonial-card featured">
-                    <div class="testimonial-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <blockquote class="testimonial-quote">
-                        "The AI predicted my motivation dips and had perfect suggestions ready. It's like having a mind reader as your personal coach. Game-changing technology."
-                    </blockquote>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <div class="avatar-placeholder">MC</div>
-                        </div>
-                        <div class="author-info">
-                            <h4>Michael Chen</h4>
-                            <p>Software Engineer • Learned 3 languages, Ran marathon</p>
+                        <div class="promise-feature">
+                            <i class="fas fa-heart"></i>
+                            <span>Real achievements celebrated</span>
                         </div>
                     </div>
-                    <div class="testimonial-achievement">
-                        <span class="achievement-badge">🚀 127% Goal Success Rate</span>
-                    </div>
-                </div>
-
-                <div class="testimonial-card">
-                    <div class="testimonial-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <blockquote class="testimonial-quote">
-                        "Finally found something that works! The AI breaks everything down so I never feel overwhelmed. My friends are asking what changed – it's this app."
-                    </blockquote>
-                    <div class="testimonial-author">
-                        <div class="author-avatar">
-                            <div class="avatar-placeholder">ER</div>
-                        </div>
-                        <div class="author-info">
-                            <h4>Emily Rodriguez</h4>
-                            <p>Teacher • Wrote a book, Started side business</p>
-                        </div>
-                    </div>
-                    <div class="testimonial-achievement">
-                        <span class="achievement-badge">📚 2 Life-Changing Goals</span>
-                    </div>
+                    <p class="promise-note">
+                        <strong>Be among our first featured success stories!</strong> 
+                        Achieve your goals and share your journey with us.
+                    </p>
                 </div>
             </div>
         </div>
@@ -1318,6 +1274,101 @@ document.addEventListener('DOMContentLoaded', function() {
     gap: 0.5rem;
     font-size: 0.9rem;
     opacity: 0.8;
+}
+
+/* Authenticity Promise Section */
+.authentic-promise {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 0;
+}
+
+.promise-content {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    border: 1px solid #dee2e6;
+    position: relative;
+    overflow: hidden;
+}
+
+.promise-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.promise-icon {
+    font-size: 4rem;
+    color: #667eea;
+    margin-bottom: 1.5rem;
+}
+
+.promise-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+}
+
+.promise-description {
+    font-size: 1.1rem;
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+.promise-features {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.promise-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.promise-feature i {
+    color: #28a745;
+    font-size: 1.3rem;
+}
+
+.promise-note {
+    font-size: 1rem;
+    color: #667eea;
+    font-weight: 600;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+@media (max-width: 768px) {
+    .promise-features {
+        flex-direction: column;
+        gap: 1.5rem;
+        align-items: center;
+    }
+    
+    .promise-content {
+        padding: 2rem 1.5rem;
+    }
+    
+    .promise-title {
+        font-size: 1.5rem;
+    }
 }
 
 /* Responsive Design */

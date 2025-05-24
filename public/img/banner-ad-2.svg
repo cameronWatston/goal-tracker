@@ -1,0 +1,19 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="80" height="80" rx="10" fill="url(#grad2)"/>
+  <g transform="translate(15,15)">
+    <!-- Rocket icon -->
+    <path d="M25 10C25 10 20 5 15 5C10 5 5 10 5 15C5 20 10 25 15 25C20 25 25 20 25 20L30 25L35 20L30 15L25 10Z" fill="white" opacity="0.9"/>
+    <circle cx="18" cy="12" r="2" fill="white" opacity="0.7"/>
+    <!-- Flame -->
+    <path d="M10 35L15 25L20 35C20 38 18 40 15 40C12 40 10 38 10 35Z" fill="white" opacity="0.6"/>
+    <!-- Speed lines -->
+    <line x1="5" y1="20" x2="10" y2="20" stroke="white" stroke-width="2" opacity="0.5"/>
+    <line x1="5" y1="25" x2="8" y2="25" stroke="white" stroke-width="2" opacity="0.5"/>
+  </g>
+</svg> 

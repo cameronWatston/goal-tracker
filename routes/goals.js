@@ -612,10 +612,23 @@ router.post('/:id/logs', (req, res) => {
         db.run(
             'INSERT INTO goal_logs (goal_id, content, mood, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)',
             [goalId, content, mood || 'neutral'],
-            function(err) {
+            async function(err) {
                 if (err) {
                     console.error('Error creating log:', err);
                     return res.status(500).json({ error: 'Failed to create log' });
+                }
+                
+                // Track check-in achievements
+                try {
+                    const AchievementTracker = require('../utils/achievements');
+                    const unlockedAchievements = await AchievementTracker.trackCheckInLogged(userId, mood);
+                    
+                    if (unlockedAchievements.length > 0) {
+                        console.log(`🏆 User ${userId} unlocked ${unlockedAchievements.length} achievements for logging a check-in`);
+                    }
+                } catch (achievementError) {
+                    console.error('Error tracking check-in achievements:', achievementError);
+                    // Don't fail the log creation if achievement tracking fails
                 }
                 
                 // Return success
@@ -988,11 +1001,16 @@ router.put('/milestone/:id', async (req, res) => {
             // Convert metrics to JSON string
             const metricsJson = JSON.stringify(metrics || []);
             
-            // Update the milestone
-            db.run(
-                'UPDATE milestones SET title = ?, description = ?, target_date = ?, status = ?, metrics = ? WHERE id = ?',
-                [title, description, targetDate, status, metricsJson, milestoneId],
-        async function(err) {
+            // Update the milestone with completed_at timestamp if being completed
+            const updateQuery = status === 'completed' && milestone.status !== 'completed' 
+                ? 'UPDATE milestones SET title = ?, description = ?, target_date = ?, status = ?, metrics = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?'
+                : 'UPDATE milestones SET title = ?, description = ?, target_date = ?, status = ?, metrics = ? WHERE id = ?';
+            
+            const updateParams = status === 'completed' && milestone.status !== 'completed'
+                ? [title, description, targetDate, status, metricsJson, milestoneId]
+                : [title, description, targetDate, status, metricsJson, milestoneId];
+            
+            db.run(updateQuery, updateParams, async function(err) {
                     if (err) {
                         console.error('Error updating milestone:', err);
                         return res.status(500).json({ error: 'Failed to update milestone' });

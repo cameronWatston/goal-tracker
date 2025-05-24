@@ -1,0 +1,394 @@
+/* Banner Ad Styles */
+.banner-ad {
+    position: relative;
+    margin: 1.5rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease-out;
+}
+
+.banner-ad:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Horizontal Banner (Default) */
+.banner-ad.horizontal .banner-ad-content {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    gap: 1.5rem;
+    min-height: 120px;
+}
+
+.banner-ad.horizontal .banner-ad-image {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-ad.horizontal .banner-ad-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-ad.horizontal .banner-ad-text {
+    flex: 1;
+}
+
+/* Vertical Banner */
+.banner-ad.vertical {
+    max-width: 300px;
+}
+
+.banner-ad.vertical .banner-ad-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.banner-ad.vertical .banner-ad-image {
+    margin: 0 auto 1rem;
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-ad.vertical .banner-ad-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Square Banner */
+.banner-ad.square {
+    aspect-ratio: 1;
+    max-width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-ad.square .banner-ad-content {
+    padding: 2rem;
+    text-align: center;
+    width: 100%;
+}
+
+.banner-ad.square .banner-ad-image {
+    margin: 0 auto 1rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Text Styling */
+.banner-ad-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.banner-ad-description {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.banner-ad-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.banner-ad-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.banner-ad-btn i {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.banner-ad-btn:hover i {
+    transform: translateX(2px);
+}
+
+/* Close Button */
+.banner-ad-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.banner-ad-close:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Advertisement Label */
+.banner-ad-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: rgba(0, 0, 0, 0.1);
+    color: #64748b;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 200px;
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+        max-height: 0;
+        margin: 0;
+        padding: 0;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .banner-ad.horizontal .banner-ad-content {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .banner-ad.horizontal .banner-ad-image {
+        margin-bottom: 1rem;
+    }
+    
+    .banner-ad-title {
+        font-size: 1rem;
+    }
+    
+    .banner-ad-description {
+        font-size: 0.85rem;
+    }
+    
+    .banner-ad-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .banner-ad {
+        margin: 1rem 0;
+    }
+    
+    .banner-ad .banner-ad-content {
+        padding: 1rem;
+    }
+    
+    .banner-ad-title {
+        font-size: 0.95rem;
+    }
+    
+    .banner-ad-description {
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Special Banner Types */
+.banner-ad.featured {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+}
+
+.banner-ad.featured .banner-ad-title {
+    color: white;
+}
+
+.banner-ad.featured .banner-ad-description {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.banner-ad.featured .banner-ad-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.banner-ad.featured .banner-ad-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.banner-ad.featured .banner-ad-close {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.banner-ad.featured .banner-ad-label {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Minimal Banner */
+.banner-ad.minimal {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    box-shadow: none;
+}
+
+.banner-ad.minimal:hover {
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Sticky Top Banner */
+.banner-ad.sticky-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    margin: 0;
+    border-radius: 0;
+    background: #1e40af;
+    color: white;
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+.banner-ad.sticky-top .banner-ad-content {
+    padding: 0.75rem 1rem;
+    min-height: auto;
+}
+
+.banner-ad.sticky-top .banner-ad-title {
+    color: white;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+}
+
+.banner-ad.sticky-top .banner-ad-description {
+    display: none;
+}
+
+.banner-ad.sticky-top .banner-ad-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Sidebar Banner */
+.banner-ad.sidebar {
+    position: sticky;
+    top: 100px;
+    max-width: 250px;
+}
+
+/* Footer Banner */
+.banner-ad.footer-banner {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    max-width: 300px;
+    z-index: 1000;
+    animation: slideInFromBottom 0.5s ease-out;
+}
+
+@keyframes slideInFromBottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner-ad.footer-banner {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+} 

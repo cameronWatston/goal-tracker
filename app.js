@@ -180,6 +180,30 @@ app.get('/profile', (req, res) => {
     res.redirect('/auth/profile');
 });
 
+// Add banner demo route
+app.get('/banner-demo', (req, res) => {
+    res.render('banner-demo', {
+        title: 'Banner Ads Demo - Goal Tracker'
+    });
+});
+
+// Add ad click tracking route
+app.post('/api/track-ad-click', (req, res) => {
+    const { adId } = req.body;
+    const userId = req.session.user ? req.session.user.id : null;
+    const timestamp = new Date().toISOString();
+    
+    // Log ad click for analytics (you can expand this to store in database)
+    console.log(`Ad Click Tracked: ${adId} by user ${userId || 'anonymous'} at ${timestamp}`);
+    
+    // You could store this in a database table for analytics
+    // const db = require('./db/init');
+    // db.run('INSERT INTO ad_clicks (ad_id, user_id, clicked_at) VALUES (?, ?, ?)', 
+    //        [adId, userId, timestamp]);
+    
+    res.json({ success: true });
+});
+
 // Add notifications route
 app.get('/notifications', isAuthenticated, (req, res) => {
     const userId = req.session.user.id;

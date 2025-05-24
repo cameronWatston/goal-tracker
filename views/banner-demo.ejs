@@ -1,0 +1,136 @@
+<div class="row">
+    <div class="col-12">
+        <h1>Banner Ads Demo</h1>
+        <p class="lead">Showcasing different banner ad styles and layouts</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h3>Horizontal Banner (Default)</h3>
+        <%- include('partials/banner-ad', { 
+            type: 'horizontal',
+            ads: [{
+                id: 'demo-horizontal',
+                title: 'Achieve More with Premium Tools',
+                description: 'Unlock advanced goal tracking features and AI insights to reach your goals faster',
+                image: '/img/banner-ad-1.svg',
+                link: '/subscription',
+                buttonText: 'Upgrade Now',
+                type: 'internal'
+            }]
+        }) %>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Vertical Banner</h3>
+        <%- include('partials/banner-ad', { 
+            type: 'vertical',
+            ads: [{
+                id: 'demo-vertical',
+                title: 'Boost Productivity',
+                description: 'Discover tools to reach your goals',
+                image: '/img/banner-ad-2.svg',
+                link: '#',
+                buttonText: 'Learn More',
+                type: 'external'
+            }]
+        }) %>
+    </div>
+    
+    <div class="col-md-6">
+        <h3>Square Banner</h3>
+        <%- include('partials/banner-ad', { 
+            type: 'square',
+            ads: [{
+                id: 'demo-square',
+                title: 'Join Community',
+                description: 'Connect with others',
+                image: '/img/banner-ad-3.svg',
+                link: '/community',
+                buttonText: 'Explore',
+                type: 'internal'
+            }]
+        }) %>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h3>Featured Banner</h3>
+        <%- include('partials/banner-ad', { 
+            type: 'featured',
+            ads: [{
+                id: 'demo-featured',
+                title: '🚀 Premium Features Available',
+                description: 'Get unlimited goals, AI insights, advanced analytics, and priority support',
+                image: '/img/premium-features.svg',
+                link: '/subscription',
+                buttonText: 'Upgrade to Pro',
+                type: 'internal'
+            }]
+        }) %>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h3>Minimal Banner</h3>
+        <%- include('partials/banner-ad', { 
+            type: 'minimal',
+            ads: [{
+                id: 'demo-minimal',
+                title: 'Simple and Clean Ad',
+                description: 'Sometimes less is more - this minimal style blends seamlessly',
+                image: '/img/banner-ad-1.svg',
+                link: '#',
+                buttonText: 'Check it out',
+                type: 'external'
+            }]
+        }) %>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <h3>Random Banner (Refreshes each time)</h3>
+        <%- include('partials/banner-ad', { 
+            type: 'horizontal',
+            random: true
+        }) %>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5>Banner Ad Features</h5>
+                <ul>
+                    <li><strong>Responsive Design:</strong> Adapts to all screen sizes</li>
+                    <li><strong>Multiple Layouts:</strong> Horizontal, vertical, square, featured, minimal</li>
+                    <li><strong>Closeable:</strong> Users can close ads (remembers for 24 hours)</li>
+                    <li><strong>Click Tracking:</strong> Analytics integration ready</li>
+                    <li><strong>Smooth Animations:</strong> Slide in/out effects</li>
+                    <li><strong>Customizable:</strong> Easy to modify colors, content, and styles</li>
+                    <li><strong>Smart Targeting:</strong> Show different ads based on user status</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .row {
+        margin-bottom: 2rem;
+    }
+    
+    h3 {
+        color: #1e293b;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 0.5rem;
+    }
+</style> 

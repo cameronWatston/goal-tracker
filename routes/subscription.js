@@ -165,6 +165,19 @@ router.get('/success', async (req, res) => {
             req.session.user.subscription_plan = plan;
             console.log(`Updated user ${userId} to ${plan} plan (mock mode)`);
             
+            // Track subscription upgrade achievement
+            try {
+                const AchievementTracker = require('../utils/achievements');
+                const unlockedAchievements = await AchievementTracker.trackSubscriptionUpgrade(userId);
+                
+                if (unlockedAchievements.length > 0) {
+                    console.log(`🏆 User ${userId} unlocked ${unlockedAchievements.length} achievements for subscription upgrade`);
+                }
+            } catch (achievementError) {
+                console.error('Error tracking subscription upgrade achievement:', achievementError);
+                // Don't fail the subscription if achievement tracking fails
+            }
+            
             return res.redirect('/dashboard?subscribed=true');
         }
         
@@ -190,6 +203,19 @@ router.get('/success', async (req, res) => {
             // Update session
             req.session.user.subscription_plan = plan;
             console.log(`Updated user ${userId} to ${plan} plan with ID: ${subscriptionId}`);
+            
+            // Track subscription upgrade achievement
+            try {
+                const AchievementTracker = require('../utils/achievements');
+                const unlockedAchievements = await AchievementTracker.trackSubscriptionUpgrade(userId);
+                
+                if (unlockedAchievements.length > 0) {
+                    console.log(`🏆 User ${userId} unlocked ${unlockedAchievements.length} achievements for subscription upgrade`);
+                }
+            } catch (achievementError) {
+                console.error('Error tracking subscription upgrade achievement:', achievementError);
+                // Don't fail the subscription if achievement tracking fails
+            }
         } catch (verifyError) {
             console.error('Error verifying subscription:', verifyError);
             // Still continue to dashboard even if verification fails

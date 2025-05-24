@@ -230,7 +230,7 @@ class AchievementTracker {
             // Insert notification into notifications table with the achievement's icon
             const notificationId = await new Promise((resolve, reject) => {
                 db.run(
-                    'INSERT INTO notifications (user_id, title, content, type, icon, is_read, created_at) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)',
+                    'INSERT INTO notifications (user_id, title, message, type, icon, is_read, created_at) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)',
                     [userId, notificationTitle, notificationContent, 'achievement', icon, 0],
                     function(err) {
                         if (err) {
@@ -807,7 +807,7 @@ class AchievementTracker {
             const query = `SELECT COUNT(*) as count FROM milestones m
                           JOIN goals g ON m.goal_id = g.id
                           WHERE g.user_id = ? AND m.status = 'completed' 
-                          AND m.completed_at < m.target_date`;
+                          AND m.completed_at IS NOT NULL AND DATE(m.completed_at) < DATE(m.target_date)`;
             db.get(query, [userId], (err, row) => {
                 if (err) {
                     console.warn('Error counting milestones ahead of schedule:', err);

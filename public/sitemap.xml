@@ -33,7 +33,7 @@
     
     <!-- Subscription/Pricing -->
     <url>
-        <loc>https://goal-tracker.co.uksubscription</loc>
+        <loc>https://goal-tracker.co.uk/subscription</loc>
         <lastmod>2024-01-15</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
@@ -41,7 +41,7 @@
     
     <!-- Community Features -->
     <url>
-        <loc>https://goal-tracker.co.ukcommunity</loc>
+        <loc>https://goal-tracker.co.uk/community</loc>
         <lastmod>2024-01-15</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
@@ -62,20 +62,5 @@
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
-    
-    <!-- Privacy Policy (if exists) -->
-    <url>
-        <loc>https://goal-tracker.co.uk/privacy</loc>
-        <lastmod>2024-01-15</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.5</priority>
-    </url>
-    
-    <!-- Terms of Service (if exists) -->
-    <url>
-        <loc>https://goaltracker.com/terms</loc>
-        <lastmod>2024-01-15</lastmod>
-        <changefreq>yearly</changefreq>
-        <priority>0.5</priority>
-    </url>
+   
 </urlset> 

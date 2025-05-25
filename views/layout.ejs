@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title><%= locals.seo ? locals.seo.title : (title || 'Goal Tracker - Achieve More with AI') %></title>
     
-    <!-- SEO Meta Tags -->
-    <meta name="description" content="<%= locals.description || 'Goal Tracker - The #1 AI-powered platform for achieving your goals. Track progress, get personalized roadmaps, and transform your dreams into reality.' %>">
-    <meta name="keywords" content="goal tracking, goal achievement, AI goals, personal development, productivity, milestone tracking, success planning, goal setting">
+    <!-- Dynamic SEO Meta Tags -->
+    <meta name="description" content="<%= locals.seo ? locals.seo.description : (locals.description || 'Goal Tracker - The #1 AI-powered platform for achieving your goals. Track progress, get personalized roadmaps, and transform your dreams into reality.') %>">
+    <meta name="keywords" content="<%= locals.seo ? locals.seo.keywords : 'goal tracking, goal achievement, AI goals, personal development, productivity, milestone tracking, success planning, goal setting' %>">
     <meta name="author" content="Goal Tracker">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="<%= title %>">
-    <meta property="og:description" content="<%= locals.description || 'Transform your dreams into reality with AI-powered goal tracking. Join 25,000+ users achieving their biggest goals.' %>">
+    <meta property="og:title" content="<%= locals.seo ? locals.seo.ogTitle : (title || 'Goal Tracker - Achieve More with AI') %>">
+    <meta property="og:description" content="<%= locals.seo ? locals.seo.ogDescription : (locals.description || 'Transform your dreams into reality with AI-powered goal tracking. Join 25,000+ users achieving their biggest goals.') %>">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="<%= locals.canonicalUrl || 'https://goaltracker.com' %>">
-    <meta property="og:image" content="https://goaltracker.com/img/og-image.jpg">
+    <meta property="og:url" content="<%= locals.seo ? locals.seo.canonicalUrl : (locals.canonicalUrl || 'https://goaltracker.com') %>">
+    <meta property="og:image" content="<%= locals.seo ? locals.seo.ogImage : 'https://goaltracker.com/img/og-image.jpg' %>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="Goal Tracker">
@@ -26,14 +26,14 @@
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<%= title %>">
-    <meta name="twitter:description" content="<%= locals.description || 'Transform your dreams into reality with AI-powered goal tracking. Join 25,000+ users achieving their biggest goals.' %>">
-    <meta name="twitter:image" content="https://goaltracker.com/img/twitter-card.jpg">
+    <meta name="twitter:title" content="<%= locals.seo ? locals.seo.twitterTitle : (title || 'Goal Tracker - Achieve More with AI') %>">
+    <meta name="twitter:description" content="<%= locals.seo ? locals.seo.twitterDescription : (locals.description || 'Transform your dreams into reality with AI-powered goal tracking. Join 25,000+ users achieving their biggest goals.') %>">
+    <meta name="twitter:image" content="<%= locals.seo ? locals.seo.twitterImage : 'https://goaltracker.com/img/twitter-card.jpg' %>">
     <meta name="twitter:site" content="@goaltracker">
     <meta name="twitter:creator" content="@goaltracker">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="<%= locals.canonicalUrl || 'https://goaltracker.com' %>">
+    <link rel="canonical" href="<%= locals.seo ? locals.seo.canonicalUrl : (locals.canonicalUrl || 'https://goaltracker.com') %>">
     
     <!-- Additional SEO Tags -->
     <meta name="theme-color" content="#1e40af">
@@ -42,9 +42,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Goal Tracker">
     
+    <!-- Custom Meta Tags (if set by admin) -->
+    <% if (locals.seo && locals.seo.customMeta) { %>
+        <%- locals.seo.customMeta %>
+    <% } %>
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
+    <%= locals.seo ? JSON.stringify(locals.seo.structuredData, null, 2) : JSON.stringify({
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Goal Tracker",
@@ -70,7 +75,7 @@
             "name": "Goal Tracker",
             "email": "goaltrackers2001@gmail.com"
         }
-    }
+    }, null, 2) %>
     </script>
     
     <!-- Favicon -->
@@ -1384,6 +1389,22 @@
         </div>
     </nav>
 
+    <!-- AdSense for free users only (revenue generating) -->
+    <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
+    <div class="container mt-3 mb-2">
+        <div class="adsense-container">
+            <div class="adsense-placement top-banner">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="<%= adsenseConfig.clientId %>"
+                     data-ad-slot="1234567890"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
     <!-- Main Content -->
     <main class="container py-5">
         <% if (typeof message !== 'undefined' && message === 'account_deleted') { %>
@@ -1399,6 +1420,22 @@
             <%- typeof content !== 'undefined' ? content : '' %>
         <% } %>
     </main>
+
+    <!-- AdSense Bottom Banner (for free users only) -->
+    <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
+    <div class="container mb-4">
+        <div class="adsense-container">
+            <div class="adsense-placement bottom-banner">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="<%= adsenseConfig.clientId %>"
+                     data-ad-slot="9876543210"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+    </div>
+    <% } %>
 
     <!-- Footer -->
     <footer class="text-center">
@@ -1454,6 +1491,22 @@
     
     <!-- Enhanced Navbar JavaScript -->
     <script src="/js/navbar.js"></script>
+    
+    <!-- AdSense JavaScript (for free users only) -->
+    <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseConfig.clientId %>"></script>
+    <script>
+        // Initialize AdSense ads
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        
+        // AdSense Auto Ads (optional - enables automatic ad placement)
+        (adsbygoogle = window.adsbygoogle || []).push({
+            google_ad_client: "<%= adsenseConfig.clientId %>",
+            enable_page_level_ads: true
+        });
+    </script>
+    <% } %>
     
     <!-- Smart Contact Navigation -->
     <script>

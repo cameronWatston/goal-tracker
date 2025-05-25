@@ -505,6 +505,233 @@ db.serialize(() => {
             console.log('✅ IP visits index ready');
         }
     });
+
+    // SEO settings table - NEW
+    db.run(`CREATE TABLE IF NOT EXISTS seo_settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        page_path TEXT NOT NULL UNIQUE,
+        title TEXT,
+        description TEXT,
+        keywords TEXT,
+        og_title TEXT,
+        og_description TEXT,
+        og_image TEXT,
+        twitter_title TEXT,
+        twitter_description TEXT,
+        twitter_image TEXT,
+        canonical_url TEXT,
+        structured_data TEXT,
+        custom_meta TEXT,
+        is_active BOOLEAN DEFAULT TRUE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating seo_settings table:', err);
+        } else {
+            console.log('✅ SEO settings table ready');
+            
+            // Insert default SEO settings
+            const defaultSeoSettings = [
+                {
+                    page_path: '/',
+                    title: 'Goal Tracker - Achieve More with AI',
+                    description: 'Transform your dreams into reality with our AI-powered goal tracking platform. Join 25,000+ users achieving their biggest goals.',
+                    keywords: 'goal tracking, goal achievement, AI goals, personal development, productivity, milestone tracking, success planning, goal setting',
+                    og_title: 'Goal Tracker - AI-Powered Goal Achievement',
+                    og_description: 'Transform your dreams into reality with AI-powered goal tracking. Join 25,000+ users achieving their biggest goals.',
+                    og_image: 'https://goaltracker.com/img/og-image.jpg',
+                    canonical_url: 'https://goaltracker.com'
+                },
+                {
+                    page_path: '/login',
+                    title: 'Login - Goal Tracker',
+                    description: 'Sign in to your Goal Tracker account and continue achieving your goals.',
+                    canonical_url: 'https://goaltracker.com/login'
+                },
+                {
+                    page_path: '/register',
+                    title: 'Register - Goal Tracker',
+                    description: 'Create your free Goal Tracker account and start achieving your dreams today.',
+                    canonical_url: 'https://goaltracker.com/register'
+                },
+                {
+                    page_path: '/contact',
+                    title: 'Contact Us - Goal Tracker',
+                    description: 'Get in touch with the Goal Tracker team. We\'re here to help you achieve your goals.',
+                    canonical_url: 'https://goaltracker.com/contact'
+                }
+            ];
+
+            defaultSeoSettings.forEach(setting => {
+                db.run(`INSERT OR IGNORE INTO seo_settings 
+                    (page_path, title, description, keywords, og_title, og_description, og_image, canonical_url) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [setting.page_path, setting.title, setting.description, setting.keywords, 
+                     setting.og_title, setting.og_description, setting.og_image, setting.canonical_url],
+                    (err) => {
+                        if (err) {
+                            console.error('Error inserting default SEO setting:', err);
+                        }
+                    });
+            });
+        }
+    });
+
+    // External Ads table - Simplified for revenue only
+    db.run(`CREATE TABLE IF NOT EXISTS external_ads (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL,
+        image_url TEXT,
+        link_url TEXT NOT NULL,
+        button_text TEXT NOT NULL,
+        placement TEXT NOT NULL DEFAULT 'horizontal',
+        is_active BOOLEAN DEFAULT TRUE,
+        start_date DATETIME,
+        end_date DATETIME,
+        external_tracking_code TEXT,
+        external_script TEXT,
+        revenue_per_click DECIMAL(10,4) DEFAULT 0,
+        revenue_per_impression DECIMAL(10,4) DEFAULT 0,
+        max_daily_budget DECIMAL(10,2),
+        current_daily_spend DECIMAL(10,2) DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating external_ads table:', err);
+        } else {
+            console.log('✅ External ads table ready');
+        }
+    });
+
+    // External Ad performance tracking table
+    db.run(`CREATE TABLE IF NOT EXISTS external_ad_performance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ad_id INTEGER NOT NULL,
+        user_id INTEGER,
+        action_type TEXT NOT NULL,
+        user_agent TEXT,
+        ip_address TEXT,
+        page_url TEXT,
+        revenue_generated DECIMAL(10,4) DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (ad_id) REFERENCES external_ads(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating external_ad_performance table:', err);
+        } else {
+            console.log('✅ External ad performance tracking table ready');
+        }
+    });
+
+    // Blog system tables for SEO
+    db.run(`CREATE TABLE IF NOT EXISTS blog_posts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        slug TEXT UNIQUE NOT NULL,
+        excerpt TEXT,
+        content TEXT NOT NULL,
+        author_id INTEGER NOT NULL,
+        featured_image TEXT,
+        category_id INTEGER,
+        status TEXT DEFAULT 'draft',
+        meta_title TEXT,
+        meta_description TEXT,
+        meta_keywords TEXT,
+        view_count INTEGER DEFAULT 0,
+        is_featured BOOLEAN DEFAULT FALSE,
+        published_at DATETIME,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (author_id) REFERENCES users(id),
+        FOREIGN KEY (category_id) REFERENCES blog_categories(id)
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating blog_posts table:', err);
+        } else {
+            console.log('✅ Blog posts table ready');
+        }
+    });
+
+    db.run(`CREATE TABLE IF NOT EXISTS blog_categories (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        slug TEXT NOT NULL UNIQUE,
+        description TEXT,
+        meta_title TEXT,
+        meta_description TEXT,
+        post_count INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating blog_categories table:', err);
+        } else {
+            console.log('✅ Blog categories table ready');
+            initializeBlogCategories();
+        }
+    });
+
+    db.run(`CREATE TABLE IF NOT EXISTS blog_tags (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE,
+        slug TEXT NOT NULL UNIQUE,
+        post_count INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating blog_tags table:', err);
+        } else {
+            console.log('✅ Blog tags table ready');
+        }
+    });
+
+    db.run(`CREATE TABLE IF NOT EXISTS blog_post_tags (
+        post_id INTEGER NOT NULL,
+        tag_id INTEGER NOT NULL,
+        PRIMARY KEY (post_id, tag_id),
+        FOREIGN KEY (post_id) REFERENCES blog_posts(id) ON DELETE CASCADE,
+        FOREIGN KEY (tag_id) REFERENCES blog_tags(id) ON DELETE CASCADE
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating blog_post_tags table:', err);
+        } else {
+            console.log('✅ Blog post tags table ready');
+        }
+    });
+
+    // Create an admin user if none exists
+    db.get("SELECT COUNT(*) as count FROM users WHERE is_admin = 1", (err, row) => {
+        if (err) {
+            console.error('Error checking for admin users:', err);
+            return;
+        }
+        
+        if (row.count === 0) {
+            const adminPassword = 'admin123'; // Change this in production!
+            
+            bcrypt.hash(adminPassword, 10, (err, hash) => {
+                if (err) {
+                    console.error('Error hashing admin password:', err);
+                    return;
+                }
+                
+                db.run("INSERT INTO users (username, email, password, is_admin, is_verified) VALUES (?, ?, ?, ?, ?)",
+                    ['admin', 'admin@goaltracker.com', hash, true, true], 
+                    function(err) {
+                        if (err) {
+                            console.error('Error creating admin user:', err);
+                        } else {
+                            console.log('✅ Admin user created (username: admin, password: admin123)');
+                            console.log('⚠️  Please change the admin password after first login!');
+                        }
+                    });
+            });
+        }
+    });
 });
 
 // Initialize all achievements in the database
@@ -599,6 +826,62 @@ function initializeAchievements() {
 
     achievements.forEach(insertAchievement);
     console.log('🏆 Initialized 50 achievements in database');
+}
+
+// Initialize blog categories
+function initializeBlogCategories() {
+    const defaultCategories = [
+        {
+            name: 'Development',
+            slug: 'development',
+            description: 'Technical insights and development best practices',
+            meta_title: 'Development Blog - Goal Tracker',
+            meta_description: 'Technical articles about Goal Tracker development, best practices, and insights.'
+        },
+        {
+            name: 'Product Updates',
+            slug: 'product-updates',
+            description: 'Latest features, improvements, and announcements',
+            meta_title: 'Product Updates - Goal Tracker',
+            meta_description: 'Stay updated with the latest Goal Tracker features, improvements, and announcements.'
+        },
+        {
+            name: 'Goal Achievement',
+            slug: 'goal-achievement',
+            description: 'Tips, strategies, and insights for achieving your goals',
+            meta_title: 'Goal Achievement Tips - Goal Tracker',
+            meta_description: 'Expert tips and strategies for effective goal setting and achievement using Goal Tracker.'
+        },
+        {
+            name: 'Case Studies',
+            slug: 'case-studies',
+            description: 'Real user success stories and case studies',
+            meta_title: 'Success Stories - Goal Tracker',
+            meta_description: 'Real user case studies and success stories from Goal Tracker community.'
+        },
+        {
+            name: 'Technology',
+            slug: 'technology',
+            description: 'Technical deep dives and architecture insights',
+            meta_title: 'Technology Blog - Goal Tracker',
+            meta_description: 'Technical architecture, performance insights, and development methodologies behind Goal Tracker.'
+        }
+    ];
+
+    defaultCategories.forEach(category => {
+        db.run(`INSERT OR IGNORE INTO blog_categories 
+            (name, slug, description, meta_title, meta_description) 
+            VALUES (?, ?, ?, ?, ?)`,
+            [category.name, category.slug, category.description, category.meta_title, category.meta_description],
+            function(err) {
+                if (err) {
+                    console.error('Error inserting blog category:', category.name, err);
+                }
+            }
+        );
+    });
+    
+    console.log('📝 Initialized blog categories in database');
 }
 
 module.exports = db; 

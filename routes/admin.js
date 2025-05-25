@@ -360,6 +360,117 @@ router.post('/posts/:id/delete', async (req, res) => {
     }
 });
 
+// SEO Settings Management
+router.get('/seo', async (req, res) => {
+    try {
+        // Get all SEO settings
+        const seoSettings = await new Promise((resolve, reject) => {
+            db.all('SELECT * FROM seo_settings ORDER BY page_path', (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        res.render('admin/seo', {
+            title: 'SEO Settings - Admin Dashboard',
+            seoSettings,
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Error loading SEO settings:', error);
+        res.status(500).render('error', {
+            title: 'Error - Goal Tracker',
+            error: 'Failed to load SEO settings'
+        });
+    }
+});
+
+// Add new SEO setting
+router.post('/seo', async (req, res) => {
+    try {
+        const {
+            page_path, title, description, keywords,
+            og_title, og_description, og_image,
+            twitter_title, twitter_description, twitter_image,
+            canonical_url, structured_data, custom_meta
+        } = req.body;
+
+        await new Promise((resolve, reject) => {
+            db.run(`INSERT INTO seo_settings 
+                (page_path, title, description, keywords, og_title, og_description, og_image,
+                 twitter_title, twitter_description, twitter_image, canonical_url, 
+                 structured_data, custom_meta, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+                [page_path, title, description, keywords, og_title, og_description, og_image,
+                 twitter_title, twitter_description, twitter_image, canonical_url,
+                 structured_data, custom_meta],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve(this.lastID);
+                });
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error creating SEO setting:', error);
+        res.status(500).json({ error: 'Failed to create SEO setting' });
+    }
+});
+
+// Update SEO setting
+router.put('/seo/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            page_path, title, description, keywords,
+            og_title, og_description, og_image,
+            twitter_title, twitter_description, twitter_image,
+            canonical_url, structured_data, custom_meta, is_active
+        } = req.body;
+
+        await new Promise((resolve, reject) => {
+            db.run(`UPDATE seo_settings SET 
+                page_path = ?, title = ?, description = ?, keywords = ?,
+                og_title = ?, og_description = ?, og_image = ?,
+                twitter_title = ?, twitter_description = ?, twitter_image = ?,
+                canonical_url = ?, structured_data = ?, custom_meta = ?,
+                is_active = ?, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?`,
+                [page_path, title, description, keywords, og_title, og_description, og_image,
+                 twitter_title, twitter_description, twitter_image, canonical_url,
+                 structured_data, custom_meta, is_active, id],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve(this.changes);
+                });
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error updating SEO setting:', error);
+        res.status(500).json({ error: 'Failed to update SEO setting' });
+    }
+});
+
+// Delete SEO setting
+router.delete('/seo/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        await new Promise((resolve, reject) => {
+            db.run('DELETE FROM seo_settings WHERE id = ?', [id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes);
+            });
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting SEO setting:', error);
+        res.status(500).json({ error: 'Failed to delete SEO setting' });
+    }
+});
+
 // IP Analytics page
 router.get('/ip-analytics', async (req, res) => {
     try {
@@ -1299,5 +1410,281 @@ async function deleteUserRecords(userId) {
         });
     });
 }
+
+// ============================================================================
+// ADSENSE ANALYTICS ROUTES
+// ============================================================================
+
+// AdSense Analytics Dashboard
+router.get('/adsense', async (req, res) => {
+    try {
+        res.render('admin/adsense', {
+            title: 'AdSense Analytics - Admin Dashboard',
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Error loading AdSense analytics:', error);
+        res.status(500).render('error', {
+            title: 'Error - Goal Tracker',
+            error: 'Failed to load AdSense analytics'
+        });
+    }
+});
+
+// ============================================================================
+// OLD AD MANAGEMENT ROUTES (DEPRECATED - Replaced by automatic AdSense)
+// ============================================================================
+
+// Ads management dashboard (DEPRECATED)
+router.get('/ads', async (req, res) => {
+    try {
+        // Get all ads with performance data
+        const ads = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT 
+                    a.*,
+                    COUNT(ap.id) as total_clicks,
+                    COUNT(CASE WHEN ap.action_type = 'impression' THEN 1 END) as total_impressions,
+                    SUM(ap.revenue_generated) as total_revenue,
+                    COUNT(CASE WHEN DATE(ap.created_at) = DATE('now') THEN 1 END) as clicks_today,
+                    COUNT(CASE WHEN ap.action_type = 'impression' AND DATE(ap.created_at) = DATE('now') THEN 1 END) as impressions_today
+                FROM ads a
+                LEFT JOIN ad_performance ap ON a.id = ap.ad_id
+                GROUP BY a.id
+                ORDER BY a.display_order ASC, a.created_at DESC
+            `, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        // Get ad statistics
+        const adStats = await new Promise((resolve, reject) => {
+            db.get(`
+                SELECT 
+                    COUNT(*) as total_ads,
+                    COUNT(CASE WHEN is_active = 1 THEN 1 END) as active_ads,
+                    COUNT(CASE WHEN ad_type = 'external' THEN 1 END) as external_ads,
+                    SUM(current_daily_spend) as total_daily_spend
+                FROM ads
+            `, (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+
+        res.render('admin/ads', {
+            title: 'Ad Management - Admin Dashboard',
+            ads,
+            adStats,
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Error loading ads management:', error);
+        res.status(500).render('error', {
+            title: 'Error - Goal Tracker',
+            error: 'Failed to load ads management'
+        });
+    }
+});
+
+// Create new ad
+router.post('/ads', async (req, res) => {
+    try {
+        const {
+            name, title, description, image_url, link_url, button_text,
+            ad_type, placement, target_audience, start_date, end_date,
+            display_order, click_tracking, external_tracking_code, external_script,
+            revenue_per_click, revenue_per_impression, max_daily_budget
+        } = req.body;
+
+        const adId = await new Promise((resolve, reject) => {
+            db.run(`INSERT INTO ads 
+                (name, title, description, image_url, link_url, button_text, ad_type, 
+                 placement, target_audience, start_date, end_date, display_order, 
+                 click_tracking, external_tracking_code, external_script, 
+                 revenue_per_click, revenue_per_impression, max_daily_budget, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+                [name, title, description, image_url, link_url, button_text, ad_type,
+                 placement, target_audience, start_date, end_date, display_order,
+                 click_tracking, external_tracking_code, external_script,
+                 revenue_per_click, revenue_per_impression, max_daily_budget],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve(this.lastID);
+                });
+        });
+
+        res.json({ success: true, adId });
+    } catch (error) {
+        console.error('Error creating ad:', error);
+        res.status(500).json({ error: 'Failed to create ad' });
+    }
+});
+
+// Update ad
+router.put('/ads/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const {
+            name, title, description, image_url, link_url, button_text,
+            ad_type, placement, target_audience, start_date, end_date,
+            display_order, click_tracking, external_tracking_code, external_script,
+            revenue_per_click, revenue_per_impression, max_daily_budget, is_active
+        } = req.body;
+
+        await new Promise((resolve, reject) => {
+            db.run(`UPDATE ads SET 
+                name = ?, title = ?, description = ?, image_url = ?, link_url = ?, 
+                button_text = ?, ad_type = ?, placement = ?, target_audience = ?, 
+                start_date = ?, end_date = ?, display_order = ?, click_tracking = ?, 
+                external_tracking_code = ?, external_script = ?, revenue_per_click = ?, 
+                revenue_per_impression = ?, max_daily_budget = ?, is_active = ?, 
+                updated_at = CURRENT_TIMESTAMP
+                WHERE id = ?`,
+                [name, title, description, image_url, link_url, button_text, ad_type,
+                 placement, target_audience, start_date, end_date, display_order,
+                 click_tracking, external_tracking_code, external_script,
+                 revenue_per_click, revenue_per_impression, max_daily_budget, is_active, id],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve(this.changes);
+                });
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error updating ad:', error);
+        res.status(500).json({ error: 'Failed to update ad' });
+    }
+});
+
+// Delete ad
+router.delete('/ads/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Delete ad performance data first
+        await new Promise((resolve, reject) => {
+            db.run('DELETE FROM ad_performance WHERE ad_id = ?', [id], (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        // Delete the ad
+        await new Promise((resolve, reject) => {
+            db.run('DELETE FROM ads WHERE id = ?', [id], function(err) {
+                if (err) reject(err);
+                else resolve(this.changes);
+            });
+        });
+
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting ad:', error);
+        res.status(500).json({ error: 'Failed to delete ad' });
+    }
+});
+
+// Toggle ad status
+router.post('/ads/:id/toggle', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Get current status
+        const ad = await new Promise((resolve, reject) => {
+            db.get('SELECT is_active FROM ads WHERE id = ?', [id], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+
+        if (!ad) {
+            return res.status(404).json({ error: 'Ad not found' });
+        }
+
+        // Toggle status
+        const newStatus = ad.is_active ? 0 : 1;
+        await new Promise((resolve, reject) => {
+            db.run('UPDATE ads SET is_active = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?', 
+                [newStatus, id], (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        res.json({ success: true, is_active: newStatus });
+    } catch (error) {
+        console.error('Error toggling ad status:', error);
+        res.status(500).json({ error: 'Failed to toggle ad status' });
+    }
+});
+
+// Get ad performance analytics
+router.get('/ads/:id/analytics', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const range = req.query.range || 'week'; // day, week, month, year
+
+        let dateFilter;
+        switch (range) {
+            case 'day':
+                dateFilter = "datetime('now', '-1 day')";
+                break;
+            case 'week':
+                dateFilter = "datetime('now', '-7 days')";
+                break;
+            case 'month':
+                dateFilter = "datetime('now', '-30 days')";
+                break;
+            case 'year':
+                dateFilter = "datetime('now', '-1 year')";
+                break;
+            default:
+                dateFilter = "datetime('now', '-7 days')";
+        }
+
+        const analytics = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT 
+                    DATE(created_at) as date,
+                    action_type,
+                    COUNT(*) as count,
+                    SUM(revenue_generated) as revenue
+                FROM ad_performance 
+                WHERE ad_id = ? AND created_at >= ${dateFilter}
+                GROUP BY DATE(created_at), action_type
+                ORDER BY date ASC
+            `, [id], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        res.json({ analytics, range });
+    } catch (error) {
+        console.error('Error getting ad analytics:', error);
+        res.status(500).json({ error: 'Failed to get ad analytics' });
+    }
+});
+
+// Reset daily ad spending
+router.post('/ads/reset-daily-spend', async (req, res) => {
+    try {
+        await new Promise((resolve, reject) => {
+            db.run('UPDATE ads SET current_daily_spend = 0', (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        console.log('Admin reset daily ad spending for all ads');
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error resetting daily spend:', error);
+        res.status(500).json({ error: 'Failed to reset daily spending' });
+    }
+});
 
 module.exports = router; 

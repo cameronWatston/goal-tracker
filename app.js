@@ -65,7 +65,6 @@ if (process.env.NODE_ENV === 'production') {
 const { trackIP } = require('./middleware/ipTracking');
 app.use(trackIP);
 
-
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -98,7 +97,15 @@ app.set('layout', 'layout');
 app.set("layout extractScripts", true);
 app.set("layout extractStyles", true);
 
-// Make user data available to all views
+// Import subscription, SEO, and automatic AdSense middleware
+const { checkSubscriptionStatus } = require('./middleware/subscription');
+const { loadSeoSettings } = require('./middleware/seo');
+const { loadAutoAdsense } = require('./middleware/adsense');
+
+// Make user data available to all views and check subscription status
+app.use(checkSubscriptionStatus);
+app.use(loadSeoSettings); // Load dynamic SEO settings
+app.use(loadAutoAdsense); // Load automatic AdSense for free users
 app.use((req, res, next) => {
     res.locals.user = req.session.user || null;
     res.locals.stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY || null;
@@ -558,6 +565,7 @@ const communityRoutes = require('./routes/community');
 const adminRoutes = require('./routes/admin');
 const aiRoutes = require('./routes/ai');
 const apiRoutes = require('./routes/api');
+const blogRoutes = require('./routes/blog');
 
 app.use('/auth', authRoutes);
 app.use('/api/goals', goalRoutes);
@@ -567,6 +575,7 @@ app.use('/community', communityRoutes); // Add community routes
 app.use('/admin', adminRoutes); // Add admin routes
 app.use('/api/ai', aiRoutes); // Add AI feature routes
 app.use('/api', apiRoutes); // Add API routes for search and chat
+app.use('/blog', blogRoutes); // Add blog routes
 
 // Add profile route
 app.get('/profile', (req, res) => {
@@ -576,28 +585,72 @@ app.get('/profile', (req, res) => {
     res.redirect('/auth/profile');
 });
 
-// Add banner demo route
-app.get('/banner-demo', (req, res) => {
-    res.render('banner-demo', {
-        title: 'Banner Ads Demo - Goal Tracker'
+// AdSense Configuration Route (admin only)
+app.post('/admin/adsense/config', (req, res) => {
+    if (!req.session.user || !req.session.user.is_admin) {
+        return res.status(403).json({ error: 'Access denied' });
+    }
+    
+    const { clientId } = req.body;
+    
+    if (!clientId || !clientId.startsWith('ca-pub-')) {
+        return res.status(400).json({ error: 'Invalid AdSense client ID format' });
+    }
+    
+    // Update environment variable (in production, this would be stored in database or env file)
+    process.env.GOOGLE_ADSENSE_CLIENT_ID = clientId;
+    
+    res.json({ 
+        success: true, 
+        message: 'AdSense client ID updated successfully',
+        clientId: clientId
     });
 });
 
-// Add ad click tracking route
-app.post('/api/track-ad-click', (req, res) => {
-    const { adId } = req.body;
-    const userId = req.session.user ? req.session.user.id : null;
-    const timestamp = new Date().toISOString();
+// AdSense Analytics Route (for admin to view AdSense performance)
+app.get('/api/adsense/analytics', (req, res) => {
+    if (!req.session.user || !req.session.user.is_admin) {
+        return res.status(403).json({ error: 'Access denied' });
+    }
     
-    // Log ad click for analytics (you can expand this to store in database)
-    console.log(`Ad Click Tracked: ${adId} by user ${userId || 'anonymous'} at ${timestamp}`);
+    const db = require('./db/init');
     
-    // You could store this in a database table for analytics
-    // const db = require('./db/init');
-    // db.run('INSERT INTO ad_clicks (ad_id, user_id, clicked_at) VALUES (?, ?, ?)', 
-    //        [adId, userId, timestamp]);
-    
-    res.json({ success: true });
+    // Get AdSense impression analytics
+    db.all(`
+        SELECT 
+            DATE(created_at) as date,
+            COUNT(*) as impressions,
+            COUNT(DISTINCT user_id) as unique_users,
+            COUNT(DISTINCT ip_address) as unique_ips
+        FROM adsense_impressions 
+        WHERE created_at >= date('now', '-30 days')
+        GROUP BY DATE(created_at)
+        ORDER BY date DESC
+    `, (err, analytics) => {
+        if (err) {
+            console.error('Error fetching AdSense analytics:', err);
+            return res.status(500).json({ error: 'Failed to fetch analytics' });
+        }
+        
+        // Get total stats
+        db.get(`
+            SELECT 
+                COUNT(*) as total_impressions,
+                COUNT(DISTINCT user_id) as total_users,
+                COUNT(DISTINCT ip_address) as total_ips
+            FROM adsense_impressions
+        `, (err, totals) => {
+            if (err) {
+                console.error('Error fetching AdSense totals:', err);
+                return res.status(500).json({ error: 'Failed to fetch totals' });
+            }
+            
+            res.json({
+                analytics: analytics || [],
+                totals: totals || { total_impressions: 0, total_users: 0, total_ips: 0 }
+            });
+        });
+    });
 });
 
 // Add notifications route

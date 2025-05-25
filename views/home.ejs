@@ -47,7 +47,7 @@
                         </h1>
                         
                         <p class="hero-subtitle mb-5">
-                            Join over 50,000 ambitious individuals who've achieved their biggest goals with our AI-powered platform. 
+                            Join ambitious individuals who've achieved their biggest goals with our AI-powered platform. 
                             Get personalized roadmaps, smart tracking, and the motivation you need to succeed.
                         </p>
                         
@@ -571,6 +571,85 @@
     </div>
 </section>
 
+<!-- Blog Section -->
+<section class="blog-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">Blog</div>
+            <h2 class="section-title">Learn & Get Inspired</h2>
+            <p class="section-subtitle">Discover goal achievement strategies, productivity tips, and success stories from our community</p>
+        </div>
+        
+        <div class="blog-preview">
+            <div class="blog-card featured-blog">
+                <div class="blog-visual">
+                    <div class="blog-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                </div>
+                <div class="blog-content">
+                    <h3 class="blog-title">Goal Achievement Strategies</h3>
+                    <p class="blog-description">
+                        Learn proven techniques to break down big goals into manageable steps, 
+                        stay motivated through challenges, and celebrate your progress.
+                    </p>
+                    <div class="blog-topics">
+                        <span class="topic-tag">Goal Setting</span>
+                        <span class="topic-tag">Motivation</span>
+                        <span class="topic-tag">Success Tips</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <div class="blog-visual">
+                    <div class="blog-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                </div>
+                <div class="blog-content">
+                    <h3 class="blog-title">Productivity Insights</h3>
+                    <p class="blog-description">
+                        Discover time management techniques, productivity hacks, and tools 
+                        that help successful people achieve more in less time.
+                    </p>
+                    <div class="blog-topics">
+                        <span class="topic-tag">Productivity</span>
+                        <span class="topic-tag">Time Management</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <div class="blog-visual">
+                    <div class="blog-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="blog-content">
+                    <h3 class="blog-title">Community Stories</h3>
+                    <p class="blog-description">
+                        Read inspiring success stories from our community members who've 
+                        achieved their biggest goals using Goal Tracker.
+                    </p>
+                    <div class="blog-topics">
+                        <span class="topic-tag">Success Stories</span>
+                        <span class="topic-tag">Inspiration</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="blog-cta">
+            <a href="/blog" class="btn btn-primary-gradient btn-lg">
+                <i class="fas fa-book-open me-2"></i>
+                Explore Our Blog
+            </a>
+            <p class="blog-cta-note">Free articles, tips, and inspiration to fuel your success</p>
+        </div>
+    </div>
+</section>
+
 <!-- Contact Section -->
 <section class="contact-section" id="contact">
     <div class="container">
@@ -1030,7 +1109,7 @@ body {
 
 .stats-2 { 
     bottom: 20%; 
-    left: -80px; 
+    left: -50px; 
     animation-delay: 2s; 
 }
 
@@ -2112,6 +2191,219 @@ input:checked + .toggle-slider:before {
     
     .placeholder-content {
         padding: 2rem 1.5rem;
+    }
+}
+
+/* Blog Section Styles */
+.blog-section {
+    padding: 120px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+}
+
+.blog-section .section-header {
+    position: relative;
+    z-index: 1;
+}
+
+.blog-section .section-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.blog-section .section-title {
+    color: white;
+}
+
+.blog-section .section-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.blog-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 4rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.blog-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.blog-card:hover::before {
+    opacity: 1;
+}
+
+.blog-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.blog-card.featured-blog {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+}
+
+.blog-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.blog-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+}
+
+.blog-card:hover .blog-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.blog-content {
+    position: relative;
+    z-index: 2;
+}
+
+.blog-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.blog-description {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.blog-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.topic-tag {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
+}
+
+.blog-card:hover .topic-tag {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.blog-cta {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.blog-cta .btn {
+    background: white;
+    color: #667eea;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.blog-cta .btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.blog-cta-note {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .blog-section {
+        padding: 80px 0;
+    }
+    
+    .blog-preview {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+    
+    .blog-card {
+        padding: 1.5rem;
+    }
+    
+    .blog-card.featured-blog {
+        transform: none;
+    }
+    
+    .blog-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .blog-title {
+        font-size: 1.3rem;
     }
 }
 </style>

@@ -40,8 +40,13 @@ const checkSubscriptionStatus = (req, res, next) => {
       user.subscription === 'premium' || 
       user.subscription_plan === 'monthly' || 
       user.subscription_plan === 'annual';
+    
+    // Add ads visibility flag (show ads only to free users)
+    res.locals.shouldShowAds = !res.locals.isPremium;
   } else {
     res.locals.isPremium = false;
+    // Show ads to non-logged-in users (to encourage signup)
+    res.locals.shouldShowAds = true;
   }
   next();
 };

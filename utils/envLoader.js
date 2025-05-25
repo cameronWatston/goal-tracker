@@ -24,7 +24,8 @@ function loadEnvVariables() {
                 { name: 'STRIPE_PUBLISHABLE_KEY', prefix: 'pk_' },
                 { name: 'OPENAI_API_KEY', prefix: 'sk' },
                 { name: 'EMAIL_USER', check: (val) => val && val.includes('@') },
-                { name: 'EMAIL_PASS', check: (val) => !!val }
+                { name: 'EMAIL_PASS', check: (val) => !!val },
+                { name: 'GOOGLE_ADSENSE_CLIENT_ID', prefix: 'ca-pub-' }
             ];
             
             let allVarsPresent = true;

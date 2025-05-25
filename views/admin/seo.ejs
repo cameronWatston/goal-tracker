@@ -1,0 +1,728 @@
+<!-- SEO Settings Admin Page -->
+<div class="seo-admin-page">
+    <!-- Header Section -->
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="header-content">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/admin">Admin</a></li>
+                                <li class="breadcrumb-item active">SEO Settings</li>
+                            </ol>
+                        </nav>
+                        <h1 class="page-title">
+                            <i class="fas fa-search me-2"></i>
+                            SEO Management Dashboard
+                        </h1>
+                        <p class="page-subtitle">
+                            Manage meta tags, Open Graph settings, and structured data for all pages
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="header-actions">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSeoModal">
+                            <i class="fas fa-plus me-1"></i> Add New Page
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="refreshSeoData()">
+                            <i class="fas fa-sync-alt me-1"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <!-- SEO Overview Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card seo-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-primary">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="stat-number"><%= seoSettings.length %></h3>
+                                <p class="stat-label">Configured Pages</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card seo-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="stat-number"><%= seoSettings.filter(s => s.is_active).length %></h3>
+                                <p class="stat-label">Active Settings</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card seo-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-info">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="stat-number"><%= seoSettings.filter(s => s.og_image).length %></h3>
+                                <p class="stat-label">With Social Images</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card seo-stat-card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="stat-icon bg-warning">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h3 class="stat-number"><%= seoSettings.filter(s => s.structured_data).length %></h3>
+                                <p class="stat-label">With Structured Data</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Settings Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-table me-2"></i>
+                            SEO Settings Management
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="seoTable">
+                                <thead>
+                                    <tr>
+                                        <th>Page Path</th>
+                                        <th>Title</th>
+                                        <th>Description</th>
+                                        <th>Social Images</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% seoSettings.forEach(setting => { %>
+                                    <tr data-id="<%= setting.id %>">
+                                        <td>
+                                            <span class="badge bg-secondary"><%= setting.page_path %></span>
+                                        </td>
+                                        <td>
+                                            <div class="seo-title-preview">
+                                                <%= setting.title ? setting.title.substring(0, 50) + (setting.title.length > 50 ? '...' : '') : 'Not set' %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="seo-desc-preview">
+                                                <%= setting.description ? setting.description.substring(0, 80) + (setting.description.length > 80 ? '...' : '') : 'Not set' %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="social-indicators">
+                                                <% if (setting.og_image) { %>
+                                                    <span class="badge bg-primary" title="Open Graph Image">OG</span>
+                                                <% } %>
+                                                <% if (setting.twitter_image) { %>
+                                                    <span class="badge bg-info" title="Twitter Image">TW</span>
+                                                <% } %>
+                                                <% if (!setting.og_image && !setting.twitter_image) { %>
+                                                    <span class="text-muted">None</span>
+                                                <% } %>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge <%= setting.is_active ? 'bg-success' : 'bg-secondary' %>">
+                                                <%= setting.is_active ? 'Active' : 'Inactive' %>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-primary" onclick="editSeoSetting(<%= setting.id %>)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-info" onclick="previewSeoSetting(<%= setting.id %>)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-outline-success" onclick="testSeoSetting('<%= setting.page_path %>')">
+                                                    <i class="fas fa-external-link-alt"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger" onclick="deleteSeoSetting(<%= setting.id %>)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add New SEO Setting Modal -->
+<div class="modal fade" id="addSeoModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus me-2"></i>
+                    Add New SEO Setting
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addSeoForm">
+                    <div class="row">
+                        <!-- Basic SEO -->
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Basic SEO</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Page Path*</label>
+                                <input type="text" class="form-control" name="page_path" required 
+                                       placeholder="/example-page" 
+                                       pattern="^/.*$" 
+                                       title="Must start with /">
+                                <div class="form-text">URL path (e.g., /about, /contact, /pricing)</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-control" name="title" 
+                                       placeholder="Page Title - Goal Tracker"
+                                       maxlength="60">
+                                <div class="form-text">Recommended: 50-60 characters</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Meta Description</label>
+                                <textarea class="form-control" name="description" rows="3" 
+                                          placeholder="Brief description of the page content..."
+                                          maxlength="160"></textarea>
+                                <div class="form-text">Recommended: 150-160 characters</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Keywords</label>
+                                <input type="text" class="form-control" name="keywords" 
+                                       placeholder="keyword1, keyword2, keyword3">
+                                <div class="form-text">Comma-separated keywords</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Canonical URL</label>
+                                <input type="url" class="form-control" name="canonical_url" 
+                                       placeholder="https://goaltracker.com/page-path">
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Social Media (Open Graph & Twitter)</h6>
+                            <div class="mb-3">
+                                <label class="form-label">OG Title</label>
+                                <input type="text" class="form-control" name="og_title" 
+                                       placeholder="Social media title">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">OG Description</label>
+                                <textarea class="form-control" name="og_description" rows="2" 
+                                          placeholder="Social media description..."></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">OG Image URL</label>
+                                <input type="url" class="form-control" name="og_image" 
+                                       placeholder="https://goaltracker.com/img/page-og.jpg">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Twitter Title</label>
+                                <input type="text" class="form-control" name="twitter_title" 
+                                       placeholder="Twitter-specific title">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Twitter Description</label>
+                                <textarea class="form-control" name="twitter_description" rows="2" 
+                                          placeholder="Twitter-specific description..."></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Twitter Image URL</label>
+                                <input type="url" class="form-control" name="twitter_image" 
+                                       placeholder="https://goaltracker.com/img/page-twitter.jpg">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Advanced Settings -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="fw-bold mb-3">Advanced Settings</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Structured Data (JSON-LD)</label>
+                                <textarea class="form-control" name="structured_data" rows="4" 
+                                          placeholder='{"@context": "https://schema.org", "@type": "WebPage", ...}'></textarea>
+                                <div class="form-text">Valid JSON-LD structured data</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Custom Meta Tags</label>
+                                <textarea class="form-control" name="custom_meta" rows="3" 
+                                          placeholder='<meta name="robots" content="index,follow">
+<meta name="author" content="Goal Tracker Team">'></textarea>
+                                <div class="form-text">Additional HTML meta tags</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveSeoSetting()">Save Settings</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit SEO Setting Modal -->
+<div class="modal fade" id="editSeoModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>
+                    Edit SEO Setting
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Same form structure as add modal -->
+                <form id="editSeoForm">
+                    <input type="hidden" name="id">
+                    <!-- Repeat form fields from add modal -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Basic SEO</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Page Path*</label>
+                                <input type="text" class="form-control" name="page_path" required readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Title</label>
+                                <input type="text" class="form-control" name="title" maxlength="60">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Meta Description</label>
+                                <textarea class="form-control" name="description" rows="3" maxlength="160"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Keywords</label>
+                                <input type="text" class="form-control" name="keywords">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Canonical URL</label>
+                                <input type="url" class="form-control" name="canonical_url">
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="is_active" id="isActiveEdit">
+                                    <label class="form-check-label" for="isActiveEdit">Active</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Social Media</h6>
+                            <div class="mb-3">
+                                <label class="form-label">OG Title</label>
+                                <input type="text" class="form-control" name="og_title">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">OG Description</label>
+                                <textarea class="form-control" name="og_description" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">OG Image URL</label>
+                                <input type="url" class="form-control" name="og_image">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Twitter Title</label>
+                                <input type="text" class="form-control" name="twitter_title">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Twitter Description</label>
+                                <textarea class="form-control" name="twitter_description" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Twitter Image URL</label>
+                                <input type="url" class="form-control" name="twitter_image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="fw-bold mb-3">Advanced Settings</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Structured Data (JSON-LD)</label>
+                                <textarea class="form-control" name="structured_data" rows="4"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Custom Meta Tags</label>
+                                <textarea class="form-control" name="custom_meta" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="updateSeoSetting()">Update Settings</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SEO Preview Modal -->
+<div class="modal fade" id="previewSeoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye me-2"></i>
+                    SEO Preview
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="seoPreviewContent">
+                    <!-- Preview content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// SEO Management JavaScript
+let seoSettings = <%- JSON.stringify(seoSettings) %>;
+
+function saveSeoSetting() {
+    const form = document.getElementById('addSeoForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+
+    fetch('/admin/seo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('addSeoModal')).hide();
+            showAlert('SEO setting created successfully!', 'success');
+            setTimeout(() => window.location.reload(), 1500);
+        } else {
+            throw new Error(data.error || 'Failed to create SEO setting');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error creating SEO setting: ' + error.message, 'danger');
+    });
+}
+
+function editSeoSetting(id) {
+    const setting = seoSettings.find(s => s.id === id);
+    if (!setting) return;
+
+    const form = document.getElementById('editSeoForm');
+    
+    // Populate form fields
+    Object.keys(setting).forEach(key => {
+        const field = form.querySelector(`[name="${key}"]`);
+        if (field) {
+            if (field.type === 'checkbox') {
+                field.checked = setting[key];
+            } else {
+                field.value = setting[key] || '';
+            }
+        }
+    });
+
+    new bootstrap.Modal(document.getElementById('editSeoModal')).show();
+}
+
+function updateSeoSetting() {
+    const form = document.getElementById('editSeoForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    const id = data.id;
+
+    // Convert checkbox to boolean
+    data.is_active = form.querySelector('[name="is_active"]').checked;
+
+    fetch(`/admin/seo/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            bootstrap.Modal.getInstance(document.getElementById('editSeoModal')).hide();
+            showAlert('SEO setting updated successfully!', 'success');
+            setTimeout(() => window.location.reload(), 1500);
+        } else {
+            throw new Error(data.error || 'Failed to update SEO setting');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error updating SEO setting: ' + error.message, 'danger');
+    });
+}
+
+function deleteSeoSetting(id) {
+    if (!confirm('Are you sure you want to delete this SEO setting?')) return;
+
+    fetch(`/admin/seo/${id}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('SEO setting deleted successfully!', 'success');
+            document.querySelector(`tr[data-id="${id}"]`).remove();
+        } else {
+            throw new Error(data.error || 'Failed to delete SEO setting');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('Error deleting SEO setting: ' + error.message, 'danger');
+    });
+}
+
+function previewSeoSetting(id) {
+    const setting = seoSettings.find(s => s.id === id);
+    if (!setting) return;
+
+    const previewContent = `
+        <div class="seo-preview">
+            <h6>Google Search Result Preview</h6>
+            <div class="search-result-preview">
+                <div class="result-title">${setting.title || 'No title set'}</div>
+                <div class="result-url">https://goaltracker.com${setting.page_path}</div>
+                <div class="result-description">${setting.description || 'No description set'}</div>
+            </div>
+            
+            <h6 class="mt-4">Facebook Share Preview</h6>
+            <div class="facebook-preview">
+                <div class="fb-image">${setting.og_image ? `<img src="${setting.og_image}" alt="OG Image">` : 'No image'}</div>
+                <div class="fb-content">
+                    <div class="fb-title">${setting.og_title || setting.title || 'No title'}</div>
+                    <div class="fb-description">${setting.og_description || setting.description || 'No description'}</div>
+                    <div class="fb-domain">goaltracker.com</div>
+                </div>
+            </div>
+            
+            <h6 class="mt-4">Twitter Card Preview</h6>
+            <div class="twitter-preview">
+                <div class="tw-image">${setting.twitter_image || setting.og_image ? `<img src="${setting.twitter_image || setting.og_image}" alt="Twitter Image">` : 'No image'}</div>
+                <div class="tw-content">
+                    <div class="tw-title">${setting.twitter_title || setting.title || 'No title'}</div>
+                    <div class="tw-description">${setting.twitter_description || setting.description || 'No description'}</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('seoPreviewContent').innerHTML = previewContent;
+    new bootstrap.Modal(document.getElementById('previewSeoModal')).show();
+}
+
+function testSeoSetting(pagePath) {
+    window.open(pagePath, '_blank');
+}
+
+function refreshSeoData() {
+    window.location.reload();
+}
+
+function showAlert(message, type = 'info') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 400px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        if (alertDiv.parentNode) alertDiv.parentNode.removeChild(alertDiv);
+    }, 5000);
+}
+</script>
+
+<style>
+/* SEO Admin Styles */
+.seo-admin-page {
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    opacity: 0.9;
+    margin-bottom: 0;
+}
+
+.seo-stat-card {
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.seo-stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.seo-title-preview, .seo-desc-preview {
+    font-size: 0.9rem;
+}
+
+.social-indicators .badge {
+    margin-right: 0.25rem;
+}
+
+/* Preview Styles */
+.search-result-preview {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    background: white;
+    margin-bottom: 1rem;
+}
+
+.result-title {
+    color: #1a0dab;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.result-url {
+    color: #006621;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.result-description {
+    color: #4d5156;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.facebook-preview, .twitter-preview {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    background: white;
+    display: flex;
+    gap: 1rem;
+}
+
+.fb-image, .tw-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+.fb-image img, .tw-image img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 8px;
+}
+
+.fb-title, .tw-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.fb-description, .tw-description {
+    color: #65676b;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.fb-domain {
+    color: #8a8d91;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+</style> 

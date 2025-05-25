@@ -1,133 +1,69 @@
-<%
-// Default banner ad data if none provided
-const defaultAds = [
-    {
-        id: 'ad1',
-        title: 'Achieve More with Premium Tools',
-        description: 'Unlock advanced goal tracking features and AI insights',
-        image: '/img/banner-ad-1.svg',
-        link: '/subscription',
-        buttonText: 'Upgrade Now',
-        type: 'internal'
-    },
-    {
-        id: 'ad2',
-        title: 'Boost Your Productivity',
-        description: 'Discover tools and resources to reach your goals faster',
-        image: '/img/banner-ad-2.svg',
-        link: '#',
-        buttonText: 'Learn More',
-        type: 'external'
-    },
-    {
-        id: 'ad3',
-        title: 'Join Our Community',
-        description: 'Connect with like-minded individuals on their goal journey',
-        image: '/img/banner-ad-3.svg',
-        link: '/community',
-        buttonText: 'Explore',
-        type: 'internal'
-    }
-];
+<!-- Clean AdSense Implementation for Revenue Generation -->
+<!-- Only shows to FREE users - Premium users see NO ads -->
 
-// Use provided ads or default ones
-const adsToShow = typeof ads !== 'undefined' ? ads : defaultAds;
-const adType = typeof type !== 'undefined' ? type : 'horizontal';
-const showRandomAd = typeof random !== 'undefined' ? random : false;
-
-// Select ad to display
-let selectedAd;
-if (showRandomAd) {
-    selectedAd = adsToShow[Math.floor(Math.random() * adsToShow.length)];
-} else {
-    selectedAd = adsToShow[0];
-}
-%>
-
-<div class="banner-ad <%= adType %>" data-ad-id="<%= selectedAd.id %>">
-    <div class="banner-ad-content">
-        <% if (selectedAd.image) { %>
-        <div class="banner-ad-image">
-            <img src="<%= selectedAd.image %>" alt="<%= selectedAd.title %>" loading="lazy">
-        </div>
-        <% } %>
-        
-        <div class="banner-ad-text">
-            <h4 class="banner-ad-title"><%= selectedAd.title %></h4>
-            <p class="banner-ad-description"><%= selectedAd.description %></p>
-            
-            <% if (selectedAd.link && selectedAd.buttonText) { %>
-            <a href="<%= selectedAd.link %>" 
-               class="banner-ad-btn"
-               <% if (selectedAd.type === 'external') { %>target="_blank" rel="noopener noreferrer"<% } %>
-               onclick="trackAdClick('<%= selectedAd.id %>')">
-                <%= selectedAd.buttonText %>
-                <i class="fas fa-arrow-right"></i>
-            </a>
-            <% } %>
-        </div>
-        
-        <button class="banner-ad-close" onclick="closeAd('<%= selectedAd.id %>')" aria-label="Close ad">
-            <i class="fas fa-times"></i>
-        </button>
+<% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
+<div class="adsense-wrapper">
+    <!-- Responsive Display Ad -->
+    <div class="adsense-placement" id="adsense-<%= Math.random().toString(36).substr(2, 9) %>">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="<%= adsenseConfig.clientId %>"
+             data-ad-slot="<%= locals.adSlot || '1234567890' %>"
+             data-ad-format="<%= locals.adFormat || 'auto' %>"
+             <% if (locals.fullWidth !== false) { %>data-full-width-responsive="true"<% } %>></ins>
     </div>
-    
-    <div class="banner-ad-label">Advertisement</div>
 </div>
 
+<style>
+.adsense-wrapper {
+    margin: 1rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.adsense-placement {
+    max-width: 100%;
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.adsbygoogle {
+    width: 100%;
+    display: block !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .adsense-wrapper {
+        margin: 0.5rem 0;
+    }
+    
+    .adsense-placement {
+        min-height: 70px;
+    }
+}
+
+/* Loading state */
+.adsense-placement:empty::before {
+    content: "Advertisement";
+    color: #6c757d;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+</style>
+
 <script>
-function trackAdClick(adId) {
-    // Track ad clicks for analytics
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'ad_click', {
-            'ad_id': adId,
-            'event_category': 'advertisement'
-        });
-    }
-    
-    // You can also send to your own analytics endpoint
-    fetch('/api/track-ad-click', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ adId: adId })
-    }).catch(() => {}); // Silently fail if endpoint doesn't exist
-}
+// Initialize this specific ad unit
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<% } %>
 
-function closeAd(adId) {
-    const adElement = document.querySelector(`[data-ad-id="${adId}"]`);
-    if (adElement) {
-        adElement.style.animation = 'slideOut 0.3s ease-out forwards';
-        setTimeout(() => {
-            adElement.style.display = 'none';
-        }, 300);
-        
-        // Store closed ad in localStorage to not show it again for a while
-        const closedAds = JSON.parse(localStorage.getItem('closedAds') || '[]');
-        closedAds.push({
-            id: adId,
-            closedAt: Date.now()
-        });
-        localStorage.setItem('closedAds', JSON.stringify(closedAds));
-    }
-}
-
-// Check if ad was recently closed
-document.addEventListener('DOMContentLoaded', function() {
-    const closedAds = JSON.parse(localStorage.getItem('closedAds') || '[]');
-    const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
-    
-    // Filter out old closed ads (older than 1 day)
-    const recentlyClosedAds = closedAds.filter(ad => ad.closedAt > oneDayAgo);
-    localStorage.setItem('closedAds', JSON.stringify(recentlyClosedAds));
-    
-    // Hide ads that were recently closed
-    recentlyClosedAds.forEach(ad => {
-        const adElement = document.querySelector(`[data-ad-id="${ad.id}"]`);
-        if (adElement) {
-            adElement.style.display = 'none';
-        }
-    });
-});
-</script> 
+<!-- Premium users see nothing here - completely ad-free experience --> 

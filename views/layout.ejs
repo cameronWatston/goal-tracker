@@ -1187,58 +1187,73 @@
 
         /* AdSense Styling */
         .adsense-container {
-            margin: 1rem 0;
+            margin: 1.5rem 0;
             text-align: center;
+            width: 100%;
+            max-width: 100%;
         }
 
         .adsense-placement {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 1rem;
-            min-height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .adsense-placement.header-banner,
-        .adsense-placement.banner-ad {
+            width: 100%;
             max-width: 100%;
+            min-height: 90px;
             margin: 0 auto;
+            position: relative;
+            overflow: hidden;
         }
 
-        .sidebar-ad-container {
-            position: sticky;
-            top: 20px;
-            margin-top: 2rem;
+        .adsense-placement.header-banner {
+            margin-bottom: 1rem;
         }
 
-        .adsense-placement.sideways-ad {
-            min-height: 250px;
-            max-width: 300px;
-            margin: 0 auto;
+        .adsense-placement.content-ad {
+            margin: 2rem 0;
+        }
+
+        .adsense-placement.footer-ad {
+            margin-top: 1rem;
         }
 
         .adsbygoogle {
             display: block !important;
+            width: 100%;
+            min-width: 320px;
+            min-height: 50px;
         }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .adsense-placement {
-                min-height: 70px;
-                padding: 0.5rem;
+                min-height: 50px;
+            }
+            
+            .adsbygoogle {
+                min-width: 300px;
+                min-height: 50px;
             }
         }
 
         /* Loading state for ads */
-        .adsense-placement:empty::before {
+        .adsense-placement:empty::after {
             content: "Advertisement";
             color: #6c757d;
-            font-size: 0.8rem;
-            opacity: 0.7;
+            font-size: 0.75rem;
+            opacity: 0.6;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #f8f9fa;
+            padding: 1rem;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
     <%- style %>
@@ -1451,7 +1466,7 @@
         <div class="adsense-container">
             <div class="adsense-placement header-banner">
                 <ins class="adsbygoogle"
-                     style="display:block"
+                     style="display:block; width:100%; height:90px;"
                      data-ad-client="<%= adsenseConfig.clientId %>"
                      data-ad-slot="8526465466"
                      data-ad-format="auto"
@@ -1461,38 +1476,45 @@
     </div>
     <% } %>
 
-    <!-- Main Content with Sidebar Ad -->
+    <!-- Main Content -->
     <main class="container py-5">
-        <div class="row">
-            <div class="col-lg-9 col-md-8">
-                <% if (typeof message !== 'undefined' && message === 'account_deleted') { %>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="fas fa-check-circle me-2"></i> Your account has been successfully deleted.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <% } %>
-                
-                <% if (typeof body !== 'undefined') { %>
-                    <%- body %>
-                <% } else { %>
-                    <%- typeof content !== 'undefined' ? content : '' %>
-                <% } %>
+        <% if (typeof message !== 'undefined' && message === 'account_deleted') { %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i> Your account has been successfully deleted.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            
-            <!-- Sideways AdSense (for free users only) -->
-            <div class="col-lg-3 col-md-4 d-none d-md-block">
-                <%- include('partials/sideways-ad') %>
-            </div>
-        </div>
+        <% } %>
+        
+        <% if (typeof body !== 'undefined') { %>
+            <%- body %>
+        <% } else { %>
+            <%- typeof content !== 'undefined' ? content : '' %>
+        <% } %>
     </main>
 
-    <!-- Banner AdSense (for free users only) -->
+    <!-- Middle Content AdSense (for free users only) -->
     <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
     <div class="container mb-4">
         <div class="adsense-container">
-            <div class="adsense-placement banner-ad">
+            <div class="adsense-placement content-ad">
                 <ins class="adsbygoogle"
-                     style="display:block"
+                     style="display:block; width:100%; height:90px;"
+                     data-ad-client="<%= adsenseConfig.clientId %>"
+                     data-ad-slot="4508772363"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+        </div>
+    </div>
+    <% } %>
+
+    <!-- Footer AdSense (for free users only) -->
+    <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
+    <div class="container mb-4">
+        <div class="adsense-container">
+            <div class="adsense-placement footer-ad">
+                <ins class="adsbygoogle"
+                     style="display:block; width:100%; height:90px;"
                      data-ad-client="<%= adsenseConfig.clientId %>"
                      data-ad-slot="7134935708"
                      data-ad-format="auto"
@@ -1562,15 +1584,16 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseConfig.clientId %>"
          crossorigin="anonymous"></script>
     <script>
-        // Initialize AdSense ads
-        (adsbygoogle = window.adsbygoogle || []).push({}); // Header ad
-        (adsbygoogle = window.adsbygoogle || []).push({}); // Banner ad
-        (adsbygoogle = window.adsbygoogle || []).push({}); // Sideways ad
-        
-        // AdSense Auto Ads (optional - enables automatic ad placement)
-        (adsbygoogle = window.adsbygoogle || []).push({
-            google_ad_client: "<%= adsenseConfig.clientId %>",
-            enable_page_level_ads: true
+        // Wait for DOM to be ready, then initialize ads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all AdSense ads on the page
+            const ads = document.querySelectorAll('.adsbygoogle');
+            ads.forEach(function(ad) {
+                if (!ad.dataset.adsenseInitialized) {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    ad.dataset.adsenseInitialized = 'true';
+                }
+            });
         });
     </script>
     <% } %>

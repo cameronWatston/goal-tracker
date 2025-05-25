@@ -2,8 +2,8 @@ const db = require('../db/init');
 
 // IP tracking middleware for admin analytics with privacy compliance
 const trackIP = (req, res, next) => {
-    // Skip tracking for admin routes, API calls, and static assets
-    const skipPaths = ['/admin', '/api/', '/css/', '/js/', '/images/', '/favicon.ico', '/robots.txt', '/sitemap.xml'];
+    // Skip tracking for admin routes and API calls only (allow static assets for debugging)
+    const skipPaths = ['/admin', '/api/'];
     const shouldSkip = skipPaths.some(path => req.path.startsWith(path));
     
     if (shouldSkip) {
@@ -58,16 +58,20 @@ const trackIP = (req, res, next) => {
         return next();
     }
 
-    // Check for bot/crawler user agents to exclude
+    // More lenient bot detection (only obvious bots)
     const botPatterns = [
-        /bot/i, /crawler/i, /spider/i, /scraper/i,
-        /google/i, /bing/i, /yahoo/i, /facebook/i,
-        /twitter/i, /linkedin/i, /pinterest/i
+        /googlebot/i, /bingbot/i, /slurp/i, /duckduckbot/i,
+        /baiduspider/i, /yandexbot/i, /facebookexternalhit/i
     ];
     
     const isBot = botPatterns.some(pattern => pattern.test(userAgent));
     if (isBot) {
         return next();
+    }
+
+    // Always log for debugging - especially requests with referers
+    if (referer) {
+        console.log(`🔗 Referer found: ${ipAddress} came from ${referer} to visit ${pagePath}`);
     }
 
     // Check if this IP has visited before

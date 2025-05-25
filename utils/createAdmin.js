@@ -3,7 +3,9 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const readline = require('readline');
 
-const dbPath = path.join(__dirname, '../db/database.sqlite');
+// Use the database configuration for persistent disk support
+const dbConfig = require('../config/database-config');
+const dbPath = dbConfig.getDatabasePath();
 const db = new sqlite3.Database(dbPath);
 
 // Handle database closing properly

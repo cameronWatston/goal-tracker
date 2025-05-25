@@ -1,7 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const dbPath = path.join(__dirname, '../db/database.sqlite');
+// Use the database configuration for persistent disk support
+const dbConfig = require('../config/database-config');
+const dbPath = dbConfig.getDatabasePath();
 console.log('Checking database at:', dbPath);
 
 // Open the database

@@ -2,13 +2,17 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const bcrypt = require('bcrypt');
 
+// Use the database configuration for persistent disk support
+const dbConfig = require('../config/database-config');
+const dbPath = dbConfig.getDatabasePath();
+
 // Create database connection
-const db = new sqlite3.Database(path.join(__dirname, 'database.sqlite'), (err) => {
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error opening database:', err);
         process.exit(1);
     }
-    console.log('Connected to SQLite database');
+    console.log('✅ Connected to SQLite database at:', dbPath);
 });
 
 // Initialize database
@@ -18,7 +22,9 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT UNIQUE NOT NULL,
         email TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
+        password TEXT,
+        google_id TEXT UNIQUE,
+        provider TEXT DEFAULT 'local',
         verification_code TEXT,
         is_verified INTEGER DEFAULT 0,
         is_admin INTEGER DEFAULT 0,
@@ -41,6 +47,36 @@ db.serialize(() => {
         }
         
         const columnNames = columns.map(col => col.name);
+        
+        // Check for google_id column
+        if (!columnNames.includes('google_id')) {
+            db.run(`ALTER TABLE users ADD COLUMN google_id TEXT`, (err) => {
+                if (err) {
+                    console.error('Error adding google_id column:', err);
+                } else {
+                    console.log('Added google_id column to users table');
+                    // Create unique index for google_id (safer than UNIQUE constraint on ALTER)
+                    db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_users_google_id ON users(google_id) WHERE google_id IS NOT NULL`, (indexErr) => {
+                        if (indexErr) {
+                            console.error('Error creating google_id index:', indexErr);
+                        } else {
+                            console.log('Created unique index for google_id column');
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Check for provider column (legacy - not used without Google OAuth)
+        if (!columnNames.includes('provider')) {
+            db.run(`ALTER TABLE users ADD COLUMN provider TEXT DEFAULT 'local'`, (err) => {
+                if (err && !err.message.includes('duplicate column name')) {
+                    console.error('Error adding provider column:', err);
+                } else {
+                    console.log('Added provider column to users table (legacy)');
+                }
+            });
+        }
         
         // Check for is_admin column
         if (!columnNames.includes('is_admin')) {

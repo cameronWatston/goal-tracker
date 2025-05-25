@@ -3,7 +3,6 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require('../db/init');
 const { sendWelcomeEmail, sendVerificationEmail } = require('../utils/emailService');
-
 // Generate a random verification code
 const generateVerificationCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit code
@@ -704,5 +703,7 @@ router.post('/profile/update', async (req, res) => {
         });
     }
 });
+
+
 
 module.exports = router; 

@@ -61,6 +61,11 @@ if (process.env.NODE_ENV === 'production') {
     }));
 }
 
+// IP tracking middleware for analytics (before other middleware)
+const { trackIP } = require('./middleware/ipTracking');
+app.use(trackIP);
+
+
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

@@ -1,0 +1,64 @@
+<!-- Sideways AdSense Ad for Free Users -->
+<!-- Premium users see nothing here - completely ad-free experience -->
+
+<% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
+<div class="sidebar-ad-container">
+    <div class="adsense-placement sideways-ad">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="<%= adsenseConfig.clientId %>"
+             data-ad-slot="4508772363"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+    </div>
+</div>
+
+<style>
+.sidebar-ad-container {
+    position: sticky;
+    top: 20px;
+    margin-top: 2rem;
+}
+
+.adsense-placement.sideways-ad {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    min-height: 250px;
+    max-width: 300px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sideways-ad .adsbygoogle {
+    display: block !important;
+    width: 100%;
+}
+
+/* Loading state */
+.adsense-placement.sideways-ad:empty::before {
+    content: "Advertisement";
+    color: #6c757d;
+    font-size: 0.8rem;
+    opacity: 0.7;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive design */
+@media (max-width: 991px) {
+    .sidebar-ad-container {
+        display: none;
+    }
+}
+</style>
+
+<script>
+// Initialize this specific sideways ad unit
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<% } %>
+
+<!-- Premium users see nothing here - completely ad-free experience --> 

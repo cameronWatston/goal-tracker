@@ -1184,6 +1184,62 @@
                 display: none;
             }
         }
+
+        /* AdSense Styling */
+        .adsense-container {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .adsense-placement {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .adsense-placement.header-banner,
+        .adsense-placement.banner-ad {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .sidebar-ad-container {
+            position: sticky;
+            top: 20px;
+            margin-top: 2rem;
+        }
+
+        .adsense-placement.sideways-ad {
+            min-height: 250px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .adsbygoogle {
+            display: block !important;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .adsense-placement {
+                min-height: 70px;
+                padding: 0.5rem;
+            }
+        }
+
+        /* Loading state for ads */
+        .adsense-placement:empty::before {
+            content: "Advertisement";
+            color: #6c757d;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     </style>
     <%- style %>
 </head>
@@ -1389,15 +1445,15 @@
         </div>
     </nav>
 
-    <!-- AdSense for free users only (revenue generating) -->
+    <!-- Header AdSense for free users only (revenue generating) -->
     <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
     <div class="container mt-3 mb-2">
         <div class="adsense-container">
-            <div class="adsense-placement top-banner">
+            <div class="adsense-placement header-banner">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="<%= adsenseConfig.clientId %>"
-                     data-ad-slot="1234567890"
+                     data-ad-slot="8526465466"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
             </div>
@@ -1405,31 +1461,40 @@
     </div>
     <% } %>
 
-    <!-- Main Content -->
+    <!-- Main Content with Sidebar Ad -->
     <main class="container py-5">
-        <% if (typeof message !== 'undefined' && message === 'account_deleted') { %>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i> Your account has been successfully deleted.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="row">
+            <div class="col-lg-9 col-md-8">
+                <% if (typeof message !== 'undefined' && message === 'account_deleted') { %>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i> Your account has been successfully deleted.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+                
+                <% if (typeof body !== 'undefined') { %>
+                    <%- body %>
+                <% } else { %>
+                    <%- typeof content !== 'undefined' ? content : '' %>
+                <% } %>
             </div>
-        <% } %>
-        
-        <% if (typeof body !== 'undefined') { %>
-            <%- body %>
-        <% } else { %>
-            <%- typeof content !== 'undefined' ? content : '' %>
-        <% } %>
+            
+            <!-- Sideways AdSense (for free users only) -->
+            <div class="col-lg-3 col-md-4 d-none d-md-block">
+                <%- include('partials/sideways-ad') %>
+            </div>
+        </div>
     </main>
 
-    <!-- AdSense Bottom Banner (for free users only) -->
+    <!-- Banner AdSense (for free users only) -->
     <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
     <div class="container mb-4">
         <div class="adsense-container">
-            <div class="adsense-placement bottom-banner">
+            <div class="adsense-placement banner-ad">
                 <ins class="adsbygoogle"
                      style="display:block"
                      data-ad-client="<%= adsenseConfig.clientId %>"
-                     data-ad-slot="9876543210"
+                     data-ad-slot="7134935708"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
             </div>
@@ -1494,11 +1559,13 @@
     
     <!-- AdSense JavaScript (for free users only) -->
     <% if (showAds && adsenseConfig && adsenseConfig.enabled) { %>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseConfig.clientId %>"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseConfig.clientId %>"
+         crossorigin="anonymous"></script>
     <script>
         // Initialize AdSense ads
-        (adsbygoogle = window.adsbygoogle || []).push({});
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        (adsbygoogle = window.adsbygoogle || []).push({}); // Header ad
+        (adsbygoogle = window.adsbygoogle || []).push({}); // Banner ad
+        (adsbygoogle = window.adsbygoogle || []).push({}); // Sideways ad
         
         // AdSense Auto Ads (optional - enables automatic ad placement)
         (adsbygoogle = window.adsbygoogle || []).push({

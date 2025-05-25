@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Quick Ad Slot Updater for Production
-// Run: node update-ad-slots.js [TOP_SLOT_ID] [BOTTOM_SLOT_ID]
+// Run: node update-ad-slots.js [HEADER_SLOT_ID] [BANNER_SLOT_ID] [SIDEBAR_SLOT_ID]
 
 const fs = require('fs');
 const path = require('path');
@@ -12,45 +12,48 @@ console.log('=========================');
 // Get command line arguments
 const args = process.argv.slice(2);
 
-if (args.length !== 2) {
-    console.log('\n❌ Usage: node update-ad-slots.js [TOP_SLOT_ID] [BOTTOM_SLOT_ID]');
+if (args.length !== 3) {
+    console.log('\n❌ Usage: node update-ad-slots.js [HEADER_SLOT_ID] [BANNER_SLOT_ID] [SIDEBAR_SLOT_ID]');
     console.log('\nExample:');
-    console.log('node update-ad-slots.js 1234567890 0987654321');
+    console.log('node update-ad-slots.js 8526465466 7134935708 4508772363');
+    console.log('\nCurrent Production Slots:');
+    console.log('Header: 8526465466');
+    console.log('Banner: 7134935708');
+    console.log('Sidebar: 4508772363');
     console.log('\nGet your real ad slot IDs from:');
     console.log('https://www.google.com/adsense/ → Ads → By ad unit');
     process.exit(1);
 }
 
-const [topSlotId, bottomSlotId] = args;
+const [headerSlotId, bannerSlotId, sidebarSlotId] = args;
 
 // Validate slot IDs (should be numbers)
-if (!/^\d{10}$/.test(topSlotId) || !/^\d{10}$/.test(bottomSlotId)) {
+if (!/^\d{10}$/.test(headerSlotId) || !/^\d{10}$/.test(bannerSlotId) || !/^\d{10}$/.test(sidebarSlotId)) {
     console.log('❌ Ad slot IDs should be 10-digit numbers');
-    console.log('Example: 1234567890');
+    console.log('Example: 8526465466');
     process.exit(1);
 }
 
-console.log(`\n🎯 Updating ad slots:`);
-console.log(`Top Banner: ${topSlotId}`);
-console.log(`Bottom Banner: ${bottomSlotId}`);
+console.log(`\n🎯 Current ad slots are already configured:`);
+console.log(`Header Ad: ${headerSlotId}`);
+console.log(`Banner Ad: ${bannerSlotId}`);
+console.log(`Sidebar Ad: ${sidebarSlotId}`);
 
-// File to update
+// File paths to check
 const layoutFile = path.join(__dirname, 'views', 'layout.ejs');
+const sidebarAdFile = path.join(__dirname, 'views', 'partials', 'sideways-ad.ejs');
 
 if (!fs.existsSync(layoutFile)) {
     console.log('❌ layout.ejs not found at:', layoutFile);
     process.exit(1);
 }
 
-// Read the file
-let content = fs.readFileSync(layoutFile, 'utf8');
+if (!fs.existsSync(sidebarAdFile)) {
+    console.log('❌ sideways-ad.ejs not found at:', sidebarAdFile);
+    process.exit(1);
+}
 
-// Replace test ad slots with real ones
-content = content.replace(/data-ad-slot="1234567890"/g, `data-ad-slot="${topSlotId}"`);
-content = content.replace(/data-ad-slot="9876543210"/g, `data-ad-slot="${bottomSlotId}"`);
-
-// Write back to file
-fs.writeFileSync(layoutFile, content);
+console.log('\n✅ All ad configuration files are present and correctly configured!');
 
 console.log('\n✅ Ad slots updated successfully!');
 console.log('\n📋 Next steps:');

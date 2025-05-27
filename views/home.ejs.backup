@@ -1,0 +1,2569 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary">Goal Tracker</h1>
+                <p class="lead text-muted">Track your goals, achieve your dreams, and transform your life!</p>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <%= error %>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero-section py-5 text-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-4">Transform Your Dreams Into Reality</h1>
+                <p class="lead mb-4">Set meaningful goals, track your progress, and achieve more with AI-powered insights and milestone tracking.</p>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="/register" class="btn btn-primary btn-lg">
+                        <i class="fas fa-rocket me-2"></i>Get Started Free
+                    </a>
+                    <a href="#features" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-play-circle me-2"></i>Learn More
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modern Hero Section with Animated Background -->
+<div class="hero-wrapper">
+    <div class="hero-background-animated">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+            </div>
+        </div>
+    
+    <div class="hero-content">
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-6">
+                    <div class="hero-text">
+                        <div class="hero-badge mb-4">
+                            <span class="badge-text">
+                                <i class="fas fa-sparkles me-2"></i>
+                                #1 AI-Powered Goal Achievement Platform
+                            </span>
+    </div>
+    
+                        <h1 class="hero-title mb-4">
+                            Transform Your
+                            <span class="gradient-text">Dreams</span>
+                            Into Reality
+                        </h1>
+                        
+                        <p class="hero-subtitle mb-5">
+                            Join ambitious individuals who've achieved their biggest goals with our AI-powered platform. 
+                            Get personalized roadmaps, smart tracking, and the motivation you need to succeed.
+                        </p>
+                        
+                        <div class="hero-actions mb-5">
+                            <a href="/register" class="btn btn-primary-gradient btn-xl me-3">
+                                <i class="fas fa-rocket me-2"></i>
+                                Start Free Trial
+                            </a>
+                            <a href="/login" class="btn btn-outline-white btn-xl">
+                                <i class="fas fa-play me-2"></i>
+                                Sign In
+                            </a>
+                </div>
+                        
+                        <div class="hero-trust">
+                            <div class="trust-item">
+                                <i class="fas fa-check-circle text-success"></i>
+                                <span>7-day free trial</span>
+    </div>
+                            <div class="trust-item">
+                                <i class="fas fa-shield-alt text-success"></i>
+                                <span>No credit card required</span>
+                </div>
+                            <div class="trust-item">
+                                <i class="fas fa-times-circle text-success"></i>
+                                <span>Cancel anytime</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                <div class="col-lg-6">
+                    <div class="hero-visual">
+                        <div class="dashboard-preview">
+                            <div class="browser-frame">
+                                <div class="browser-header">
+                                    <div class="browser-buttons">
+                                        <span class="btn-close"></span>
+                                        <span class="btn-minimize"></span>
+                                        <span class="btn-maximize"></span>
+                </div>
+                                    <div class="browser-url">goaltracker.com/dashboard</div>
+                    </div>
+                                <div class="browser-content">
+                                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+                                         alt="Goal Tracker Dashboard" class="dashboard-image">
+                                    <div class="dashboard-overlay">
+                                        <div class="dashboard-metric">
+                                            <div class="metric-value">87%</div>
+                                            <div class="metric-label">Goals Completed</div>
+                    </div>
+                                        <div class="dashboard-metric">
+                                            <div class="metric-value">12</div>
+                                            <div class="metric-label">Active Goals</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                            <!-- Floating Stats Cards -->
+                            <div class="floating-stats stats-1">
+                                <div class="stat-card">
+                                    <div class="stat-icon">📈</div>
+                                    <div class="stat-text">
+                                        <div class="stat-number">92%</div>
+                                        <div class="stat-label">Success Rate</div>
+                </div>
+                    </div>
+                    </div>
+                            
+                            <div class="floating-stats stats-2">
+                                <div class="stat-card">
+                                    <div class="stat-icon">🎯</div>
+                                    <div class="stat-text">
+                                        <div class="stat-number">15</div>
+                                        <div class="stat-label">Goals Completed</div>
+    </div>
+            </div>
+        </div>
+        
+                            <div class="floating-stats stats-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon">⚡</div>
+                                    <div class="stat-text">
+                                        <div class="stat-number">3x</div>
+                                        <div class="stat-label">Faster Results</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+<!-- Social Proof Section -->
+<section class="social-proof-section">
+                <div class="container">
+        <div class="row align-items-center">
+                        <div class="col-md-4">
+                <h6 class="social-proof-title">Trusted by ambitious people at</h6>
+                                    </div>
+            <div class="col-md-8">
+                <div class="company-logos">
+                    <div class="logo">Microsoft</div>
+                    <div class="logo">Google</div>
+                    <div class="logo">Apple</div>
+                    <div class="logo">Netflix</div>
+                    <div class="logo">Tesla</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="stat-icon">🚀</div>
+                    <div class="stat-number">Growing</div>
+                    <div class="stat-label">User Base</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-number">Improving</div>
+                    <div class="stat-label">Daily</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-number">Your Success</div>
+                    <div class="stat-label">Our Priority</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stat-item">
+                    <div class="stat-icon">💪</div>
+                    <div class="stat-number">Start Today</div>
+                    <div class="stat-label">Achieve Tomorrow</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+            
+<!-- Features Section -->
+<section class="features-section">
+                <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">Features</div>
+            <h2 class="section-title">Everything you need to achieve your goals</h2>
+            <p class="section-subtitle">Powerful tools backed by cutting-edge AI to turn your dreams into reality</p>
+                                    </div>
+        
+        <div class="features-grid">
+            <div class="feature-card feature-highlight">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                                    </div>
+                <h3 class="feature-title">AI-Powered Insights</h3>
+                <p class="feature-description">
+                    Get personalized recommendations and smart analytics that adapt to your progress patterns and optimize your success rate.
+                </p>
+                <div class="feature-tags">
+                    <span class="tag">Machine Learning</span>
+                    <span class="tag">Predictive Analytics</span>
+                            </div>
+                        </div>
+                        
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-route"></i>
+                                    </div>
+                <h3 class="feature-title">Smart Roadmaps</h3>
+                <p class="feature-description">
+                    AI creates custom step-by-step plans with time-bound milestones tailored to your specific goals and lifestyle.
+                </p>
+                                    </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                                </div>
+                <h3 class="feature-title">Progress Tracking</h3>
+                <p class="feature-description">
+                    Beautiful dashboards and real-time analytics keep you motivated with clear visualization of your journey.
+                </p>
+                        </div>
+                        
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                                    </div>
+                <h3 class="feature-title">Community Support</h3>
+                <p class="feature-description">
+                    Connect with like-minded achievers, share your progress, and get inspiration from success stories.
+                </p>
+                                    </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                <h3 class="feature-title">Mobile Ready</h3>
+                <p class="feature-description">
+                    Access your goals anywhere with our responsive design that works perfectly on all your devices.
+                </p>
+                            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                        </div>
+                <h3 class="feature-title">Privacy First</h3>
+                <p class="feature-description">
+                    Your data is encrypted and secure. We never share your personal information with third parties.
+                </p>
+                    </div>
+                </div>
+            </div>
+</section>
+            
+<!-- Pricing Section -->
+<section class="pricing-section">
+                <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">Pricing</div>
+            <h2 class="section-title">Choose your success plan</h2>
+            <p class="section-subtitle">Start free, upgrade when you're ready to unlock your full potential</p>
+                                    </div>
+        
+        <div class="pricing-toggle">
+            <span class="toggle-label">Monthly</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="pricing-toggle">
+                <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Annual <span class="save-badge">Save 23%</span></span>
+                        </div>
+                        
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3 class="plan-name">Starter</h3>
+                    <p class="plan-description">Perfect for trying out goal tracking</p>
+                    <div class="plan-price">
+                        <span class="price">£0</span>
+                        <span class="period">/forever</span>
+                            </div>
+                        </div>
+                        
+                <div class="pricing-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Track 1 goal at a time</span>
+                                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Basic milestone creation</span>
+                                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Progress tracking</span>
+                                </div>
+                    <div class="feature-item disabled">
+                        <i class="fas fa-times"></i>
+                        <span>AI-powered milestones</span>
+                            </div>
+                    <div class="feature-item disabled">
+                        <i class="fas fa-times"></i>
+                        <span>Unlimited goals</span>
+                        </div>
+                    <div class="feature-item disabled">
+                        <i class="fas fa-times"></i>
+                        <span>Community features</span>
+                </div>
+            </div>
+            
+                <div class="pricing-action">
+                    <a href="/register" class="btn btn-outline">Get Started Free</a>
+                            </div>
+                        </div>
+                        
+            <!-- Monthly Plan -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">Most Popular</div>
+                <div class="pricing-header">
+                    <h3 class="plan-name">Professional</h3>
+                    <p class="plan-description">For serious goal achievers</p>
+                    <div class="plan-price">
+                        <span class="price monthly-price">£12.99</span>
+                        <span class="price annual-price" style="display: none;">£9.93</span>
+                        <span class="period">/month</span>
+                                    </div>
+                    <div class="price-note">
+                        <span class="monthly-note">7-day free trial</span>
+                        <span class="annual-note" style="display: none;">Billed annually at £119.19</span>
+                            </div>
+                        </div>
+                        
+                <div class="pricing-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span><strong>Unlimited goals</strong></span>
+                                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span><strong>AI-powered milestones</strong></span>
+                                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Advanced progress analytics</span>
+                                </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Community features</span>
+                            </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>PDF progress reports</span>
+                        </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Priority support</span>
+                </div>
+            </div>
+            
+                <div class="pricing-action">
+                    <a href="/subscription" class="btn btn-primary">Start Free Trial</a>
+                            </div>
+                        </div>
+                        
+            <!-- Enterprise Plan -->
+            <div class="pricing-card">
+                <div class="pricing-header">
+                    <h3 class="plan-name">Enterprise</h3>
+                    <p class="plan-description">For teams and organizations</p>
+                    <div class="plan-price">
+                        <span class="price">Custom</span>
+                        <span class="period">pricing</span>
+                            </div>
+                        </div>
+                        
+                <div class="pricing-features">
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Everything in Professional</span>
+                                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Team management</span>
+                                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Advanced analytics</span>
+                                </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Custom integrations</span>
+                            </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>Dedicated support</span>
+                        </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check"></i>
+                        <span>White-label options</span>
+                </div>
+            </div>
+            
+                <div class="pricing-action">
+                    <a href="mailto:goaltrackers2001@gmail.com?subject=Enterprise%20Goal%20Tracker%20Inquiry&body=Hi,%0A%0AI'm%20interested%20in%20learning%20more%20about%20your%20Enterprise%20plan%20for%20Goal%20Tracker.%0A%0APlease%20contact%20me%20with%20more%20information.%0A%0AThank%20you!" class="btn btn-outline">Contact Sales</a>
+                                    </div>
+                            </div>
+                        </div>
+                        
+        <div class="pricing-guarantee">
+            <i class="fas fa-shield-alt"></i>
+            <span>30-day money-back guarantee • Cancel anytime • No hidden fees</span>
+                                    </div>
+                                    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="how-it-works-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">How It Works</div>
+            <h2 class="section-title">Three steps to goal mastery</h2>
+            <p class="section-subtitle">Our proven system makes achieving any goal simple and actionable</p>
+            </div>
+            
+        <div class="steps-container">
+            <div class="step-item">
+                <div class="step-visual">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">🎯</div>
+                                    </div>
+                <div class="step-content">
+                    <h3 class="step-title">Define Your Goal</h3>
+                    <p class="step-description">
+                        Tell us what you want to achieve. Our AI analyzes your goal and creates a personalized strategy 
+                        based on successful patterns from thousands of similar goals.
+                    </p>
+                            </div>
+                        </div>
+                        
+            <div class="step-connector"></div>
+            
+            <div class="step-item">
+                <div class="step-visual">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🚀</div>
+                                    </div>
+                <div class="step-content">
+                    <h3 class="step-title">Follow Your Roadmap</h3>
+                    <p class="step-description">
+                        Get AI-generated milestones that break your goal into manageable steps. Each milestone is 
+                        timed perfectly to keep you motivated and on track.
+                    </p>
+                            </div>
+                        </div>
+                        
+            <div class="step-connector"></div>
+            
+            <div class="step-item">
+                <div class="step-visual">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">🏆</div>
+                                    </div>
+                <div class="step-content">
+                    <h3 class="step-title">Achieve Success</h3>
+                    <p class="step-description">
+                        Track your progress with beautiful analytics, get AI insights, and celebrate milestones. 
+                        Join thousands who've already achieved their biggest dreams.
+                    </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+</section>
+            
+<!-- CTA Section -->
+<section class="cta-section">
+                <div class="container">
+        <div class="cta-content">
+            <h2 class="cta-title">Ready to transform your life?</h2>
+            <p class="cta-subtitle">
+                Start your journey to achieving your biggest goals with AI-powered guidance
+            </p>
+            <div class="cta-actions">
+                <a href="/register" class="btn btn-primary-gradient btn-xl">
+                    <i class="fas fa-rocket me-2"></i>
+                    Start Your Free Trial
+                </a>
+                <p class="cta-note">No credit card required • 7-day free trial</p>
+                                    </div>
+                                    </div>
+                                </div>
+</section>
+
+<!-- User Success Stories Section -->
+<section class="testimonials-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">Success Stories</div>
+            <h2 class="section-title">Your success story could be here</h2>
+            <p class="section-subtitle">We're building something special, and we want to feature real success stories from genuine users</p>
+        </div>
+        
+        <!-- Call to Action for Real Stories -->
+        <div class="testimonials-placeholder">
+            <div class="placeholder-content text-center">
+                <div class="placeholder-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="placeholder-title">Be Among Our First Success Stories</h3>
+                <p class="placeholder-description">
+                    As a new platform, we're committed to authenticity. When you achieve your goals with Goal Tracker, 
+                    we'd love to feature your real journey and celebrate your genuine achievements.
+                </p>
+                <div class="placeholder-features">
+                    <div class="feature-point">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Real users, real results</span>
+                    </div>
+                    <div class="feature-point">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Authentic success stories</span>
+                    </div>
+                    <div class="feature-point">
+                        <i class="fas fa-check-circle"></i>
+                        <span>No fake reviews or bots</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+            
+        <!-- Feedback CTA -->
+        <div class="feedback-cta">
+            <div class="feedback-box">
+                <h3 class="feedback-title">Share Your Success Story</h3>
+                <p class="feedback-description">
+                    Have you achieved a goal with Goal Tracker? We'd love to hear about your journey and feature your story!
+                </p>
+                <a href="mailto:goaltrackers2001@gmail.com?subject=My%20Goal%20Tracker%20Success%20Story&body=Hi%20Goal%20Tracker%20Team,%0A%0AI'd%20like%20to%20share%20my%20success%20story:%0A%0AMy%20Goal:%20%0ATimeframe:%20%0AWhat%20I%20Achieved:%20%0AHow%20Goal%20Tracker%20Helped:%20%0A%0AFeel%20free%20to%20contact%20me%20if%20you'd%20like%20more%20details!%0A%0AThank%20you!" class="btn btn-primary-gradient">
+                    <i class="fas fa-star me-2"></i>
+                    Share Your Story
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section class="blog-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">Blog</div>
+            <h2 class="section-title">Learn & Get Inspired</h2>
+            <p class="section-subtitle">Discover goal achievement strategies, productivity tips, and success stories from our community</p>
+        </div>
+        
+        <div class="blog-preview">
+            <div class="blog-card featured-blog">
+                <div class="blog-visual">
+                    <div class="blog-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                </div>
+                <div class="blog-content">
+                    <h3 class="blog-title">Goal Achievement Strategies</h3>
+                    <p class="blog-description">
+                        Learn proven techniques to break down big goals into manageable steps, 
+                        stay motivated through challenges, and celebrate your progress.
+                    </p>
+                    <div class="blog-topics">
+                        <span class="topic-tag">Goal Setting</span>
+                        <span class="topic-tag">Motivation</span>
+                        <span class="topic-tag">Success Tips</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <div class="blog-visual">
+                    <div class="blog-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                </div>
+                <div class="blog-content">
+                    <h3 class="blog-title">Productivity Insights</h3>
+                    <p class="blog-description">
+                        Discover time management techniques, productivity hacks, and tools 
+                        that help successful people achieve more in less time.
+                    </p>
+                    <div class="blog-topics">
+                        <span class="topic-tag">Productivity</span>
+                        <span class="topic-tag">Time Management</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="blog-card">
+                <div class="blog-visual">
+                    <div class="blog-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="blog-content">
+                    <h3 class="blog-title">Community Stories</h3>
+                    <p class="blog-description">
+                        Read inspiring success stories from our community members who've 
+                        achieved their biggest goals using Goal Tracker.
+                    </p>
+                    <div class="blog-topics">
+                        <span class="topic-tag">Success Stories</span>
+                        <span class="topic-tag">Inspiration</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="blog-cta">
+            <a href="/blog" class="btn btn-primary-gradient btn-lg">
+                <i class="fas fa-book-open me-2"></i>
+                Explore Our Blog
+            </a>
+            <p class="blog-cta-note">Free articles, tips, and inspiration to fuel your success</p>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section" id="contact">
+    <div class="container">
+        <div class="section-header text-center">
+            <div class="section-badge">Contact</div>
+            <h2 class="section-title">Get in Touch</h2>
+            <p class="section-subtitle">Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="contact-form-card">
+                    <!-- Success/Error Messages -->
+                    <% if (typeof success !== 'undefined' && success) { %>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <%= success %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <% if (typeof error !== 'undefined' && error) { %>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <%= error %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                    
+                    <form action="/contact" method="POST" class="contact-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="contact-name" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Full Name
+                                    </label>
+                                    <input type="text" class="form-control" id="contact-name" name="name" 
+                                           value="<%= typeof formData !== 'undefined' ? (formData.name || '') : '' %>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group">
+                                    <label for="contact-email" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email Address
+                                    </label>
+                                    <input type="email" class="form-control" id="contact-email" name="email" 
+                                           value="<%= typeof formData !== 'undefined' ? (formData.email || '') : '' %>" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="contact-subject" class="form-label">
+                                    <i class="fas fa-tag me-2"></i>Subject
+                                </label>
+                                <select class="form-select" id="contact-subject" name="subject" required>
+                                    <option value="">Choose a subject...</option>
+                                    <option value="General Inquiry" <%= typeof formData !== 'undefined' && formData.subject === 'General Inquiry' ? 'selected' : '' %>>General Inquiry</option>
+                                    <option value="Technical Support" <%= typeof formData !== 'undefined' && formData.subject === 'Technical Support' ? 'selected' : '' %>>Technical Support</option>
+                                    <option value="Feature Request" <%= typeof formData !== 'undefined' && formData.subject === 'Feature Request' ? 'selected' : '' %>>Feature Request</option>
+                                    <option value="Partnership" <%= typeof formData !== 'undefined' && formData.subject === 'Partnership' ? 'selected' : '' %>>Partnership Opportunity</option>
+                                    <option value="Bug Report" <%= typeof formData !== 'undefined' && formData.subject === 'Bug Report' ? 'selected' : '' %>>Bug Report</option>
+                                    <option value="Billing Question" <%= typeof formData !== 'undefined' && formData.subject === 'Billing Question' ? 'selected' : '' %>>Billing Question</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-group">
+                                <label for="contact-message" class="form-label">
+                                    <i class="fas fa-comment me-2"></i>Message
+                                </label>
+                                <textarea class="form-control" id="contact-message" name="message" rows="5" 
+                                          placeholder="Tell us how we can help you..." required><%= typeof formData !== 'undefined' ? (formData.message || '') : '' %></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row mt-5">
+            <div class="col-lg-4 mb-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h5>Email Us</h5>
+                    <p>Send us an email and we'll respond within 24 hours</p>
+                    <a href="mailto:goaltrackers2001@gmail.com" class="contact-link">
+                        goaltrackers2001@gmail.com
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h5>Response Time</h5>
+                    <p>We aim to respond to all inquiries quickly</p>
+                    <span class="contact-highlight">Usually within 24 hours</span>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 mb-4">
+                <div class="contact-info-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h5>Community</h5>
+                    <p>Join our community for instant help and support</p>
+                    <a href="/community" class="contact-link">
+                        Visit Community
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Ultra-Modern CSS for Stunning Homepage -->
+<style>
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --dark-gradient: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    --text-dark: #2c3e50;
+    --text-light: #6c757d;
+    --white: #ffffff;
+    --border-radius: 20px;
+    --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* Hero Section */
+.hero-wrapper {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.hero-background-animated {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-gradient);
+    z-index: -1;
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float 20s infinite linear;
+}
+
+.shape-1 {
+    width: 100px;
+    height: 100px;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.shape-2 {
+    width: 150px;
+    height: 150px;
+    top: 20%;
+    right: 10%;
+    animation-delay: 4s;
+}
+
+.shape-3 {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 8s;
+}
+
+.shape-4 {
+    width: 120px;
+    height: 120px;
+    bottom: 10%;
+    right: 20%;
+    animation-delay: 12s;
+}
+
+.shape-5 {
+    width: 60px;
+    height: 60px;
+    top: 50%;
+    left: 50%;
+    animation-delay: 16s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(30px, -30px) rotate(120deg); }
+    66% { transform: translate(-20px, 20px) rotate(240deg); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 100px 0;
+}
+
+.hero-badge {
+    display: inline-block;
+    animation: slideInDown 1s ease-out;
+}
+
+.badge-text {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: white;
+    margin-bottom: 2rem;
+    animation: slideInUp 1s ease-out 0.2s both;
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    line-height: 1.6;
+    animation: slideInUp 1s ease-out 0.4s both;
+}
+
+.hero-actions {
+    animation: slideInUp 1s ease-out 0.6s both;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: var(--transition);
+    border: none;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.btn-xl {
+    padding: 20px 40px;
+    font-size: 18px;
+}
+
+.btn-primary-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary-gradient:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.6);
+}
+
+.btn-outline-white {
+    background: transparent;
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+}
+
+.btn-outline-white:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+.hero-trust {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    animation: slideInUp 1s ease-out 0.8s both;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+/* Dashboard Preview */
+.hero-visual {
+    position: relative;
+    animation: slideInRight 1s ease-out 0.4s both;
+}
+
+.dashboard-preview {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.browser-frame {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.browser-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f9fa;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.browser-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.browser-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.btn-close { background: #ff5f57; }
+.btn-minimize { background: #ffbd2e; }
+.btn-maximize { background: #28ca42; }
+
+.browser-url {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #6c757d;
+    border: 1px solid #e9ecef;
+}
+
+.browser-content {
+    position: relative;
+}
+
+.dashboard-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    display: block;
+}
+
+.dashboard-overlay {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    gap: 1rem;
+}
+
+.dashboard-metric {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 12px 16px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    min-width: 80px;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.metric-label {
+    font-size: 10px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.floating-stats {
+    position: absolute;
+    animation: floatStats 6s ease-in-out infinite;
+    z-index: 1;
+}
+
+.stats-1 { 
+    top: 15%; 
+    right: -10px; 
+    animation-delay: 0s; 
+}
+
+.stats-2 { 
+    bottom: 20%; 
+    left: -50px; 
+    animation-delay: 2s; 
+}
+
+.stats-3 { 
+    top: 72%; 
+    right: -30px; 
+    animation-delay: 4s; 
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: left;
+    gap: 2px;
+    min-width: 18px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.stat-icon {
+    font-size: 24px;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-dark);
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+@keyframes floatStats {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Social Proof Section */
+.social-proof-section {
+    padding: 40px 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.social-proof-title {
+    color: var(--text-light);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.company-logos {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-light);
+    opacity: 0.7;
+    transition: var(--transition);
+}
+
+.logo:hover {
+    opacity: 1;
+    color: var(--text-dark);
+}
+
+/* Stats Section */
+.stats-section {
+    padding: 100px 0;
+    background: white;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.stat-item .stat-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.stat-item .stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.stat-item .stat-label {
+    font-size: 1rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* Features Section */
+.features-section {
+    padding: 120px 0;
+    background: /* background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);*/
+}
+
+.section-header {
+    margin-bottom: 5rem;
+}
+
+.section-badge {
+    display: inline-block;
+    background: var(--primary-gradient);
+    color: white;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.section-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: var(--transition);
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+}
+
+.feature-highlight {
+    background: var(--primary-gradient);
+    color: white;
+    transform: scale(1.05);
+}
+
+.feature-highlight .feature-title,
+.feature-highlight .feature-description {
+    color: white;
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 2rem;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+}
+
+.feature-highlight .feature-icon {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.feature-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.feature-description {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.feature-tags {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.feature-highlight .tag {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+/* Pricing Section */
+.pricing-section {
+    padding: 120px 0;
+    background: white;
+}
+
+.pricing-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 3rem 0 4rem;
+}
+
+.toggle-label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.save-badge {
+    background: var(--success-gradient);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.toggle-switch {
+    position: relative;
+    width: 60px;
+    height: 30px;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    border-radius: 30px;
+    transition: var(--transition);
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background: white;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+input:checked + .toggle-slider {
+    background: var(--primary-gradient);
+}
+
+input:checked + .toggle-slider:before {
+    transform: translateX(30px);
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.pricing-card {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: visible;
+    transition: var(--transition);
+    position: relative;
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.15);
+}
+
+.pricing-card.featured {
+    transform: scale(1.05);
+    box-shadow: 0 30px 80px rgba(102, 126, 234, 0.3);
+    border: 2px solid #667eea;
+}
+
+.popular-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary-gradient);
+    color: white;
+    padding: 10px 28px;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    z-index: 10;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    white-space: nowrap;
+}
+
+.pricing-header {
+    padding: 3rem 2rem 2rem;
+    text-align: center;
+}
+
+.plan-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.plan-description {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.plan-price {
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.period {
+    font-size: 1rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.price-note {
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.pricing-features {
+    padding: 0 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.feature-item:last-child {
+    border-bottom: none;
+}
+
+.feature-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.feature-item.disabled {
+    opacity: 0.5;
+}
+
+.pricing-action {
+    padding: 2rem;
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+    width: 100%;
+    border: none;
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--text-dark);
+    border: 2px solid #e9ecef;
+    width: 100%;
+}
+
+.btn-outline:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.pricing-guarantee {
+    text-align: center;
+    margin-top: 3rem;
+    color: var(--text-light);
+    font-size: 14px;
+}
+
+/* How It Works Section */
+.how-it-works-section {
+    padding: 120px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.how-it-works-section .section-badge {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.how-it-works-section .section-title {
+    color: white;
+}
+
+.how-it-works-section .section-subtitle {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.steps-container {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.step-item {
+    text-align: center;
+}
+
+.step-visual {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.step-number {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+}
+
+.step-icon {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    margin: 0 auto;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.step-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.step-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+.step-connector {
+    width: 100px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.step-connector::after {
+    content: '';
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid rgba(255, 255, 255, 0.3);
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+}
+
+/* CTA Section */
+.cta-section {
+    padding: 120px 0;
+    background: var(--dark-gradient);
+    color: white;
+    text-align: center;
+}
+
+.cta-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.cta-subtitle {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 3rem;
+}
+
+.cta-note {
+    margin-top: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+}
+
+/* Animations */
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .floating-stats {
+        display: none; /* Hide floating stats on tablets and smaller */
+    }
+    
+    .pricing-grid {
+        padding-top: 25px; /* More space on smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .cta-title {
+        font-size: 2rem;
+    }
+    
+    .hero-trust {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .features-grid,
+    .pricing-grid {
+        grid-template-columns: 1fr;
+        padding-top: 30px; /* Even more space on mobile */
+    }
+    
+    .steps-container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
+    .step-connector {
+        display: none;
+    }
+    
+    .floating-stats {
+        display: none;
+    }
+    
+    .company-logos {
+        justify-content: center;
+        gap: 1.5rem;
+    }
+    
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .testimonial-card {
+        padding: 1.5rem;
+    }
+    
+    .quote-icon {
+        font-size: 3rem;
+    }
+    
+    .feedback-box {
+        padding: 2rem 1rem;
+        margin: 0 1rem;
+    }
+    
+    .feedback-title {
+        font-size: 1.5rem;
+    }
+    
+    .popular-badge {
+        font-size: 11px;
+        padding: 8px 20px;
+        top: -12px;
+    }
+}
+
+/* Pricing Toggle Functionality */
+.annual-price,
+.annual-note {
+    display: none;
+}
+
+/* When toggle is checked, show annual pricing */
+#pricing-toggle:checked ~ .pricing-grid .monthly-price,
+#pricing-toggle:checked ~ .pricing-grid .monthly-note {
+    display: none;
+}
+
+#pricing-toggle:checked ~ .pricing-grid .annual-price,
+#pricing-toggle:checked ~ .pricing-grid .annual-note {
+    display: inline;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+    padding: 120px 0;
+    background: /* background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);*/
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto 4rem;
+}
+
+.testimonial-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.testimonial-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: var(--transition);
+}
+
+.testimonial-card:hover::before {
+    transform: scaleX(1);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+}
+
+.quote-icon {
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--primary-gradient);
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.testimonial-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-dark);
+    margin-bottom: 1.5rem;
+    font-style: italic;
+}
+
+.testimonial-rating {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stars {
+    font-size: 1.2rem;
+}
+
+.rating-text {
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.author-avatar {
+    flex-shrink: 0;
+}
+
+.author-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f8f9fa;
+}
+
+.author-name {
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.author-title {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* Feedback CTA */
+.feedback-cta {
+    text-align: center;
+}
+
+.feedback-box {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    max-width: 600px;
+    margin: 0 auto;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+}
+
+.feedback-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: var(--border-radius);
+    padding: 2px;
+    background: var(--primary-gradient);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: subtract;
+    z-index: -1;
+}
+
+.feedback-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.feedback-description {
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Contact Section Styles */
+.contact-section {
+    padding: 120px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.contact-form-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-form-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+}
+
+.contact-form .form-control,
+.contact-form .form-select {
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background-color: #f8fafc;
+}
+
+.contact-form .form-control:focus,
+.contact-form .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    background-color: white;
+    transform: translateY(-2px);
+}
+
+.contact-form .form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.contact-form .btn {
+    padding: 1rem 2rem;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    text-transform: none;
+    letter-spacing: 0.5px;
+}
+
+.contact-form .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+}
+
+.contact-info-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 100%;
+}
+
+.contact-info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+}
+
+.contact-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 1.8rem;
+    box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+}
+
+.contact-info-card h5 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-dark);
+}
+
+.contact-info-card p {
+    color: #6c757d;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.contact-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+    color: var(--accent-color);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.contact-highlight {
+    color: var(--success-color);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .contact-form-card {
+        padding: 2rem 1.5rem;
+        margin: 0 1rem;
+    }
+    
+    .contact-section {
+        padding: 80px 0;
+    }
+}
+
+/* Testimonials Placeholder */
+.testimonials-placeholder {
+    max-width: 800px;
+    margin: 0 auto 4rem;
+}
+
+.placeholder-content {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 3rem 2rem;
+    box-shadow: var(--box-shadow);
+    border: 2px dashed #e9ecef;
+}
+
+.placeholder-icon {
+    font-size: 4rem;
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+}
+
+.placeholder-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+}
+
+.placeholder-description {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.placeholder-features {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.feature-point {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+}
+
+.feature-point i {
+    color: #28a745;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .placeholder-features {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+    
+    .placeholder-content {
+        padding: 2rem 1.5rem;
+    }
+}
+
+/* Blog Section Styles */
+.blog-section {
+    padding: 120px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+}
+
+.blog-section .section-header {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(102, 126, 234, 0.10);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+    color: #2d2350;
+    text-align: left;
+}
+
+.blog-section .section-header .section-title,
+.blog-section .section-header .section-subtitle,
+.blog-section .section-header .section-badge {
+    color: #2d2350 !important;
+    text-shadow: none;
+}
+
+.blog-section .section-header .section-badge {
+    background: rgba(102, 126, 234, 0.10);
+    color: #5f4bb6 !important;
+    border: 1px solid #a99cf0;
+}
+
+.blog-section .section-badge {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.blog-section .section-title {
+    color: white;
+}
+
+.blog-section .section-subtitle {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.blog-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin: 4rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.blog-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.blog-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.blog-card:hover::before {
+    opacity: 1;
+}
+
+.blog-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.blog-card.featured-blog {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transform: scale(1.02);
+}
+
+.blog-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.blog-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+}
+
+.blog-card:hover .blog-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.blog-content {
+    position: relative;
+    z-index: 2;
+}
+
+.blog-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.blog-description {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.blog-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.topic-tag {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
+}
+
+.blog-card:hover .topic-tag {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.blog-cta {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.blog-cta .btn {
+    background: white;
+    color: #667eea;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.blog-cta .btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.blog-cta-note {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .blog-section {
+        padding: 80px 0;
+    }
+    
+    .blog-preview {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+    
+    .blog-card {
+        padding: 1.5rem;
+    }
+    
+    .blog-card.featured-blog {
+        transform: none;
+    }
+    
+    .blog-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .blog-title {
+        font-size: 1.3rem;
+    }
+}
+
+/* How It Works Section Header Readability Fix */
+.how-it-works-section .section-header {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(6px);
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(102, 126, 234, 0.10);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 2.5rem 2rem;
+    margin-bottom: 3rem;
+    color: #2d2350;
+    text-align: left;
+}
+.how-it-works-section .section-header .section-title,
+.how-it-works-section .section-header .section-subtitle,
+.how-it-works-section .section-header .section-badge {
+    color: #2d2350 !important;
+    text-shadow: none;
+}
+.how-it-works-section .section-header .section-badge {
+    background: rgba(102, 126, 234, 0.10);
+    color: #5f4bb6 !important;
+    border: 1px solid #a99cf0;
+}
+</style>
+
+<!-- JavaScript for Interactive Features -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Pricing toggle functionality
+    const pricingToggle = document.getElementById('pricing-toggle');
+    const monthlyPrices = document.querySelectorAll('.monthly-price');
+    const annualPrices = document.querySelectorAll('.annual-price');
+    const monthlyNotes = document.querySelectorAll('.monthly-note');
+    const annualNotes = document.querySelectorAll('.annual-note');
+    
+    if (pricingToggle) {
+        pricingToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // Show annual pricing
+                monthlyPrices.forEach(el => el.style.display = 'none');
+                monthlyNotes.forEach(el => el.style.display = 'none');
+                annualPrices.forEach(el => el.style.display = 'inline');
+                annualNotes.forEach(el => el.style.display = 'inline');
+            } else {
+                // Show monthly pricing
+                monthlyPrices.forEach(el => el.style.display = 'inline');
+                monthlyNotes.forEach(el => el.style.display = 'inline');
+                annualPrices.forEach(el => el.style.display = 'none');
+                annualNotes.forEach(el => el.style.display = 'none');
+            }
+        });
+    }
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Add scroll animation for stats numbers
+    const observerOptions = {
+        threshold: 0.5,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+                const countElement = target.querySelector('.stat-number[data-count]');
+                if (countElement && !countElement.classList.contains('counted')) {
+                    countElement.classList.add('counted');
+                    animateNumber(countElement);
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // Observe all stat items
+    document.querySelectorAll('.stat-item').forEach(item => {
+        observer.observe(item);
+    });
+    
+    function animateNumber(element) {
+        const target = parseInt(element.getAttribute('data-count'));
+        const duration = 2000;
+        const start = performance.now();
+        
+        function update() {
+            const now = performance.now();
+            const progress = Math.min((now - start) / duration, 1);
+            const current = Math.floor(progress * target);
+            
+            if (element.textContent.includes('.')) {
+                element.textContent = (current / 10).toFixed(1) + element.textContent.slice(-2);
+            } else if (target >= 1000) {
+                element.textContent = current.toLocaleString() + '+';
+            } else {
+                element.textContent = current + (element.textContent.includes('%') ? '%' : '');
+            }
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+        
+        requestAnimationFrame(update);
+    }
+});
+</script> 

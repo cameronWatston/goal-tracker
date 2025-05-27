@@ -1841,22 +1841,26 @@
         }
         
         function shouldAutoShowHelp(pageType) {
+            // DISABLED: Auto-help system turned off
+            return false;
+            
+            // Original logic (commented out):
             // Don't auto-show help if user has seen it before
-            if (hasSeenHelp(pageType)) {
-                return false;
-            }
+            // if (hasSeenHelp(pageType)) {
+            //     return false;
+            // }
             
             // Only auto-show help for new users (you can customize this logic)
-            const userCreatedAt = '<%= user ? user.created_at : "" %>';
-            if (userCreatedAt) {
-                const accountAge = Date.now() - new Date(userCreatedAt).getTime();
-                const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
-                
-                // Only show auto-help for accounts less than 3 days old
-                return accountAge < threeDaysInMs;
-            }
+            // const userCreatedAt = '<%= user ? user.created_at : "" %>';
+            // if (userCreatedAt) {
+            //     const accountAge = Date.now() - new Date(userCreatedAt).getTime();
+            //     const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+            //     
+            //     // Only show auto-help for accounts less than 3 days old
+            //     return accountAge < threeDaysInMs;
+            // }
             
-            return false; // Don't show for guests
+            // return false; // Don't show for guests
         }
         
         function resetAllHelp() {

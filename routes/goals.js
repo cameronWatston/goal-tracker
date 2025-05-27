@@ -989,7 +989,7 @@ router.get('/:id/export/ai-report', checkFeatureAccess('ai-report'), (req, res) 
 router.put('/milestone/:id', async (req, res) => {
     const milestoneId = req.params.id;
     const userId = req.session.user.id;
-    const { title, description, targetDate, status, metrics } = req.body;
+    const { title, description, targetDate, status, metrics, progress_percentage } = req.body;
     
     // First verify that the milestone belongs to the user
     const milestone = await new Promise((resolve, reject) => {
@@ -1012,16 +1012,46 @@ router.put('/milestone/:id', async (req, res) => {
             // Convert metrics to JSON string
             const metricsJson = JSON.stringify(metrics || []);
             
-            // Update the milestone with completed_at timestamp if being completed
-            const updateQuery = status === 'completed' && milestone.status !== 'completed' 
-                ? 'UPDATE milestones SET title = ?, description = ?, target_date = ?, status = ?, metrics = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?'
-                : 'UPDATE milestones SET title = ?, description = ?, target_date = ?, status = ?, metrics = ? WHERE id = ?';
+            // Determine which fields to update based on what was provided
+            let updateFields = [];
+            let updateValues = [];
             
-            const updateParams = status === 'completed' && milestone.status !== 'completed'
-                ? [title, description, targetDate, status, metricsJson, milestoneId]
-                : [title, description, targetDate, status, metricsJson, milestoneId];
+            if (title !== undefined) {
+                updateFields.push('title = ?');
+                updateValues.push(title);
+            }
+            if (description !== undefined) {
+                updateFields.push('description = ?');
+                updateValues.push(description);
+            }
+            if (targetDate !== undefined) {
+                updateFields.push('target_date = ?');
+                updateValues.push(targetDate);
+            }
+            if (status !== undefined) {
+                updateFields.push('status = ?');
+                updateValues.push(status);
+            }
+            if (metrics !== undefined) {
+                updateFields.push('metrics = ?');
+                updateValues.push(metricsJson);
+            }
+            if (progress_percentage !== undefined) {
+                updateFields.push('progress_percentage = ?');
+                updateValues.push(parseInt(progress_percentage));
+            }
             
-            db.run(updateQuery, updateParams, async function(err) {
+            // Add completed_at timestamp if being completed
+            if (status === 'completed' && milestone.status !== 'completed') {
+                updateFields.push('completed_at = CURRENT_TIMESTAMP');
+            }
+            
+            // Add milestone ID to the end of values array
+            updateValues.push(milestoneId);
+            
+            const updateQuery = `UPDATE milestones SET ${updateFields.join(', ')} WHERE id = ?`;
+            
+            db.run(updateQuery, updateValues, async function(err) {
                     if (err) {
                         console.error('Error updating milestone:', err);
                         return res.status(500).json({ error: 'Failed to update milestone' });
@@ -1033,7 +1063,7 @@ router.put('/milestone/:id', async (req, res) => {
                     const AchievementTracker = require('../utils/achievements');
                     const milestoneData = {
                         id: milestoneId,
-                        title,
+                        title: title || milestone.title,
                         target_date: targetDate || milestone.target_date,
                         created_at: milestone.created_at
                     };
@@ -1054,10 +1084,11 @@ router.put('/milestone/:id', async (req, res) => {
                     res.status(200).json({
                         id: milestoneId,
                         goal_id: milestone.goal_id,
-                        title,
-                        description,
-                        target_date: targetDate,
-                        status,
+                        title: title || milestone.title,
+                        description: description || milestone.description,
+                        target_date: targetDate || milestone.target_date,
+                        status: status || milestone.status,
+                        progress_percentage: progress_percentage !== undefined ? parseInt(progress_percentage) : milestone.progress_percentage,
                         metrics: metrics || []
                     });
         }

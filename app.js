@@ -70,6 +70,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Explicit route for ads.txt (ensures AdSense can always find it)
+app.get('/ads.txt', (req, res) => {
+    res.type('text/plain');
+    res.send('google.com, pub-1114938538633285, DIRECT, f08c47fec0942fa0');
+});
+
 // Session configuration
 const ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 
@@ -142,6 +148,44 @@ app.get('/contact', (req, res) => {
         error: null,
         success: null,
         formData: {}
+    });
+});
+
+// Terms of Service page
+app.get('/terms', (req, res) => {
+    res.render('terms-of-service', { 
+        title: 'Terms of Service - Goal Tracker',
+        description: 'Read our Terms of Service to understand your rights and responsibilities when using Goal Tracker.',
+        canonicalUrl: 'https://goaltracker.com/terms'
+    });
+});
+
+// Privacy Policy page
+app.get('/privacy', (req, res) => {
+    res.render('privacy-policy', { 
+        title: 'Privacy Policy - Goal Tracker',
+        description: 'Learn how Goal Tracker protects your privacy and handles your personal data.',
+        canonicalUrl: 'https://goaltracker.com/privacy'
+    });
+});
+
+// Friends page
+app.get('/friends', isAuthenticated, (req, res) => {
+    res.render('friends', { 
+        title: 'Friends - Goal Tracker',
+        description: 'Connect with fellow goal achievers and build your support network.',
+        canonicalUrl: 'https://goaltracker.com/friends',
+        user: req.session.user
+    });
+});
+
+// Messages page
+app.get('/messages', isAuthenticated, (req, res) => {
+    res.render('messages', { 
+        title: 'Messages - Goal Tracker',
+        description: 'Stay connected with your friends and support network through private messaging.',
+        canonicalUrl: 'https://goaltracker.com/messages',
+        user: req.session.user
     });
 });
 
@@ -566,6 +610,8 @@ const adminRoutes = require('./routes/admin');
 const aiRoutes = require('./routes/ai');
 const apiRoutes = require('./routes/api');
 const blogRoutes = require('./routes/blog');
+const tutorialRoutes = require('./routes/tutorials');
+const socialRoutes = require('./routes/social');
 
 app.use('/auth', authRoutes);
 app.use('/api/goals', goalRoutes);
@@ -576,6 +622,8 @@ app.use('/admin', adminRoutes); // Add admin routes
 app.use('/api/ai', aiRoutes); // Add AI feature routes
 app.use('/api', apiRoutes); // Add API routes for search and chat
 app.use('/blog', blogRoutes); // Add blog routes
+app.use('/api/tutorials', tutorialRoutes);
+app.use('/api/social', socialRoutes);
 
 // Add profile route
 app.get('/profile', (req, res) => {
@@ -676,6 +724,16 @@ app.get('/notifications', isAuthenticated, (req, res) => {
             });
         }
     );
+});
+
+// Community page
+app.get('/community', isAuthenticated, (req, res) => {
+    res.render('community', { 
+        title: 'Community - Goal Tracker',
+        user: req.session.user,
+        showAds: shouldShowAds(req.session.user),
+        adsenseConfig: adsenseConfig
+    });
 });
 
 // Error handling middleware

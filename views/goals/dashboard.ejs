@@ -4,7 +4,7 @@
 <!-- Enhanced Dashboard Header with Live Stats -->
 <div class="row mb-4">
     <div class="col-12">
-        <div class="dashboard-hero-section">
+        <div class="dashboard-hero-section dashboard-header">
             <div class="hero-background"></div>
             <div class="hero-content">
                 <div class="container-fluid">
@@ -137,7 +137,7 @@
                             <p class="text-muted mb-0">Track and manage your personal and professional goals</p>
                         </div>
                         <div class="ms-auto">
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newGoalModal">
+                            <button class="btn btn-primary create-goal-btn" data-bs-toggle="modal" data-bs-target="#newGoalModal">
                                 <i class="fas fa-plus-circle me-2"></i> Add New Goal
                             </button>
                         </div>
@@ -153,7 +153,7 @@
     </div>
 
     <!-- Filter & Sort Controls -->
-    <div class="row mb-4">
+    <div class="row mb-4 filter-section">
         <div class="col-md-8">
             <div class="btn-group" role="group" aria-label="Filter goals">
                 <a href="/goals/dashboard?filter=all&sort=<%= sort %>" class="btn <%= filter === 'all' ? 'btn-primary' : 'btn-outline-secondary' %>">
@@ -297,7 +297,7 @@
         <% if (goals && goals.length > 0) { %>
             <% goals.forEach(goal => { %>
                 <div class="col-md-6 col-lg-4 goal-card-container">
-                    <div class="card h-100 goal-card" data-goal-id="<%= goal.id %>">
+                    <div class="card h-100 goal-card" data-goal-id="<%= goal.id %>" data-tutorial="goal-cards">
                         <div class="card-body p-4">
                             <!-- Category Badge -->
                             <% 
@@ -2023,6 +2023,21 @@ document.addEventListener('DOMContentLoaded', function() {
             progressBar.setAttribute('aria-valuenow', '0');
         }
         progressValue.textContent = '0';
+    }
+    
+    // Initialize tutorial for dashboard
+    setTimeout(() => {
+        // Check if this is a new user and auto-start tutorial
+        checkAutoStartTutorial();
+    }, 1000);
+    
+    // Add tutorial button functionality
+    const helpBtn = document.getElementById('helpBtn');
+    if (helpBtn) {
+        helpBtn.onclick = (e) => {
+            e.preventDefault();
+            startTutorial('dashboard');
+        };
     }
 });
 </script>

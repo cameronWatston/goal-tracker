@@ -1,0 +1,335 @@
+/* Tutorial System Styles */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tutorial-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.tutorial-content {
+    position: relative;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 420px;
+    max-width: calc(100vw - 40px);
+    animation: tutorialSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 10001;
+}
+
+@keyframes tutorialSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.tutorial-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.tutorial-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.tutorial-header h4 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+    position: relative;
+    z-index: 1;
+}
+
+.tutorial-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.tutorial-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.tutorial-body {
+    padding: 2rem;
+}
+
+.tutorial-body p {
+    color: #495057;
+    line-height: 1.7;
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+.tutorial-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border-radius: 0 0 15px 15px;
+}
+
+.tutorial-navigation {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tutorial-step-indicator {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+    background: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.tutorial-highlight {
+    position: relative;
+    z-index: 1001;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.4), 0 0 30px rgba(102, 126, 234, 0.3) !important;
+    border-radius: 8px !important;
+    animation: tutorialPulse 2s ease-in-out infinite;
+}
+
+@keyframes tutorialPulse {
+    0%, 100% { 
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.4), 0 0 30px rgba(102, 126, 234, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 0 8px rgba(102, 126, 234, 0.6), 0 0 40px rgba(102, 126, 234, 0.5);
+    }
+}
+
+/* Button Styles */
+.tutorial-footer .btn {
+    font-weight: 500;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.tutorial-footer .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.tutorial-footer .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.tutorial-footer .btn-secondary {
+    background: #6c757d;
+    border: none;
+}
+
+.tutorial-footer .btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.tutorial-footer .btn-outline-secondary:hover {
+    background: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .tutorial-content {
+        width: calc(100vw - 20px);
+        margin: 10px;
+    }
+    
+    .tutorial-header {
+        padding: 1.25rem;
+    }
+    
+    .tutorial-header h4 {
+        font-size: 1.1rem;
+    }
+    
+    .tutorial-body {
+        padding: 1.5rem;
+    }
+    
+    .tutorial-footer {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .tutorial-navigation {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .btn-outline-secondary {
+        width: 100%;
+        order: 2;
+    }
+    
+    .tutorial-navigation {
+        order: 1;
+    }
+}
+
+@media (max-width: 480px) {
+    .tutorial-content {
+        width: calc(100vw - 10px);
+        margin: 5px;
+    }
+    
+    .tutorial-header {
+        padding: 1rem;
+    }
+    
+    .tutorial-body {
+        padding: 1.25rem;
+    }
+    
+    .tutorial-footer {
+        padding: 1.25rem;
+    }
+    
+    .tutorial-navigation {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+    }
+    
+    .tutorial-navigation .btn {
+        width: 100%;
+    }
+    
+    .tutorial-step-indicator {
+        order: -1;
+        text-align: center;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .tutorial-content {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .tutorial-body p {
+        color: #cbd5e0;
+    }
+    
+    .tutorial-footer {
+        background: #1a202c;
+        border-top-color: #4a5568;
+    }
+    
+    .tutorial-step-indicator {
+        background: #2d3748;
+        color: #cbd5e0;
+        border-color: #4a5568;
+    }
+    
+    .tutorial-close {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .tutorial-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .tutorial-highlight {
+        box-shadow: 0 0 0 4px #000, 0 0 30px #000 !important;
+    }
+    
+    .tutorial-content {
+        border: 2px solid #000;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .tutorial-content {
+        animation: none;
+    }
+    
+    .tutorial-highlight {
+        animation: none;
+    }
+    
+    .tutorial-close {
+        transition: none;
+    }
+    
+    .tutorial-footer .btn {
+        transition: none;
+    }
+}
+
+/* Focus Styles for Accessibility */
+.tutorial-close:focus,
+.tutorial-footer .btn:focus {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Print Styles */
+@media print {
+    .tutorial-overlay {
+        display: none !important;
+    }
+} 

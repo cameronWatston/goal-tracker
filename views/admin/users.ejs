@@ -58,6 +58,7 @@
                             <th scope="col">User</th>
                             <th scope="col">Email</th>
                             <th scope="col">Created</th>
+                            <th scope="col">Last Active</th>
                             <th scope="col">Status</th>
                             <th scope="col">Admin</th>
                             <th scope="col">Actions</th>
@@ -73,11 +74,70 @@
                                             <div class="avatar bg-primary bg-opacity-10 text-primary rounded-circle me-2">
                                                 <%= user.username.charAt(0).toUpperCase() %>
                                             </div>
-                                            <span><%= user.username %></span>
+                                            <div>
+                                                <span><%= user.username %></span>
+                                                <% if (user.last_activity) { %>
+                                                    <% 
+                                                    const lastActivity = new Date(user.last_activity);
+                                                    const now = new Date();
+                                                    const diffMinutes = Math.floor((now - lastActivity) / (1000 * 60));
+                                                    const diffHours = Math.floor(diffMinutes / 60);
+                                                    const diffDays = Math.floor(diffHours / 24);
+                                                    
+                                                    let activityStatus = '';
+                                                    let statusClass = '';
+                                                    
+                                                    if (diffMinutes < 5) {
+                                                        activityStatus = 'Online';
+                                                        statusClass = 'text-success';
+                                                    } else if (diffMinutes < 30) {
+                                                        activityStatus = 'Recently active';
+                                                        statusClass = 'text-warning';
+                                                    } else if (diffDays < 1) {
+                                                        activityStatus = 'Today';
+                                                        statusClass = 'text-info';
+                                                    } else if (diffDays < 7) {
+                                                        activityStatus = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+                                                        statusClass = 'text-muted';
+                                                    } else {
+                                                        activityStatus = 'Inactive';
+                                                        statusClass = 'text-danger';
+                                                    }
+                                                    %>
+                                                    <small class="d-block <%= statusClass %>">
+                                                        <i class="fas fa-circle fa-xs me-1"></i>
+                                                        <%= activityStatus %>
+                                                    </small>
+                                                <% } %>
+                                            </div>
                                         </div>
                                     </td>
                                     <td><%= user.email %></td>
                                     <td><%= new Date(user.created_at).toLocaleDateString() %></td>
+                                    <td>
+                                        <% if (user.last_activity) { %>
+                                            <% 
+                                            const lastActivityFormatted = new Date(user.last_activity);
+                                            const now = new Date();
+                                            const diffMinutes = Math.floor((now - lastActivityFormatted) / (1000 * 60));
+                                            %>
+                                            <div>
+                                                <span class="fw-bold"><%= lastActivityFormatted.toLocaleDateString() %></span>
+                                                <small class="d-block text-muted"><%= lastActivityFormatted.toLocaleTimeString() %></small>
+                                                <% if (diffMinutes < 5) { %>
+                                                    <span class="badge bg-success">Online</span>
+                                                <% } else if (diffMinutes < 30) { %>
+                                                    <span class="badge bg-warning">Active</span>
+                                                <% } else if (diffMinutes < 1440) { %>
+                                                    <span class="badge bg-info">Today</span>
+                                                <% } else { %>
+                                                    <span class="badge bg-secondary">Offline</span>
+                                                <% } %>
+                                            </div>
+                                        <% } else { %>
+                                            <span class="text-muted">Never</span>
+                                        <% } %>
+                                    </td>
                                     <td>
                                         <% if (user.subscription_plan === 'monthly') { %>
                                             <span class="badge bg-success">Monthly</span>
@@ -96,16 +156,19 @@
                                     </td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
-                                            <a href="/admin/users/<%= user.id %>" class="btn btn-outline-primary">
+                                            <a href="/admin/users/<%= user.id %>" class="btn btn-outline-primary" title="View Details">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <button type="button" class="btn btn-outline-success" onclick="openUpgradeModal('<%= user.id %>', '<%= user.username %>')">
+                                            <a href="/admin/users/<%= user.id %>/activity" class="btn btn-outline-info" title="View Activity">
+                                                <i class="fas fa-chart-line"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-success" onclick="openUpgradeModal('<%= user.id %>', '<%= user.username %>')" title="Upgrade Subscription">
                                                 <i class="fas fa-crown"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-warning" onclick="toggleAdminStatus('<%= user.id %>', '<%= user.username %>', <%= user.is_admin === 1 ? false : true %>)">
+                                            <button type="button" class="btn btn-outline-warning" onclick="toggleAdminStatus('<%= user.id %>', '<%= user.username %>', <%= user.is_admin === 1 ? false : true %>)" title="Toggle Admin">
                                                 <i class="fas fa-<%= user.is_admin === 1 ? 'user' : 'user-shield' %>"></i>
                                             </button>
-                                            <button type="button" class="btn btn-outline-danger" onclick="confirmDeleteUser('<%= user.id %>', '<%= user.username %>')">
+                                            <button type="button" class="btn btn-outline-danger" onclick="confirmDeleteUser('<%= user.id %>', '<%= user.username %>')" title="Delete User">
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
@@ -114,7 +177,7 @@
                             <% }); %>
                         <% } else { %>
                             <tr>
-                                <td colspan="7" class="text-center py-4">No users found</td>
+                                <td colspan="8" class="text-center py-4">No users found</td>
                             </tr>
                         <% } %>
                     </tbody>

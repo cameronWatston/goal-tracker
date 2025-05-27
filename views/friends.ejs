@@ -1,0 +1,746 @@
+<!-- Friends Page -->
+<div class="friends-page">
+    <div class="container-fluid">
+        <!-- Friends Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="friends-header">
+                    <div class="header-content">
+                        <h1><i class="fas fa-user-friends me-3"></i>Friends</h1>
+                        <p class="lead">Connect with fellow goal achievers and build your support network!</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchUsersModal">
+                            <i class="fas fa-search me-2"></i>Find People
+                        </button>
+                        <a href="/messages" class="btn btn-success">
+                            <i class="fas fa-envelope me-2"></i>Messages
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <ul class="nav nav-pills nav-fill friends-nav" id="friendsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="my-friends-tab" data-bs-toggle="pill" data-bs-target="#my-friends" type="button" role="tab">
+                            <i class="fas fa-users me-2"></i>My Friends
+                            <span class="badge bg-primary ms-1" id="friendsCount">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="requests-tab" data-bs-toggle="pill" data-bs-target="#requests" type="button" role="tab">
+                            <i class="fas fa-user-plus me-2"></i>Friend Requests
+                            <span class="badge bg-warning ms-1" id="requestsCount">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="discover-tab" data-bs-toggle="pill" data-bs-target="#discover" type="button" role="tab">
+                            <i class="fas fa-compass me-2"></i>Discover People
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="friendsTabContent">
+            <!-- My Friends Tab -->
+            <div class="tab-pane fade show active" id="my-friends" role="tabpanel">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4><i class="fas fa-user-friends me-2"></i>Your Friends</h4>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchUsersModal">
+                                <i class="fas fa-user-plus me-2"></i>Add Friends
+                            </button>
+                        </div>
+                        
+                        <div id="friendsList" class="row g-4">
+                            <!-- Friends will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="col-lg-4">
+                        <!-- Quick Stats -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Your Social Stats</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="stat-row">
+                                    <span>Total Friends</span>
+                                    <span class="badge bg-primary" id="sidebarFriendsCount">0</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Pending Requests</span>
+                                    <span class="badge bg-warning" id="sidebarRequestsCount">0</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Messages Sent</span>
+                                    <span class="badge bg-success" id="messagesSentCount">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Activity</h6>
+                            </div>
+                            <div class="card-body" id="recentActivity">
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-history fa-2x mb-2"></i>
+                                    <p>No recent activity</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Friend Requests Tab -->
+            <div class="tab-pane fade" id="requests" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <h4><i class="fas fa-user-plus me-2"></i>Friend Requests</h4>
+                        
+                        <!-- Incoming Requests -->
+                        <div class="mb-4">
+                            <h5 class="text-muted">Incoming Requests</h5>
+                            <div id="incomingRequests">
+                                <!-- Incoming requests will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Outgoing Requests -->
+                        <div>
+                            <h5 class="text-muted">Sent Requests</h5>
+                            <div id="outgoingRequests">
+                                <!-- Outgoing requests will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discover Tab -->
+            <div class="tab-pane fade" id="discover" role="tabpanel">
+                <div class="row">
+                    <div class="col-12">
+                        <h4><i class="fas fa-compass me-2"></i>Discover People</h4>
+                        <p class="text-muted">Find other goal achievers to connect with</p>
+                        
+                        <!-- Search Bar -->
+                        <div class="search-section mb-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="discoverSearch" placeholder="Search by username or email...">
+                                <button class="btn btn-primary" type="button" onclick="searchUsers()">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search Results -->
+                        <div id="discoverResults" class="row g-4">
+                            <!-- Search results will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Users Modal -->
+<div class="modal fade" id="searchUsersModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-search me-2"></i>Find People</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="search-input mb-3">
+                    <input type="text" class="form-control" id="modalSearchInput" placeholder="Search by username or email...">
+                </div>
+                <div id="modalSearchResults">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-search fa-2x mb-2"></i>
+                        <p>Start typing to search for people</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize friends page
+    initializeFriendsPage();
+    
+    // Load initial data
+    loadFriends();
+    loadFriendRequests();
+    
+    // Set up event listeners
+    setupEventListeners();
+});
+
+function initializeFriendsPage() {
+    console.log('🌟 Initializing friends page...');
+    
+    // Set up real-time updates
+    setInterval(() => {
+        updateNotificationCounts();
+    }, 30000); // Update every 30 seconds
+}
+
+function setupEventListeners() {
+    // Search input in modal
+    document.getElementById('modalSearchInput').addEventListener('input', debounce(function() {
+        const query = this.value.trim();
+        if (query.length >= 2) {
+            searchUsersInModal(query);
+        } else {
+            document.getElementById('modalSearchResults').innerHTML = `
+                <div class="text-center text-muted">
+                    <i class="fas fa-search fa-2x mb-2"></i>
+                    <p>Start typing to search for people</p>
+                </div>
+            `;
+        }
+    }, 300));
+    
+    // Discover search
+    document.getElementById('discoverSearch').addEventListener('input', debounce(function() {
+        const query = this.value.trim();
+        if (query.length >= 2) {
+            searchUsersInDiscover(query);
+        }
+    }, 300));
+}
+
+// ======================== FRIENDS FUNCTIONALITY ========================
+
+async function loadFriends() {
+    try {
+        const response = await fetch('/api/social/friends');
+        const data = await response.json();
+        
+        if (data.friends) {
+            displayFriends(data.friends);
+            updateFriendsCount(data.friends.length);
+        }
+    } catch (error) {
+        console.error('Error loading friends:', error);
+    }
+}
+
+function displayFriends(friends) {
+    const friendsList = document.getElementById('friendsList');
+    
+    if (friends.length === 0) {
+        friendsList.innerHTML = `
+            <div class="col-12">
+                <div class="text-center p-5">
+                    <i class="fas fa-user-friends fa-3x text-muted mb-3"></i>
+                    <h5>No friends yet</h5>
+                    <p class="text-muted">Start connecting with other goal achievers!</p>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#searchUsersModal">
+                        <i class="fas fa-search me-2"></i>Find People
+                    </button>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    friendsList.innerHTML = friends.map(friend => `
+        <div class="col-md-6 col-lg-4">
+            <div class="card friend-card">
+                <div class="card-body text-center">
+                    <div class="friend-avatar mb-3">
+                        <div class="avatar-circle">
+                            ${friend.username.charAt(0).toUpperCase()}
+                        </div>
+                    </div>
+                    <h6 class="friend-name">${friend.username}</h6>
+                    <p class="text-muted small">Friends since ${new Date(friend.friendship_date).toLocaleDateString()}</p>
+                    <div class="friend-actions">
+                        <a href="/messages?user=${friend.id}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-envelope me-1"></i>Message
+                        </a>
+                        <button class="btn btn-outline-danger btn-sm" onclick="removeFriend(${friend.id})">
+                            <i class="fas fa-user-minus me-1"></i>Remove
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ======================== FRIEND REQUESTS ========================
+
+async function loadFriendRequests() {
+    try {
+        const response = await fetch('/api/social/friend-requests');
+        const data = await response.json();
+        
+        if (data.requests) {
+            const incoming = data.requests.filter(r => r.type === 'incoming');
+            const outgoing = data.requests.filter(r => r.type === 'outgoing');
+            
+            displayIncomingRequests(incoming);
+            displayOutgoingRequests(outgoing);
+            updateRequestsCount(incoming.length);
+        }
+    } catch (error) {
+        console.error('Error loading friend requests:', error);
+    }
+}
+
+function displayIncomingRequests(requests) {
+    const container = document.getElementById('incomingRequests');
+    
+    if (requests.length === 0) {
+        container.innerHTML = `
+            <div class="text-center p-4 text-muted">
+                <i class="fas fa-inbox fa-2x mb-2"></i>
+                <p>No incoming friend requests</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = requests.map(request => `
+        <div class="card mb-3 request-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="request-avatar me-3">
+                        ${request.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${request.username}</h6>
+                        <p class="text-muted small mb-0">Sent ${new Date(request.request_date).toLocaleDateString()}</p>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-success btn-sm me-2" onclick="respondToRequest(${request.request_id}, 'accept')">
+                            <i class="fas fa-check me-1"></i>Accept
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm" onclick="respondToRequest(${request.request_id}, 'decline')">
+                            <i class="fas fa-times me-1"></i>Decline
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function displayOutgoingRequests(requests) {
+    const container = document.getElementById('outgoingRequests');
+    
+    if (requests.length === 0) {
+        container.innerHTML = `
+            <div class="text-center p-4 text-muted">
+                <i class="fas fa-paper-plane fa-2x mb-2"></i>
+                <p>No sent friend requests</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = requests.map(request => `
+        <div class="card mb-3 request-card">
+            <div class="card-body">
+                <div class="d-flex align-items-center">
+                    <div class="request-avatar me-3">
+                        ${request.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${request.username}</h6>
+                        <p class="text-muted small mb-0">Sent ${new Date(request.request_date).toLocaleDateString()}</p>
+                    </div>
+                    <div class="request-status">
+                        <span class="badge bg-warning">Pending</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ======================== USER SEARCH ========================
+
+async function searchUsersInModal(query) {
+    try {
+        const response = await fetch(`/api/social/search?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        
+        displaySearchResults(data.users, 'modalSearchResults');
+    } catch (error) {
+        console.error('Error searching users:', error);
+    }
+}
+
+async function searchUsersInDiscover(query) {
+    try {
+        const response = await fetch(`/api/social/search?q=${encodeURIComponent(query)}`);
+        const data = await response.json();
+        
+        displaySearchResults(data.users, 'discoverResults', true);
+    } catch (error) {
+        console.error('Error searching users:', error);
+    }
+}
+
+function displaySearchResults(users, containerId, isGrid = false) {
+    const container = document.getElementById(containerId);
+    
+    if (users.length === 0) {
+        container.innerHTML = `
+            <div class="text-center p-4 text-muted">
+                <i class="fas fa-search fa-2x mb-2"></i>
+                <p>No users found</p>
+            </div>
+        `;
+        return;
+    }
+    
+    if (isGrid) {
+        container.innerHTML = users.map(user => `
+            <div class="col-md-6 col-lg-4">
+                <div class="card user-card">
+                    <div class="card-body text-center">
+                        <div class="user-avatar mb-3">
+                            <div class="avatar-circle">
+                                ${user.username.charAt(0).toUpperCase()}
+                            </div>
+                        </div>
+                        <h6 class="user-name">${user.username}</h6>
+                        <p class="text-muted small">Joined ${new Date(user.created_at).toLocaleDateString()}</p>
+                        ${getUserActionButton(user)}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        container.innerHTML = users.map(user => `
+            <div class="search-result-item">
+                <div class="d-flex align-items-center">
+                    <div class="user-avatar-small me-3">
+                        ${user.username.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">${user.username}</h6>
+                        <p class="text-muted small mb-0">Joined ${new Date(user.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <div class="user-actions">
+                        ${getUserActionButton(user)}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+function getUserActionButton(user) {
+    switch (user.friendship_status) {
+        case 'friends':
+            return `<button class="btn btn-success btn-sm" disabled>
+                <i class="fas fa-check me-1"></i>Friends
+            </button>`;
+        case 'request_sent':
+            return `<button class="btn btn-warning btn-sm" disabled>
+                <i class="fas fa-clock me-1"></i>Pending
+            </button>`;
+        case 'request_received':
+            return `<button class="btn btn-info btn-sm" onclick="respondToRequestByUser(${user.id}, 'accept')">
+                <i class="fas fa-user-check me-1"></i>Accept
+            </button>`;
+        default:
+            return `<button class="btn btn-primary btn-sm" onclick="sendFriendRequest(${user.id})">
+                <i class="fas fa-user-plus me-1"></i>Add Friend
+            </button>`;
+    }
+}
+
+// ======================== FRIEND REQUEST ACTIONS ========================
+
+async function sendFriendRequest(friendId) {
+    try {
+        const response = await fetch('/api/social/friend-request', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ friendId })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Success', 'Friend request sent!', 'success');
+            // Refresh search results
+            const searchInput = document.getElementById('modalSearchInput');
+            if (searchInput.value) {
+                searchUsersInModal(searchInput.value);
+            }
+        } else {
+            showToast('Error', data.error || 'Failed to send friend request', 'error');
+        }
+    } catch (error) {
+        console.error('Error sending friend request:', error);
+        showToast('Error', 'Failed to send friend request', 'error');
+    }
+}
+
+async function respondToRequest(requestId, action) {
+    try {
+        const response = await fetch(`/api/social/friend-request/${requestId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('Success', data.message, 'success');
+            loadFriendRequests();
+            if (action === 'accept') {
+                loadFriends();
+            }
+        } else {
+            showToast('Error', data.error || 'Failed to process request', 'error');
+        }
+    } catch (error) {
+        console.error('Error responding to friend request:', error);
+        showToast('Error', 'Failed to process request', 'error');
+    }
+}
+
+// ======================== UTILITY FUNCTIONS ========================
+
+function updateFriendsCount(count) {
+    document.getElementById('friendsCount').textContent = count;
+    document.getElementById('sidebarFriendsCount').textContent = count;
+}
+
+function updateRequestsCount(count) {
+    document.getElementById('requestsCount').textContent = count;
+    document.getElementById('sidebarRequestsCount').textContent = count;
+}
+
+function updateNotificationCounts() {
+    // Update notification counts - placeholder
+    console.log('Updating notification counts...');
+}
+
+function searchUsers() {
+    const query = document.getElementById('discoverSearch').value.trim();
+    if (query.length >= 2) {
+        searchUsersInDiscover(query);
+    }
+}
+
+function removeFriend(friendId) {
+    if (confirm('Are you sure you want to remove this friend?')) {
+        // API call to remove friend
+        fetch(`/api/social/friend/${friendId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Success', 'Friend removed successfully', 'success');
+                loadFriends(); // Reload friends list
+            } else {
+                showToast('Error', data.error || 'Failed to remove friend', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error removing friend:', error);
+            showToast('Error', 'Failed to remove friend', 'error');
+        });
+    }
+}
+
+function respondToRequestByUser(userId, action) {
+    // Find the request ID for this user and respond
+    console.log('Responding to request from user:', userId, 'with action:', action);
+    showToast('Info', 'Processing request...', 'info');
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function showToast(title, message, type = 'info') {
+    // Create toast notification
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : type} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <strong>${title}:</strong> ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    // Add to page
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+    }
+    
+    toastContainer.appendChild(toast);
+    
+    // Show toast
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    // Remove after hiding
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
+}
+</script>
+
+<style>
+/* Friends Page Styles */
+.friends-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.friends-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Navigation */
+.friends-nav .nav-link {
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.friends-nav .nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* Cards */
+.friend-card, .user-card, .request-card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.friend-card:hover, .user-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Avatars */
+.avatar-circle, .user-avatar-small, .request-avatar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.avatar-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    margin: 0 auto;
+}
+
+.user-avatar-small, .request-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+}
+
+/* Stats */
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.stat-row:last-child {
+    border-bottom: none;
+}
+
+/* Search Results */
+.search-result-item {
+    padding: 1rem;
+    border-bottom: 1px solid #f8f9fa;
+    transition: background-color 0.2s ease;
+}
+
+.search-result-item:hover {
+    background-color: #f8f9fa;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .friends-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+}
+</style> 

@@ -1,0 +1,660 @@
+/* ======================== ENHANCED GOAL DETAILS STYLING ======================== */
+
+/* Tutorial System */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tutorial-content {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    animation: tutorialSlideIn 0.3s ease-out;
+}
+
+@keyframes tutorialSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.tutorial-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.tutorial-header h4 {
+    margin: 0;
+    color: #495057;
+    font-weight: 600;
+}
+
+.tutorial-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6c757d;
+    transition: color 0.2s;
+}
+
+.tutorial-close:hover {
+    color: #dc3545;
+}
+
+.tutorial-body {
+    margin-bottom: 25px;
+}
+
+.tutorial-body p {
+    color: #6c757d;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.tutorial-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tutorial-navigation {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.tutorial-step-indicator {
+    background: #f8f9fa;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.tutorial-highlight {
+    position: relative;
+    z-index: 1001;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3), 0 0 20px rgba(0, 123, 255, 0.2) !important;
+    border-radius: 8px !important;
+    animation: tutorialHighlight 2s ease-in-out infinite;
+}
+
+@keyframes tutorialHighlight {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.3), 0 0 20px rgba(0, 123, 255, 0.2); }
+    50% { box-shadow: 0 0 0 8px rgba(0, 123, 255, 0.5), 0 0 30px rgba(0, 123, 255, 0.4); }
+}
+
+/* Enhanced Header */
+.goal-header-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+}
+
+.goal-header-card .card-body {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    margin: 15px;
+}
+
+.goal-icon-container {
+    position: relative;
+}
+
+.goal-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.goal-icon:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.goal-title {
+    font-weight: 700;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.quick-stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 20px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #495057;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Circular Progress */
+.circular-progress-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+}
+
+.circular-progress {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.progress-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 2;
+}
+
+.progress-percentage {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.progress-label {
+    display: block;
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+/* Timeline Milestones */
+.milestone-timeline {
+    margin-bottom: 20px;
+}
+
+.timeline-container {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+}
+
+.timeline-milestone {
+    min-width: 80px;
+    text-align: center;
+    position: relative;
+}
+
+.milestone-dot {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.timeline-milestone.pending .milestone-dot {
+    background: #6c757d;
+    color: white;
+}
+
+.timeline-milestone.in-progress .milestone-dot {
+    background: #007bff;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.timeline-milestone.completed .milestone-dot {
+    background: #28a745;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.3);
+}
+
+.timeline-milestone.missed .milestone-dot {
+    background: #dc3545;
+    color: white;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 123, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 123, 255, 0); }
+}
+
+.milestone-label {
+    font-size: 0.75rem;
+    color: #6c757d;
+    line-height: 1.2;
+}
+
+/* Achievement Badges */
+.achievement-section {
+    margin-top: 30px;
+}
+
+.achievement-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.achievement-badge {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+    min-width: 100px;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.achievement-badge.earned {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-color: #f39c12;
+    opacity: 1;
+    transform: scale(1);
+}
+
+.achievement-badge.earned.gold {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    border-color: #f39c12;
+    box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+}
+
+@keyframes achievementPop {
+    0% { transform: scale(0.8); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.achievement-badge i {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #f39c12;
+}
+
+.achievement-badge span {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Info Cards */
+.info-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.info-header i {
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+.info-header h6 {
+    margin: 0;
+    font-weight: 600;
+    color: #495057;
+}
+
+.timeline-stat, .progress-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px 0;
+}
+
+.timeline-stat label {
+    font-weight: 500;
+    color: #6c757d;
+    margin: 0;
+}
+
+.timeline-stat.overdue span {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.timeline-stat.urgent span {
+    color: #fd7e14;
+    font-weight: 600;
+}
+
+/* Action Grid */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.action-btn {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    text-decoration: none;
+    color: inherit;
+}
+
+.action-btn.primary:hover {
+    border-color: #007bff;
+    background: #007bff;
+    color: white;
+}
+
+.action-btn.secondary:hover {
+    border-color: #6c757d;
+    background: #6c757d;
+    color: white;
+}
+
+.action-btn.success:hover {
+    border-color: #28a745;
+    background: #28a745;
+    color: white;
+}
+
+.action-btn.warning:hover {
+    border-color: #ffc107;
+    background: #ffc107;
+    color: white;
+}
+
+.action-btn.info:hover {
+    border-color: #17a2b8;
+    background: #17a2b8;
+    color: white;
+}
+
+.action-btn.danger:hover {
+    border-color: #dc3545;
+    background: #dc3545;
+    color: white;
+}
+
+.action-icon {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.action-text {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.action-title {
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.action-subtitle {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Motivation Card */
+.motivation-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.motivation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.motivation-card .card-body {
+    position: relative;
+    z-index: 1;
+}
+
+.motivation-icon i {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+.motivation-quote {
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+/* Celebration Animation */
+.celebration-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    animation: celebrationFadeIn 0.5s ease-out;
+}
+
+@keyframes celebrationFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.confetti {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    animation: confettiFall 3s ease-out infinite;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translate(-50%, -50%) translateY(-100px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) translateY(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.celebration-message {
+    text-align: center;
+    color: white;
+    z-index: 2;
+    position: relative;
+    animation: celebrationBounce 0.8s ease-out;
+}
+
+@keyframes celebrationBounce {
+    0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0,0,0);
+    }
+    40%, 43% {
+        transform: translate3d(0, -30px, 0);
+    }
+    70% {
+        transform: translate3d(0, -15px, 0);
+    }
+    90% {
+        transform: translate3d(0, -4px, 0);
+    }
+}
+
+.celebration-message h3 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    background: linear-gradient(45deg, #fff, #f8f9fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Motivational Alert */
+.motivational-alert {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    animation: motivationalSlideIn 0.5s ease-out;
+}
+
+@keyframes motivationalSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .quick-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .action-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .achievement-badges {
+        justify-content: center;
+    }
+    
+    .timeline-container {
+        justify-content: flex-start;
+    }
+    
+    .tutorial-content {
+        margin: 20px;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .quick-stats-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .action-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .goal-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .stat-value {
+        font-size: 1.25rem;
+    }
+} 

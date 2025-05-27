@@ -193,6 +193,13 @@ router.get('/detail/:id', (req, res) => {
                         notes = [];
                     }
                     
+                    // Calculate completed milestones and total milestones
+                    const completedCount = milestones.filter(m => m.status === 'completed').length;
+                    const totalMilestones = milestones.length;
+                    const checkInCount = logs ? logs.length : 0;
+                    let streakPoints = completedCount * 10;
+                    if (logs) streakPoints += logs.length * 5;
+                    
                     res.render('goals/detail', { 
                         title: `${goal.title} - Goal Tracker`,
                         goal: goal,
@@ -200,7 +207,11 @@ router.get('/detail/:id', (req, res) => {
                         logs: logs,
                         notes: notes,
                         daysRemaining: daysRemaining,
-                        progressPercent: progressPercent
+                        progressPercent: progressPercent,
+                        completedCount: completedCount,
+                        totalMilestones: totalMilestones,
+                        checkInCount: checkInCount,
+                        streakPoints: streakPoints
                     });
                 });
             });

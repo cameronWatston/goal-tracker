@@ -4,6 +4,7 @@ const db = require('../db/init');
 const { isAdmin } = require('../middleware/auth');
 const stripeService = require('../utils/stripeService');
 const { getIPAnalytics, getTopIPs, getRecentIPVisits, getIPTrends } = require('../middleware/ipTracking');
+const { getActivityAnalytics, getUserActivityStats, getRecentUserActivities } = require('../middleware/activityTracker');
 
 // Apply admin middleware to all routes
 router.use(isAdmin);
@@ -23,7 +24,8 @@ router.get('/', async (req, res) => {
             revenueData,
             communityStats,
             systemStats,
-            ipAnalytics
+            ipAnalytics,
+            activityAnalytics
         ] = await Promise.all([
             getUserCount(),
             getGoalCount(),
@@ -35,7 +37,8 @@ router.get('/', async (req, res) => {
             getRevenueMetrics(),
             getCommunityStats(),
             getSystemStats(),
-            getIPAnalytics()
+            getIPAnalytics(),
+            getActivityAnalytics()
         ]);
         
         res.render('admin/dashboard', {
@@ -51,6 +54,7 @@ router.get('/', async (req, res) => {
             communityStats,
             systemStats,
             ipAnalytics,
+            activityAnalytics,
             user: req.session.user
         });
     } catch (error) {
@@ -69,10 +73,11 @@ router.get('/users', async (req, res) => {
         const limit = 20;
         const offset = (page - 1) * limit;
         
-        // Get users with pagination
+        // Get users with pagination and activity data
         const users = await new Promise((resolve, reject) => {
             db.all(`
-                SELECT id, username, email, created_at, subscription_plan, is_admin, is_verified
+                SELECT id, username, email, created_at, subscription_plan, is_admin, is_verified,
+                       last_activity, last_login, total_sessions, last_ip_address
                 FROM users
                 ORDER BY created_at DESC
                 LIMIT ? OFFSET ?
@@ -468,6 +473,127 @@ router.delete('/seo/:id', async (req, res) => {
     } catch (error) {
         console.error('Error deleting SEO setting:', error);
         res.status(500).json({ error: 'Failed to delete SEO setting' });
+    }
+});
+
+// User Activity Analytics page
+router.get('/user-activity', async (req, res) => {
+    try {
+        // Get comprehensive user activity analytics
+        const activityAnalytics = await getActivityAnalytics();
+        
+        // Get recent activity logs (last 100)
+        const recentActivities = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT ual.*, u.username 
+                FROM user_activity_logs ual
+                JOIN users u ON ual.user_id = u.id
+                ORDER BY ual.created_at DESC
+                LIMIT 100
+            `, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+        
+        // Get online users (active in last 5 minutes)
+        const onlineUsers = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT u.id, u.username, u.last_activity, u.last_ip_address
+                FROM users u
+                WHERE u.last_activity >= datetime('now', '-5 minutes')
+                ORDER BY u.last_activity DESC
+            `, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+        
+        // Get activity trends by hour for today
+        const hourlyActivity = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT strftime('%H', created_at) as hour, COUNT(*) as count
+                FROM user_activity_logs 
+                WHERE date(created_at) = date('now')
+                GROUP BY strftime('%H', created_at)
+                ORDER BY hour
+            `, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        res.render('admin/user-activity', {
+            title: 'User Activity Analytics - Admin',
+            activityAnalytics,
+            recentActivities,
+            onlineUsers,
+            hourlyActivity,
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Error loading user activity analytics:', error);
+        res.status(500).render('error', {
+            title: 'Error - Goal Tracker',
+            error: 'Failed to load user activity analytics'
+        });
+    }
+});
+
+// View specific user activity
+router.get('/users/:id/activity', async (req, res) => {
+    try {
+        const userId = req.params.id;
+        
+        // Get user details
+        const user = await new Promise((resolve, reject) => {
+            db.get('SELECT * FROM users WHERE id = ?', [userId], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+        
+        if (!user) {
+            return res.status(404).render('error', {
+                title: 'Error - Goal Tracker',
+                error: 'User not found'
+            });
+        }
+        
+        // Get user activity stats
+        const activityStats = await getUserActivityStats(userId);
+        
+        // Get recent activities
+        const recentActivities = await getRecentUserActivities(userId, 100);
+        
+        // Get activity by type for this user
+        const activityByType = await new Promise((resolve, reject) => {
+            db.all(`
+                SELECT activity_type, COUNT(*) as count
+                FROM user_activity_logs
+                WHERE user_id = ?
+                GROUP BY activity_type
+                ORDER BY count DESC
+            `, [userId], (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+
+        res.render('admin/user-activity-detail', {
+            title: `Activity: ${user.username} - Admin`,
+            userDetail: user,
+            activityStats,
+            recentActivities,
+            activityByType,
+            user: req.session.user
+        });
+    } catch (error) {
+        console.error('Error loading user activity details:', error);
+        res.status(500).render('error', {
+            title: 'Error - Goal Tracker',
+            error: 'Failed to load user activity details'
+        });
     }
 });
 

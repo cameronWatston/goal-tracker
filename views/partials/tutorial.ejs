@@ -1,0 +1,172 @@
+<!-- Tutorial Progress Bar -->
+<div id="tutorial-progress" class="fixed top-0 left-0 w-full bg-blue-600 text-white text-sm py-1 px-4 flex items-center justify-between z-50" style="display: none;">
+    <div class="flex items-center">
+        <i class="fas fa-graduation-cap mr-2"></i>
+        <span>Tutorial Progress: <span id="tutorial-percentage">0</span>%</span>
+    </div>
+    <div class="flex items-center">
+        <button id="restart-tutorial" class="text-xs hover:underline mr-4">
+            <i class="fas fa-redo-alt mr-1"></i> Restart Tutorial
+        </button>
+        <button id="close-tutorial" class="text-xs hover:underline">
+            <i class="fas fa-times mr-1"></i> Close
+        </button>
+    </div>
+</div>
+
+<!-- Tutorial Tooltip -->
+<div id="tutorial-tooltip" class="fixed bg-white rounded-lg shadow-xl p-4 max-w-sm z-50" style="display: none;">
+    <div class="flex items-start justify-between">
+        <h3 class="text-lg font-semibold tutorial-title"></h3>
+        <button class="tutorial-next text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <p class="tutorial-description text-gray-600 mt-2"></p>
+    <div class="mt-4 flex justify-between items-center">
+        <div class="text-sm text-gray-500">
+            <span class="tutorial-step">1</span>/<span class="tutorial-total">10</span>
+        </div>
+        <button class="tutorial-next bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Next <i class="fas fa-arrow-right ml-1"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tutorials = <%- JSON.stringify(tutorials || []) %>;
+    let currentTutorialIndex = 0;
+    
+    // Initialize tutorial if there are tutorials and it should be shown
+    if (tutorials.length > 0 && <%= showTutorial ? 'true' : 'false' %>) {
+        showTutorialProgress();
+        showNextTutorial();
+    }
+    
+    // Show tutorial progress bar
+    function showTutorialProgress() {
+        const progressBar = document.getElementById('tutorial-progress');
+        const percentage = document.getElementById('tutorial-percentage');
+        percentage.textContent = <%= tutorialProgress?.percentage || 0 %>;
+        progressBar.style.display = 'flex';
+    }
+    
+    // Show next tutorial step
+    function showNextTutorial() {
+        if (currentTutorialIndex >= tutorials.length) {
+            hideTutorial();
+            return;
+        }
+        
+        const tutorial = tutorials[currentTutorialIndex];
+        const element = document.querySelector(tutorial.element_selector);
+        
+        if (!element) {
+            currentTutorialIndex++;
+            showNextTutorial();
+            return;
+        }
+        
+        const tooltip = document.getElementById('tutorial-tooltip');
+        tooltip.querySelector('.tutorial-title').textContent = tutorial.title;
+        tooltip.querySelector('.tutorial-description').textContent = tutorial.description;
+        tooltip.querySelector('.tutorial-step').textContent = currentTutorialIndex + 1;
+        tooltip.querySelector('.tutorial-total').textContent = tutorials.length;
+        
+        // Position tooltip relative to element
+        const rect = element.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        
+        let top, left;
+        switch (tutorial.position) {
+            case 'top':
+                top = rect.top - tooltipRect.height - 10;
+                left = rect.left + (rect.width - tooltipRect.width) / 2;
+                break;
+            case 'bottom':
+                top = rect.bottom + 10;
+                left = rect.left + (rect.width - tooltipRect.width) / 2;
+                break;
+            case 'left':
+                top = rect.top + (rect.height - tooltipRect.height) / 2;
+                left = rect.left - tooltipRect.width - 10;
+                break;
+            case 'right':
+                top = rect.top + (rect.height - tooltipRect.height) / 2;
+                left = rect.right + 10;
+                break;
+        }
+        
+        // Keep tooltip within viewport
+        top = Math.max(10, Math.min(top, window.innerHeight - tooltipRect.height - 10));
+        left = Math.max(10, Math.min(left, window.innerWidth - tooltipRect.width - 10));
+        
+        tooltip.style.top = `${top}px`;
+        tooltip.style.left = `${left}px`;
+        tooltip.style.display = 'block';
+        
+        // Highlight the element
+        element.style.position = 'relative';
+        element.style.zIndex = '40';
+        element.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.5)';
+        element.style.borderRadius = '4px';
+    }
+    
+    // Hide tutorial
+    function hideTutorial() {
+        const tooltip = document.getElementById('tutorial-tooltip');
+        const progressBar = document.getElementById('tutorial-progress');
+        tooltip.style.display = 'none';
+        progressBar.style.display = 'none';
+        
+        // Remove highlighting from all elements
+        document.querySelectorAll(tutorials.map(t => t.element_selector).join(',')).forEach(el => {
+            el.style.position = '';
+            el.style.zIndex = '';
+            el.style.boxShadow = '';
+            el.style.borderRadius = '';
+        });
+    }
+    
+    // Handle next button click
+    document.querySelectorAll('.tutorial-next').forEach(button => {
+        button.addEventListener('click', async () => {
+            // Remove highlighting from current element
+            const currentTutorial = tutorials[currentTutorialIndex];
+            const currentElement = document.querySelector(currentTutorial.element_selector);
+            if (currentElement) {
+                currentElement.style.position = '';
+                currentElement.style.zIndex = '';
+                currentElement.style.boxShadow = '';
+                currentElement.style.borderRadius = '';
+            }
+            
+            // Mark current tutorial as completed
+            try {
+                await fetch(`/tutorials/${currentTutorial.id}/complete`, { method: 'POST' });
+            } catch (error) {
+                console.error('Error marking tutorial as completed:', error);
+            }
+            
+            currentTutorialIndex++;
+            showNextTutorial();
+        });
+    });
+    
+    // Handle restart tutorial button
+    document.getElementById('restart-tutorial').addEventListener('click', async () => {
+        try {
+            await fetch('/tutorials/reset', { method: 'POST' });
+            currentTutorialIndex = 0;
+            showTutorialProgress();
+            showNextTutorial();
+        } catch (error) {
+            console.error('Error resetting tutorial:', error);
+        }
+    });
+    
+    // Handle close tutorial button
+    document.getElementById('close-tutorial').addEventListener('click', hideTutorial);
+});
+</script> 

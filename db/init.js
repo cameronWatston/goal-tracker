@@ -257,10 +257,29 @@ db.serialize(() => {
         metrics TEXT,
         status TEXT DEFAULT 'pending',
         display_order INTEGER DEFAULT 0,
+        progress_percentage INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        completed_at DATETIME,
         FOREIGN KEY (goal_id) REFERENCES goals(id)
     )`);
+    
+    // Migration: Add progress_percentage column to existing milestones table if it doesn't exist
+    db.all(`PRAGMA table_info(milestones)`, (err, columns) => {
+        if (!err) {
+            const hasProgressPercentage = columns.some(col => col.name === 'progress_percentage');
+            if (!hasProgressPercentage) {
+                console.log('Adding progress_percentage column to milestones table...');
+                db.run(`ALTER TABLE milestones ADD COLUMN progress_percentage INTEGER DEFAULT 0`, (err) => {
+                    if (!err) {
+                        console.log('Successfully added progress_percentage column to milestones table');
+                        // Set progress_percentage to 100 for completed milestones
+                        db.run(`UPDATE milestones SET progress_percentage = 100 WHERE status = 'completed'`);
+                    }
+                });
+            }
+        }
+    });
     
     // Create goal logs table (for check-ins)
     db.run(`CREATE TABLE IF NOT EXISTS goal_logs (
@@ -314,97 +333,77 @@ db.serialize(() => {
         FOREIGN KEY (goal_id) REFERENCES goals(id)
     )`);
     
-    // Create social posts table
-    db.run(`CREATE TABLE IF NOT EXISTS social_posts (
+    // Note: Using simplified posts and comments tables below instead
+    // Community posts table
+    db.run(`CREATE TABLE IF NOT EXISTS posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
-        goal_id INTEGER,
         title TEXT NOT NULL,
         content TEXT NOT NULL,
-        image_url TEXT,
-        category TEXT,
-        likes INTEGER DEFAULT 0,
+        goal_id INTEGER,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id),
         FOREIGN KEY (goal_id) REFERENCES goals(id)
     )`);
     
-    // Create comments table
-    db.run(`CREATE TABLE IF NOT EXISTS post_comments (
+    // Comments table
+    db.run(`CREATE TABLE IF NOT EXISTS comments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         post_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
         content TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (post_id) REFERENCES social_posts(id),
+        FOREIGN KEY (post_id) REFERENCES posts(id),
         FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
     
-    // Create post likes table
+    // Post likes table
     db.run(`CREATE TABLE IF NOT EXISTS post_likes (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
         post_id INTEGER NOT NULL,
         user_id INTEGER NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (post_id) REFERENCES social_posts(id),
-        FOREIGN KEY (user_id) REFERENCES users(id),
-        UNIQUE(post_id, user_id)
+        PRIMARY KEY (post_id, user_id),
+        FOREIGN KEY (post_id) REFERENCES posts(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
     )`);
 
-    // Posts table for community
-    db.run(`
-        CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            title TEXT NOT NULL,
-            content TEXT NOT NULL,
-            goal_id INTEGER,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (id),
-            FOREIGN KEY (goal_id) REFERENCES goals (id)
-        )
-    `);
-    
-    // Comments table
-    db.run(`
-        CREATE TABLE IF NOT EXISTS comments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            post_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
-            content TEXT NOT NULL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (post_id) REFERENCES posts (id),
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    `);
-    
-    // Post likes table
-    db.run(`
-        CREATE TABLE IF NOT EXISTS post_likes (
-            post_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (post_id, user_id),
-            FOREIGN KEY (post_id) REFERENCES posts (id),
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    `);
-
-    // Notifications table for navbar notifications
-    db.run(`
-        CREATE TABLE IF NOT EXISTS notifications (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            type TEXT NOT NULL,
-            title TEXT NOT NULL,
-            message TEXT NOT NULL,
-            icon TEXT DEFAULT '🔔',
-            is_read INTEGER DEFAULT 0,
-            action_url TEXT,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )
-    `);
+    // Notifications table
+    db.run(`CREATE TABLE IF NOT EXISTS notifications (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        message TEXT NOT NULL,
+        data TEXT,
+        icon TEXT DEFAULT '🔔',
+        is_read INTEGER DEFAULT 0,
+        action_url TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating notifications table:', err);
+        } else {
+            console.log('✅ Notifications table ready');
+            
+            // Migration: Add data column if it doesn't exist
+            db.all(`PRAGMA table_info(notifications)`, (err, columns) => {
+                if (!err && columns) {
+                    const hasDataColumn = columns.some(col => col.name === 'data');
+                    if (!hasDataColumn) {
+                        console.log('Adding data column to notifications table...');
+                        db.run(`ALTER TABLE notifications ADD COLUMN data TEXT`, (err) => {
+                            if (err) {
+                                console.error('Error adding data column to notifications:', err);
+                            } else {
+                                console.log('✅ Successfully added data column to notifications table');
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    });
 
     // Create user_achievements table
     db.run(`CREATE TABLE IF NOT EXISTS user_achievements (
@@ -503,6 +502,44 @@ db.serialize(() => {
             console.error('Error creating IP index:', err);
         } else {
             console.log('✅ IP visits index ready');
+        }
+    });
+
+    // Create tutorials table
+    db.run(`CREATE TABLE IF NOT EXISTS tutorials (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        key_name TEXT UNIQUE NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT,
+        page_path TEXT NOT NULL,
+        element_selector TEXT,
+        position TEXT DEFAULT 'bottom',
+        order_index INTEGER NOT NULL,
+        is_required BOOLEAN DEFAULT FALSE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating tutorials table:', err);
+        } else {
+            console.log('✅ Tutorials table ready');
+            initializeTutorials();
+        }
+    });
+
+    // Create user tutorial progress table
+    db.run(`CREATE TABLE IF NOT EXISTS user_tutorial_progress (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        tutorial_id INTEGER NOT NULL,
+        completed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (tutorial_id) REFERENCES tutorials(id) ON DELETE CASCADE,
+        UNIQUE(user_id, tutorial_id)
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating user_tutorial_progress table:', err);
+        } else {
+            console.log('✅ User tutorial progress table ready');
         }
     });
 
@@ -732,6 +769,85 @@ db.serialize(() => {
             });
         }
     });
+
+    // Create user friends table
+    db.run(`CREATE TABLE IF NOT EXISTS user_friends (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        friend_id INTEGER NOT NULL,
+        status TEXT DEFAULT 'pending',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id),
+        FOREIGN KEY (friend_id) REFERENCES users(id),
+        UNIQUE(user_id, friend_id)
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating user_friends table:', err);
+        } else {
+            console.log('✅ User friends table ready');
+        }
+    });
+
+    // Create private messages table
+    db.run(`CREATE TABLE IF NOT EXISTS private_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sender_id INTEGER NOT NULL,
+        receiver_id INTEGER NOT NULL,
+        message TEXT NOT NULL,
+        is_read BOOLEAN DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (sender_id) REFERENCES users(id),
+        FOREIGN KEY (receiver_id) REFERENCES users(id)
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating private_messages table:', err);
+        } else {
+            console.log('✅ Private messages table ready');
+        }
+    });
+
+    // Create user search index table for better search performance
+    db.run(`CREATE TABLE IF NOT EXISTS user_search_index (
+        user_id INTEGER PRIMARY KEY,
+        search_text TEXT,
+        last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    )`, (err) => {
+        if (err) {
+            console.error('Error creating user_search_index table:', err);
+        } else {
+            console.log('✅ User search index table ready');
+        }
+    });
+
+    // Note: Notifications table already created above
+
+    // Add indexes for better performance
+    db.run(`CREATE INDEX IF NOT EXISTS idx_user_friends_user_id ON user_friends(user_id)`, (err) => {
+        if (err) {
+            console.error('Error creating user_friends index:', err);
+        } else {
+            console.log('✅ User friends index ready');
+        }
+    });
+
+    db.run(`CREATE INDEX IF NOT EXISTS idx_private_messages_receiver ON private_messages(receiver_id, is_read)`, (err) => {
+        if (err) {
+            console.error('Error creating private_messages index:', err);
+        } else {
+            console.log('✅ Private messages index ready');
+        }
+    });
+
+    db.run(`CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, is_read)`, (err) => {
+        if (err) {
+            console.error('Error creating notifications index:', err);
+        } else {
+            console.log('✅ Notifications index ready');
+        }
+    });
 });
 
 // Initialize all achievements in the database
@@ -882,6 +998,137 @@ function initializeBlogCategories() {
     });
     
     console.log('📝 Initialized blog categories in database');
+}
+
+// Add the initializeTutorials function at the bottom of the file
+function initializeTutorials() {
+    const tutorials = [
+        // Welcome & Navigation
+        {
+            key_name: 'welcome',
+            title: 'Welcome to Goal Tracker! 👋',
+            description: 'Let\'s take a quick tour to help you get started with achieving your goals.',
+            page_path: '/',
+            element_selector: '#welcome-message',
+            position: 'bottom',
+            order_index: 1,
+            is_required: true
+        },
+        {
+            key_name: 'navigation',
+            title: 'Easy Navigation',
+            description: 'Use the navigation bar to access all your goals, create new ones, and track your progress.',
+            page_path: '/',
+            element_selector: '.navbar',
+            position: 'bottom',
+            order_index: 2,
+            is_required: true
+        },
+        
+        // Goal Creation
+        {
+            key_name: 'create_goal',
+            title: 'Create Your First Goal',
+            description: 'Click here to create your first goal. Remember to make it SMART: Specific, Measurable, Achievable, Relevant, and Time-bound.',
+            page_path: '/goals/dashboard',
+            element_selector: '#create-goal-btn',
+            position: 'bottom',
+            order_index: 3,
+            is_required: true
+        },
+        {
+            key_name: 'goal_details',
+            title: 'Goal Details',
+            description: 'Add a clear title, description, and target date for your goal. The more specific you are, the better!',
+            page_path: '/goals/new',
+            element_selector: '#goal-form',
+            position: 'left',
+            order_index: 4,
+            is_required: true
+        },
+        
+        // Milestone Management
+        {
+            key_name: 'milestones_intro',
+            title: 'Track with Milestones',
+            description: 'Break down your goal into smaller, manageable milestones. This helps you stay on track and measure progress.',
+            page_path: '/goals/detail/:id',
+            element_selector: '#milestones-section',
+            position: 'top',
+            order_index: 5,
+            is_required: true
+        },
+        {
+            key_name: 'milestone_progress',
+            title: 'Update Progress',
+            description: 'Use the progress slider to update how far along you are with each milestone. This helps you visualize your journey!',
+            page_path: '/goals/detail/:id',
+            element_selector: '.milestone-progress',
+            position: 'right',
+            order_index: 6,
+            is_required: true
+        },
+        
+        // Check-ins and Notes
+        {
+            key_name: 'checkins',
+            title: 'Regular Check-ins',
+            description: 'Log your progress with check-ins. Regular updates help you stay accountable and track your journey.',
+            page_path: '/goals/detail/:id',
+            element_selector: '#checkin-section',
+            position: 'left',
+            order_index: 7,
+            is_required: false
+        },
+        {
+            key_name: 'notes',
+            title: 'Add Notes',
+            description: 'Keep detailed notes about your progress, challenges, and ideas. They\'ll help you reflect on your journey.',
+            page_path: '/goals/detail/:id',
+            element_selector: '#notes-section',
+            position: 'right',
+            order_index: 8,
+            is_required: false
+        },
+        
+        // Dashboard Features
+        {
+            key_name: 'dashboard_filters',
+            title: 'Filter & Sort',
+            description: 'Use these options to organize your goals. You can filter by status and sort them in different ways.',
+            page_path: '/goals/dashboard',
+            element_selector: '#filter-sort-section',
+            position: 'bottom',
+            order_index: 9,
+            is_required: false
+        },
+        {
+            key_name: 'achievements',
+            title: 'Earn Achievements',
+            description: 'Complete goals and milestones to earn achievements. They\'re a great way to track your progress!',
+            page_path: '/goals/dashboard',
+            element_selector: '#achievements-section',
+            position: 'left',
+            order_index: 10,
+            is_required: false
+        }
+    ];
+
+    // Insert tutorials if they don't exist
+    tutorials.forEach(tutorial => {
+        db.run(`INSERT OR IGNORE INTO tutorials 
+            (key_name, title, description, page_path, element_selector, position, order_index, is_required) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [tutorial.key_name, tutorial.title, tutorial.description, tutorial.page_path, 
+             tutorial.element_selector, tutorial.position, tutorial.order_index, tutorial.is_required],
+            function(err) {
+                if (err) {
+                    console.error('Error inserting tutorial:', tutorial.key_name, err);
+                }
+            }
+        );
+    });
+    console.log('📚 Initialized tutorials in database');
 }
 
 module.exports = db; 

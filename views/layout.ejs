@@ -98,6 +98,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Banner Ads CSS -->
     <link rel="stylesheet" href="/css/banner-ads.css">
+    <!-- Tutorial CSS -->
+    <link rel="stylesheet" href="/css/tutorial.css">
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="/css/dashboard.css">
     
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17105349239"></script>
@@ -1304,6 +1308,11 @@
                                 <i class="fas fa-robot"></i>
                                 <span class="action-text">AI</span>
                             </button>
+                            
+                            <button class="action-btn help-btn" id="helpBtn" title="Help & Tutorial">
+                                <i class="fas fa-question-circle"></i>
+                                <span class="action-text">Help</span>
+                            </button>
 
                             <!-- Notifications -->
                             <div class="notification-container">
@@ -1381,6 +1390,18 @@
                                         <i class="fas fa-user"></i>
                                         <span>Profile</span>
                                     </a>
+                                    <a class="dropdown-item" href="/friends">
+                                        <i class="fas fa-user-friends"></i>
+                                        <span>Friends</span>
+                                    </a>
+                                    <a class="dropdown-item" href="/messages">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>Messages</span>
+                                    </a>
+                                    <a class="dropdown-item" href="#" onclick="startTutorial(); return false;">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span>Help & Tutorial</span>
+                                    </a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item logout" href="/auth/logout">
                                         <i class="fas fa-sign-out-alt"></i>
@@ -1426,28 +1447,36 @@
                             <span>Community</span>
                             <span class="nav-badge">Hot</span>
                         </a>
+                        <a href="/friends" class="mobile-nav-link">
+                            <i class="fas fa-user-friends"></i>
+                            <span>Friends</span>
+                        </a>
+                        <a href="/messages" class="mobile-nav-link">
+                            <i class="fas fa-envelope"></i>
+                            <span>Messages</span>
+                        </a>
                         <a href="/subscription" class="mobile-nav-link">
                             <i class="fas fa-crown"></i>
                             <span>Subscription</span>
                         </a>
                         <a href="/contact" class="mobile-nav-link">
-                            <i class="fas fa-envelope"></i>
+                            <i class="fas fa-phone"></i>
                             <span>Contact</span>
                         </a>
-                        <a href="/profile" class="mobile-nav-link">
+                        <a href="/auth/profile" class="mobile-nav-link">
                             <i class="fas fa-user"></i>
                             <span>Profile</span>
                         </a>
                     </div>
 
                     <div class="mobile-quick-actions">
-                        <button class="mobile-action-btn">
+                        <button class="mobile-action-btn" onclick="window.location.href='/community'">
                             <i class="fas fa-plus"></i>
                             <span>New Post</span>
                         </button>
-                        <button class="mobile-action-btn">
-                            <i class="fas fa-robot"></i>
-                            <span>AI Assistant</span>
+                        <button class="mobile-action-btn" onclick="startTutorial()">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help</span>
                         </button>
                     </div>
                 <% } else { %>
@@ -1584,16 +1613,33 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsenseConfig.clientId %>"
          crossorigin="anonymous"></script>
     <script>
+        console.log('🎯 AdSense Setup Info:');
+        console.log('Client ID:', '<%= adsenseConfig.clientId %>');
+        console.log('Domain:', window.location.hostname);
+        console.log('Ad slots on page:', document.querySelectorAll('.adsbygoogle').length);
+        
         // Wait for DOM to be ready, then initialize ads
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Initializing AdSense ads...');
+            
             // Initialize all AdSense ads on the page
             const ads = document.querySelectorAll('.adsbygoogle');
-            ads.forEach(function(ad) {
+            ads.forEach(function(ad, index) {
                 if (!ad.dataset.adsenseInitialized) {
+                    console.log(`📝 Initializing ad ${index + 1}: slot ${ad.dataset.adSlot}`);
                     (adsbygoogle = window.adsbygoogle || []).push({});
                     ad.dataset.adsenseInitialized = 'true';
                 }
             });
+            
+            console.log('✅ AdSense initialization complete');
+        });
+        
+        // Monitor for ad load errors
+        window.addEventListener('error', function(e) {
+            if (e.target && e.target.src && e.target.src.includes('googlesyndication')) {
+                console.warn('⚠️ AdSense loading issue:', e.target.src);
+            }
         });
     </script>
     <% } %>
@@ -1649,6 +1695,430 @@
             }, 500);
         }
     });
+    </script>
+    
+    <!-- Tutorial System -->
+    <script src="/js/tutorial.js"></script>
+    <!-- Dashboard JavaScript -->
+    <script src="/js/dashboard.js"></script>
+    <script>
+        // Initialize tutorial when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait a bit for all scripts to load
+            setTimeout(() => {
+                initializeHelpSystem();
+            }, 500);
+        });
+        
+        function initializeHelpSystem() {
+            const pageType = detectPageType();
+            
+            // Add click handler for Help button first
+            const helpBtn = document.getElementById('helpBtn');
+            if (helpBtn) {
+                helpBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    startTutorial();
+                });
+                
+                // Add visual indicator if help hasn't been seen for this page
+                if (!hasSeenHelp(pageType)) {
+                    helpBtn.classList.add('help-available');
+                    
+                    // Add a small pulse animation (only once)
+                    if (!document.getElementById('helpPulseStyle')) {
+                        const style = document.createElement('style');
+                        style.id = 'helpPulseStyle';
+                        style.textContent = `
+                            .help-available {
+                                position: relative;
+                            }
+                            .help-available::after {
+                                content: '';
+                                position: absolute;
+                                top: -2px;
+                                right: -2px;
+                                width: 8px;
+                                height: 8px;
+                                background: #f59e0b;
+                                border-radius: 50%;
+                                animation: helpPulse 2s infinite;
+                            }
+                            @keyframes helpPulse {
+                                0%, 100% { transform: scale(1); opacity: 1; }
+                                50% { transform: scale(1.2); opacity: 0.7; }
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                }
+            }
+            
+            // Check if we should auto-show help
+            if (shouldAutoShowHelp(pageType)) {
+                // Check if advanced tutorial system exists and should run
+                if (typeof checkAutoStartTutorial === 'function') {
+                    // Override the tutorial system to use our tracking
+                    const originalCheckAutoStart = window.checkAutoStartTutorial;
+                    window.checkAutoStartTutorial = function() {
+                        // Only run if we haven't seen help for this page
+                        if (!hasSeenHelp(pageType)) {
+                            originalCheckAutoStart();
+                            markHelpAsSeen(pageType); // Mark as seen when tutorial runs
+                        }
+                    };
+                    
+                    // Call the original function
+                    checkAutoStartTutorial();
+                } else {
+                    // Fallback: show interactive help for new users who haven't seen it
+                    setTimeout(() => {
+                        showInteractiveHelp(pageType);
+                    }, 1000);
+                }
+            }
+        }
+        
+
+        
+        // Fix startTutorial function
+        window.startTutorial = function() {
+            // Prevent multiple help systems from running
+            if (window.helpSystemActive) {
+                console.log('Help system already active, ignoring manual start...');
+                return;
+            }
+            
+            const pageType = detectPageType();
+            
+            // Remove help indicator when manually clicked
+            const helpBtn = document.getElementById('helpBtn');
+            if (helpBtn) {
+                helpBtn.classList.remove('help-available');
+            }
+            
+            // Check if tutorial system is loaded
+            if (typeof window.tutorialContent !== 'undefined' && typeof window.showTutorialStep === 'function') {
+                console.log('Starting tutorial for page:', pageType);
+                
+                // Call the tutorial system directly
+                if (window.tutorialContent[pageType]) {
+                    window.helpSystemActive = true;
+                    
+                    // Set up tutorial variables
+                    window.currentTutorial = window.tutorialContent[pageType];
+                    window.currentStep = 0;
+                    window.tutorialActive = true;
+                    
+                    // Start the tutorial
+                    window.showTutorialStep();
+                    window.createTutorialOverlay();
+                    
+                    // Mark as seen
+                    markHelpAsSeen(pageType);
+                } else {
+                    showInteractiveHelp('general');
+                }
+            } else {
+                // Tutorial system not loaded, show interactive help
+                showInteractiveHelp(pageType);
+            }
+        };
+        
+        // Global help system state
+        window.helpSystemActive = false;
+        
+        // Help tracking system
+        function hasSeenHelp(pageType) {
+            const seenHelp = JSON.parse(localStorage.getItem('goalTracker_helpSeen') || '{}');
+            return seenHelp[pageType] === true;
+        }
+        
+        function markHelpAsSeen(pageType) {
+            const seenHelp = JSON.parse(localStorage.getItem('goalTracker_helpSeen') || '{}');
+            seenHelp[pageType] = true;
+            localStorage.setItem('goalTracker_helpSeen', JSON.stringify(seenHelp));
+        }
+        
+        function shouldAutoShowHelp(pageType) {
+            // Don't auto-show help if user has seen it before
+            if (hasSeenHelp(pageType)) {
+                return false;
+            }
+            
+            // Only auto-show help for new users (you can customize this logic)
+            const userCreatedAt = '<%= user ? user.created_at : "" %>';
+            if (userCreatedAt) {
+                const accountAge = Date.now() - new Date(userCreatedAt).getTime();
+                const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+                
+                // Only show auto-help for accounts less than 3 days old
+                return accountAge < threeDaysInMs;
+            }
+            
+            return false; // Don't show for guests
+        }
+        
+        function resetAllHelp() {
+            localStorage.removeItem('goalTracker_helpSeen');
+            window.helpSystemActive = false; // Reset help system state
+            
+            // Close the current modal
+            const modal = document.getElementById('helpModal');
+            if (modal) {
+                const bsModal = bootstrap.Modal.getInstance(modal);
+                if (bsModal) {
+                    bsModal.hide();
+                }
+            }
+            
+            // Remove help indicators and re-add them
+            const helpBtn = document.getElementById('helpBtn');
+            if (helpBtn) {
+                helpBtn.classList.remove('help-available');
+                
+                // Re-add indicator for current page
+                const pageType = detectPageType();
+                if (!hasSeenHelp(pageType)) {
+                    helpBtn.classList.add('help-available');
+                }
+            }
+            
+            // Show success message
+            setTimeout(() => {
+                alert('✅ Help reset successfully!\n\nHelp will now show automatically again when you visit pages for the first time.');
+            }, 300);
+        }
+        
+        // Interactive help system
+        function showInteractiveHelp(pageType) {
+            // Prevent multiple help systems from running
+            if (window.helpSystemActive) {
+                console.log('Help system already active, skipping...');
+                return;
+            }
+            
+            window.helpSystemActive = true;
+            const helpContent = getHelpContent(pageType);
+            createHelpModal(helpContent, pageType);
+        }
+        
+        function getHelpContent(pageType) {
+            const helpData = {
+                'home': {
+                    title: '🏠 Welcome to Goal Tracker!',
+                    steps: [
+                        { icon: '🎯', title: 'Set Your Goals', description: 'Create meaningful goals that align with your dreams and aspirations.' },
+                        { icon: '📊', title: 'Track Progress', description: 'Monitor your progress with visual charts and milestone tracking.' },
+                        { icon: '🤝', title: 'Connect with Others', description: 'Join our community to find support and motivation from fellow achievers.' },
+                        { icon: '🚀', title: 'Get Started', description: 'Click "Get Started" to create your account and begin your journey!' }
+                    ]
+                },
+                'dashboard': {
+                    title: '📊 Dashboard Guide',
+                    steps: [
+                        { icon: '➕', title: 'Create New Goal', description: 'Click the "Create Goal" button to add a new goal to your dashboard.' },
+                        { icon: '👁️', title: 'View Goal Details', description: 'Click on any goal card to view detailed progress and milestones.' },
+                        { icon: '📈', title: 'Track Progress', description: 'Use the progress bars and charts to monitor your advancement.' },
+                        { icon: '🏆', title: 'Celebrate Achievements', description: 'Mark milestones as complete and celebrate your wins!' }
+                    ]
+                },
+                'friends': {
+                    title: '👥 Friends & Connections',
+                    steps: [
+                        { icon: '🔍', title: 'Find People', description: 'Use the search feature to find other goal achievers by username or email.' },
+                        { icon: '📤', title: 'Send Friend Requests', description: 'Connect with people who inspire you by sending friend requests.' },
+                        { icon: '✅', title: 'Accept Requests', description: 'Review and accept incoming friend requests to build your network.' },
+                        { icon: '💬', title: 'Start Conversations', description: 'Message your friends to share progress and offer support.' }
+                    ]
+                },
+                'messages': {
+                    title: '💬 Messaging System',
+                    steps: [
+                        { icon: '📋', title: 'View Conversations', description: 'See all your conversations in the left sidebar.' },
+                        { icon: '👆', title: 'Select a Chat', description: 'Click on any conversation to open the chat interface.' },
+                        { icon: '⌨️', title: 'Send Messages', description: 'Type your message and press Enter or click the send button.' },
+                        { icon: '🔄', title: 'Real-time Updates', description: 'Messages update automatically - stay connected with your friends!' }
+                    ]
+                },
+                'community': {
+                    title: '🌟 Community Features',
+                    steps: [
+                        { icon: '📝', title: 'Share Progress', description: 'Post updates about your goals and achievements to inspire others.' },
+                        { icon: '👥', title: 'Connect with Friends', description: 'Build your network by connecting with like-minded goal achievers.' },
+                        { icon: '💬', title: 'Send Messages', description: 'Communicate privately with your friends through direct messaging.' },
+                        { icon: '🔍', title: 'Discover People', description: 'Find new connections and expand your support network.' }
+                    ]
+                },
+                'goal-detail': {
+                    title: '🎯 Goal Management',
+                    steps: [
+                        { icon: '📊', title: 'Track Progress', description: 'Update your progress percentage and see visual representations.' },
+                        { icon: '🏁', title: 'Add Milestones', description: 'Break your goal into smaller, manageable milestones.' },
+                        { icon: '📝', title: 'Write Notes', description: 'Document your journey with notes and reflections.' },
+                        { icon: '🏆', title: 'Complete Goal', description: 'Mark your goal as complete when you achieve it!' }
+                    ]
+                },
+                'general': {
+                    title: '🎯 Goal Tracker Overview',
+                    steps: [
+                        { icon: '🏠', title: 'Dashboard', description: 'Your central hub for viewing and managing all your goals.' },
+                        { icon: '🌟', title: 'Community', description: 'Connect with others, share progress, and find motivation.' },
+                        { icon: '👥', title: 'Friends', description: 'Build your support network by connecting with fellow achievers.' },
+                        { icon: '💬', title: 'Messages', description: 'Stay in touch with your friends through private messaging.' }
+                    ]
+                }
+            };
+            
+            return helpData[pageType] || helpData['general'];
+        }
+        
+        function createHelpModal(helpContent, pageType) {
+            // Prevent multiple modals from opening
+            if (document.getElementById('helpModal')) {
+                console.log('Help modal already exists, skipping...');
+                return;
+            }
+            
+            // Check if any other modal is currently open
+            const existingModals = document.querySelectorAll('.modal.show');
+            if (existingModals.length > 0) {
+                console.log('Another modal is open, skipping help modal...');
+                return;
+            }
+            
+            // Mark help as seen for this page
+            if (pageType) {
+                markHelpAsSeen(pageType);
+            }
+            
+            // Create modal HTML
+            const modalHTML = `
+                <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="helpModalLabel">${helpContent.title}</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="help-steps">
+                                    ${helpContent.steps.map((step, index) => `
+                                        <div class="help-step">
+                                            <div class="step-icon">${step.icon}</div>
+                                            <div class="step-content">
+                                                <h6 class="step-title">${step.title}</h6>
+                                                <p class="step-description">${step.description}</p>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            This help won't show automatically again for this page
+                                        </small>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-secondary me-2" onclick="resetAllHelp()">Reset All Help</button>
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Got it!</button>
+                                        <button type="button" class="btn btn-primary" onclick="window.location.href='/contact'">Need More Help?</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <style>
+                .help-steps {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                }
+                
+                .help-step {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 1rem;
+                    padding: 1rem;
+                    background: #f8f9fa;
+                    border-radius: 10px;
+                    border-left: 4px solid #667eea;
+                }
+                
+                .step-icon {
+                    font-size: 2rem;
+                    flex-shrink: 0;
+                }
+                
+                .step-content {
+                    flex: 1;
+                }
+                
+                .step-title {
+                    margin-bottom: 0.5rem;
+                    color: #333;
+                    font-weight: 600;
+                }
+                
+                .step-description {
+                    margin-bottom: 0;
+                    color: #666;
+                    line-height: 1.5;
+                }
+                
+                @media (max-width: 768px) {
+                    .help-step {
+                        flex-direction: column;
+                        text-align: center;
+                    }
+                    
+                    .step-icon {
+                        align-self: center;
+                    }
+                }
+                </style>
+            `;
+            
+            // Add modal to page
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('helpModal'));
+            modal.show();
+            
+            // Remove modal from DOM when hidden
+            document.getElementById('helpModal').addEventListener('hidden.bs.modal', function() {
+                window.helpSystemActive = false; // Reset help system state
+                this.remove();
+            });
+        }
+        
+        // Helper function to detect page type
+        function detectPageType() {
+            const path = window.location.pathname;
+            if (path === '/' || path === '/home') return 'home';
+            if (path.includes('/dashboard') || path.includes('/goals/dashboard')) return 'dashboard';
+            if (path.includes('/goals/detail')) return 'goal-detail';
+            if (path.includes('/community')) return 'community';
+            if (path.includes('/friends')) return 'friends';
+            if (path.includes('/messages')) return 'messages';
+            return 'general';
+        }
+        
+        // Function to start tutorial for specific page
+        function startTutorialForPage(pageType) {
+            // This will be handled by the tutorial.js file
+            if (window.tutorialContent && window.tutorialContent[pageType]) {
+                // Trigger tutorial
+                const event = new CustomEvent('startTutorial', { detail: { pageType } });
+                document.dispatchEvent(event);
+            }
+        }
     </script>
     
     <%- script %>

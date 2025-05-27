@@ -1,0 +1,432 @@
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="h3 text-dark mb-0">User Activity Analytics</h1>
+                <p class="text-muted">Monitor user engagement and activity patterns</p>
+            </div>
+            <div>
+                <a href="/admin" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+                </a>
+                <button class="btn btn-primary" onclick="refreshData()">
+                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 text-success rounded-circle p-3">
+                                <i class="fas fa-users fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0"><%= activityAnalytics.activeUsers.last24Hours %></h3>
+                            <p class="text-muted mb-0">Active (24h)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 text-info rounded-circle p-3">
+                                <i class="fas fa-calendar-week fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0"><%= activityAnalytics.activeUsers.last7Days %></h3>
+                            <p class="text-muted mb-0">Active (7 days)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 text-warning rounded-circle p-3">
+                                <i class="fas fa-calendar-alt fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0"><%= activityAnalytics.activeUsers.last30Days %></h3>
+                            <p class="text-muted mb-0">Active (30 days)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3">
+                                <i class="fas fa-circle fa-lg"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h3 class="mb-0"><%= onlineUsers.length %></h3>
+                            <p class="text-muted mb-0">Online Now</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Activity by Hour Chart -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Activity by Hour (Today)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="hourlyActivityChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity by Type -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Activity Types (7 days)</h5>
+                </div>
+                <div class="card-body">
+                    <% activityAnalytics.activityByType.forEach(activity => { %>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <% 
+                                let iconClass = 'fas fa-circle';
+                                let colorClass = 'text-secondary';
+                                
+                                switch(activity.activity_type) {
+                                    case 'login':
+                                        iconClass = 'fas fa-sign-in-alt';
+                                        colorClass = 'text-success';
+                                        break;
+                                    case 'page_view':
+                                        iconClass = 'fas fa-eye';
+                                        colorClass = 'text-info';
+                                        break;
+                                    case 'goal_action':
+                                        iconClass = 'fas fa-bullseye';
+                                        colorClass = 'text-primary';
+                                        break;
+                                    case 'post_action':
+                                        iconClass = 'fas fa-comments';
+                                        colorClass = 'text-warning';
+                                        break;
+                                    case 'logout':
+                                        iconClass = 'fas fa-sign-out-alt';
+                                        colorClass = 'text-danger';
+                                        break;
+                                }
+                                %>
+                                <i class="<%= iconClass %> <%= colorClass %> me-2"></i>
+                                <span class="text-capitalize"><%= activity.activity_type.replace('_', ' ') %></span>
+                            </div>
+                            <span class="fw-bold"><%= activity.count %></span>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Tables Row -->
+    <div class="row">
+        <!-- Most Active Users -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Most Active Users (7 days)</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>User</th>
+                                    <th>Activities</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (activityAnalytics.mostActiveUsers && activityAnalytics.mostActiveUsers.length > 0) { %>
+                                    <% activityAnalytics.mostActiveUsers.forEach((activeUser, index) => { %>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar bg-primary bg-opacity-10 text-primary rounded-circle me-2">
+                                                        <%= activeUser.username.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <span><%= activeUser.username %></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary"><%= activeUser.activity_count %></span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="/admin/users/<%= activeUser.id %>" class="btn btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/admin/users/<%= activeUser.id %>/activity" class="btn btn-outline-info">
+                                                        <i class="fas fa-chart-line"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted">No activity data available</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Online Users -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Currently Online Users</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>User</th>
+                                    <th>Last Activity</th>
+                                    <th>IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (onlineUsers && onlineUsers.length > 0) { %>
+                                    <% onlineUsers.forEach(onlineUser => { %>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar bg-success bg-opacity-10 text-success rounded-circle me-2">
+                                                        <%= onlineUser.username.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <div>
+                                                        <span><%= onlineUser.username %></span>
+                                                        <small class="d-block text-success">
+                                                            <i class="fas fa-circle fa-xs me-1"></i>
+                                                            Online
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <% if (onlineUser.last_activity) { %>
+                                                    <%= new Date(onlineUser.last_activity).toLocaleTimeString() %>
+                                                <% } else { %>
+                                                    <span class="text-muted">Unknown</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted"><%= onlineUser.last_ip_address || 'Unknown' %></small>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted">No users currently online</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>User</th>
+                                    <th>Activity</th>
+                                    <th>Description</th>
+                                    <th>Time</th>
+                                    <th>IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (recentActivities && recentActivities.length > 0) { %>
+                                    <% recentActivities.slice(0, 50).forEach(activity => { %>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar bg-secondary bg-opacity-10 text-secondary rounded-circle me-2">
+                                                        <%= activity.username.charAt(0).toUpperCase() %>
+                                                    </div>
+                                                    <span><%= activity.username %></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <% 
+                                                let badgeClass = 'bg-secondary';
+                                                switch(activity.activity_type) {
+                                                    case 'login':
+                                                        badgeClass = 'bg-success';
+                                                        break;
+                                                    case 'logout':
+                                                        badgeClass = 'bg-danger';
+                                                        break;
+                                                    case 'goal_action':
+                                                        badgeClass = 'bg-primary';
+                                                        break;
+                                                    case 'post_action':
+                                                        badgeClass = 'bg-warning';
+                                                        break;
+                                                    case 'page_view':
+                                                        badgeClass = 'bg-info';
+                                                        break;
+                                                }
+                                                %>
+                                                <span class="badge <%= badgeClass %>">
+                                                    <%= activity.activity_type.replace('_', ' ') %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <small><%= activity.activity_description %></small>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted">
+                                                    <%= new Date(activity.created_at).toLocaleString() %>
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <small class="text-muted"><%= activity.ip_address || 'Unknown' %></small>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">No recent activity</td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Refresh data function
+    function refreshData() {
+        window.location.reload();
+    }
+    
+    // Hourly Activity Chart
+    const hourlyData = <%- JSON.stringify(hourlyActivity) %>;
+    
+    // Create 24-hour array with proper data
+    const hours = Array.from({length: 24}, (_, i) => i.toString().padStart(2, '0'));
+    const activityCounts = hours.map(hour => {
+        const data = hourlyData.find(h => h.hour === hour);
+        return data ? data.count : 0;
+    });
+    
+    const ctx = document.getElementById('hourlyActivityChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: hours.map(h => h + ':00'),
+            datasets: [{
+                label: 'Activities',
+                data: activityCounts,
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
+
+<style>
+.avatar {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.card {
+    transition: all 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+</style> 

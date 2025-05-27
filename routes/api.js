@@ -910,4 +910,424 @@ router.delete('/goals/:id', ensureAuthenticated, (req, res) => {
     });
 });
 
+// ======================== MISSING API ENDPOINTS ========================
+
+// AI Generate Milestones for Dashboard
+router.post('/ai/generate-milestones', ensureAuthenticated, async (req, res) => {
+    try {
+        const { title, description, category, deadline } = req.body;
+        const userId = req.session.user.id;
+        
+        if (!title || !deadline) {
+            return res.status(400).json({ error: 'Title and deadline are required' });
+        }
+        
+        // Get user subscription plan
+        const user = await new Promise((resolve, reject) => {
+            db.get('SELECT subscription_plan FROM users WHERE id = ?', [userId], (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+        
+        const isPremium = user && (user.subscription_plan === 'monthly' || user.subscription_plan === 'annual');
+        let milestones = [];
+        
+        if (isPremium) {
+            try {
+                const aiService = require('../utils/aiService');
+                const today = new Date().toISOString().split('T')[0];
+                milestones = await aiService.generateMilestones(title, description, today, deadline, category, user.subscription_plan);
+            } catch (error) {
+                console.error('Error generating AI milestones:', error);
+                milestones = generateBasicMilestones(title, new Date().toISOString().split('T')[0], deadline);
+            }
+        } else {
+            milestones = generateBasicMilestones(title, new Date().toISOString().split('T')[0], deadline);
+        }
+        
+        res.json({
+            success: true,
+            milestones: milestones
+        });
+        
+    } catch (error) {
+        console.error('Error in generate-milestones:', error);
+        res.status(500).json({ error: 'Failed to generate milestones' });
+    }
+});
+
+// Create Goal with Milestones from Dashboard
+router.post('/goals/create-with-milestones', ensureAuthenticated, async (req, res) => {
+    try {
+        const { title, description, category, targetDate, milestones } = req.body;
+        const userId = req.session.user.id;
+        
+        if (!title || !category || !targetDate) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        const startDate = new Date().toISOString().split('T')[0];
+        
+        // Create the goal
+        const goalId = await new Promise((resolve, reject) => {
+            db.run(
+                'INSERT INTO goals (user_id, title, description, category, status, start_date, target_date, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                [userId, title, description || '', category, 'active', startDate, targetDate, new Date().toISOString()],
+                function(err) {
+                    if (err) reject(err);
+                    else resolve(this.lastID);
+                }
+            );
+        });
+        
+        // Insert milestones if provided
+        if (milestones && Array.isArray(milestones)) {
+            for (let i = 0; i < milestones.length; i++) {
+                const milestone = milestones[i];
+                await new Promise((resolve, reject) => {
+                    db.run(
+                        'INSERT INTO milestones (goal_id, title, description, target_date, status, display_order, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                        [goalId, milestone.title, milestone.description || '', milestone.targetDate || targetDate, 'pending', i + 1, new Date().toISOString()],
+                        (err) => {
+                            if (err) reject(err);
+                            else resolve();
+                        }
+                    );
+                });
+            }
+        }
+        
+        res.json({
+            success: true,
+            goalId: goalId,
+            message: 'Goal created successfully with milestones!'
+        });
+        
+    } catch (error) {
+        console.error('Error creating goal with milestones:', error);
+        res.status(500).json({ error: 'Failed to create goal' });
+    }
+});
+
+// Get Goal Progress for Dashboard Cards
+router.get('/goals/:id/progress', ensureAuthenticated, (req, res) => {
+    const goalId = req.params.id;
+    const userId = req.session.user.id;
+    
+    // Verify goal ownership
+    db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [goalId, userId], (err, goal) => {
+        if (err || !goal) {
+            return res.status(404).json({ error: 'Goal not found' });
+        }
+        
+        // Get milestones for this goal
+        db.all('SELECT * FROM milestones WHERE goal_id = ?', [goalId], (err, milestones) => {
+            if (err) {
+                console.error('Error fetching milestones:', err);
+                return res.status(500).json({ error: 'Failed to fetch milestones' });
+            }
+            
+            const totalMilestones = milestones.length;
+            const completedMilestones = milestones.filter(m => m.status === 'completed').length;
+            const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+            
+            res.json({
+                success: true,
+                progress: progress,
+                milestoneCount: totalMilestones,
+                completedCount: completedMilestones
+            });
+        });
+    });
+});
+
+// Get Goal Details for Modal
+router.get('/goals/:id/details', ensureAuthenticated, (req, res) => {
+    const goalId = req.params.id;
+    const userId = req.session.user.id;
+    
+    // Get goal with milestones
+    db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [goalId, userId], (err, goal) => {
+        if (err || !goal) {
+            return res.status(404).json({ error: 'Goal not found' });
+        }
+        
+        db.all('SELECT * FROM milestones WHERE goal_id = ? ORDER BY display_order ASC, target_date ASC', [goalId], (err, milestones) => {
+            if (err) {
+                console.error('Error fetching milestones:', err);
+                milestones = [];
+            }
+            
+            // Calculate overall progress
+            const totalMilestones = milestones.length;
+            const completedMilestones = milestones.filter(m => m.status === 'completed').length;
+            const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+            
+            goal.milestones = milestones;
+            goal.progress = progress;
+            
+            res.json({
+                success: true,
+                goal: goal
+            });
+        });
+    });
+});
+
+// Get User Streak for Dashboard
+router.get('/user/streak', ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.session.user.id;
+        const StreakTracker = require('../utils/streak-tracker');
+        const streakStats = await StreakTracker.getUserStreakStats(userId);
+        
+        res.json({
+            success: true,
+            streak: streakStats.currentStreak || 0
+        });
+    } catch (error) {
+        console.error('Error getting user streak:', error);
+        res.json({
+            success: true,
+            streak: 0
+        });
+    }
+});
+
+// Get Milestone Count for Dashboard
+router.get('/milestones/count', ensureAuthenticated, (req, res) => {
+    const userId = req.session.user.id;
+    
+    db.get(`
+        SELECT COUNT(m.id) as total 
+        FROM milestones m 
+        JOIN goals g ON m.goal_id = g.id 
+        WHERE g.user_id = ?
+    `, [userId], (err, result) => {
+        if (err) {
+            console.error('Error getting milestone count:', err);
+            return res.json({ success: true, total: 0 });
+        }
+        
+        res.json({
+            success: true,
+            total: result.total || 0
+        });
+    });
+});
+
+// Get Analytics for Premium Dashboard
+router.get('/analytics/dashboard', ensureAuthenticated, ensurePaidSubscriber, (req, res) => {
+    const userId = req.session.user.id;
+    
+    // Get goals data for chart
+    db.all(`
+        SELECT 
+            DATE(created_at) as date,
+            COUNT(*) as goals_created,
+            SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as goals_completed
+        FROM goals 
+        WHERE user_id = ? 
+        AND created_at >= date('now', '-30 days')
+        GROUP BY DATE(created_at)
+        ORDER BY date ASC
+    `, [userId], (err, chartData) => {
+        if (err) {
+            console.error('Error getting analytics data:', err);
+            return res.status(500).json({ error: 'Failed to load analytics' });
+        }
+        
+        // Format data for Chart.js
+        const labels = [];
+        const progress = [];
+        
+        // Fill in missing dates and calculate cumulative progress
+        const last30Days = [];
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            last30Days.push(date.toISOString().split('T')[0]);
+        }
+        
+        let cumulativeProgress = 0;
+        last30Days.forEach(date => {
+            const dayData = chartData.find(d => d.date === date);
+            if (dayData) {
+                cumulativeProgress += (dayData.goals_completed * 10); // 10 points per completed goal
+            }
+            labels.push(new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            progress.push(Math.min(cumulativeProgress, 100));
+        });
+        
+        res.json({
+            success: true,
+            chartData: {
+                labels: labels,
+                progress: progress
+            },
+            insights: {
+                trend: 'positive',
+                message: 'Your goal completion rate is improving!'
+            }
+        });
+    });
+});
+
+// AI Insights for Goal Detail Page
+router.get('/ai/insights', ensureAuthenticated, (req, res) => {
+    const { goalId } = req.query;
+    const userId = req.session.user.id;
+    
+    if (!goalId) {
+        return res.status(400).json({ error: 'Goal ID is required' });
+    }
+    
+    // Get goal and milestone data
+    db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [goalId, userId], (err, goal) => {
+        if (err || !goal) {
+            return res.status(404).json({ error: 'Goal not found' });
+        }
+        
+        db.all('SELECT * FROM milestones WHERE goal_id = ?', [goalId], (err, milestones) => {
+            if (err) {
+                console.error('Error fetching milestones:', err);
+                milestones = [];
+            }
+            
+            // Generate insights based on goal data
+            const totalMilestones = milestones.length;
+            const completedMilestones = milestones.filter(m => m.status === 'completed').length;
+            const progress = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
+            
+            const targetDate = new Date(goal.target_date);
+            const today = new Date();
+            const daysRemaining = Math.ceil((targetDate - today) / (1000 * 60 * 60 * 24));
+            
+            let insight = '';
+            let recommendation = '';
+            
+            if (progress >= 80) {
+                insight = "🎉 Excellent progress! You're in the final stretch.";
+                recommendation = "Focus on completing the remaining milestones to achieve your goal.";
+            } else if (progress >= 50) {
+                insight = "💪 Great momentum! You're halfway there.";
+                recommendation = "Keep up the consistent effort. Consider breaking down larger milestones.";
+            } else if (progress >= 25) {
+                insight = "🌱 Good start! You're building momentum.";
+                recommendation = "Try to complete at least one milestone this week to maintain progress.";
+            } else {
+                insight = "🚀 Ready to accelerate? Every journey starts with a single step.";
+                recommendation = "Focus on completing your first milestone to build momentum.";
+            }
+            
+            if (daysRemaining < 7 && progress < 80) {
+                insight = "⏰ Time is running short! Consider adjusting your timeline or scope.";
+                recommendation = "Prioritize the most important milestones or extend your deadline.";
+            }
+            
+            res.json({
+                success: true,
+                data: {
+                    insight: insight,
+                    recommendation: recommendation,
+                    progress: progress,
+                    daysRemaining: daysRemaining,
+                    completedMilestones: completedMilestones,
+                    totalMilestones: totalMilestones
+                }
+            });
+        });
+    });
+});
+
+// Get Motivational Quote
+router.get('/motivation/quote', ensureAuthenticated, (req, res) => {
+    const quotes = [
+        {
+            text: "The journey of a thousand miles begins with one step.",
+            author: "Lao Tzu"
+        },
+        {
+            text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+            author: "Winston Churchill"
+        },
+        {
+            text: "The only impossible journey is the one you never begin.",
+            author: "Tony Robbins"
+        },
+        {
+            text: "Don't watch the clock; do what it does. Keep going.",
+            author: "Sam Levenson"
+        },
+        {
+            text: "The future belongs to those who believe in the beauty of their dreams.",
+            author: "Eleanor Roosevelt"
+        },
+        {
+            text: "It is during our darkest moments that we must focus to see the light.",
+            author: "Aristotle"
+        },
+        {
+            text: "Success is walking from failure to failure with no loss of enthusiasm.",
+            author: "Winston Churchill"
+        },
+        {
+            text: "The only way to do great work is to love what you do.",
+            author: "Steve Jobs"
+        },
+        {
+            text: "Life is what happens to you while you're busy making other plans.",
+            author: "John Lennon"
+        },
+        {
+            text: "The way to get started is to quit talking and begin doing.",
+            author: "Walt Disney"
+        }
+    ];
+    
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    
+    res.json({
+        success: true,
+        quote: randomQuote.text,
+        author: randomQuote.author
+    });
+});
+
+// AI Motivation for Goal Detail Page
+router.post('/ai/motivation', ensureAuthenticated, (req, res) => {
+    const { goalId } = req.body;
+    const userId = req.session.user.id;
+    
+    if (!goalId) {
+        return res.status(400).json({ error: 'Goal ID is required' });
+    }
+    
+    // Get goal data for context
+    db.get('SELECT * FROM goals WHERE id = ? AND user_id = ?', [goalId, userId], (err, goal) => {
+        if (err || !goal) {
+            return res.status(404).json({ error: 'Goal not found' });
+        }
+        
+        const motivationalMessages = [
+            `🌟 Remember why you started "${goal.title}" - your future self will thank you for not giving up!`,
+            `💪 Every step toward "${goal.title}" is progress worth celebrating. You've got this!`,
+            `🚀 "${goal.title}" might seem challenging now, but you're stronger than you think!`,
+            `✨ Focus on the journey, not just the destination. You're already succeeding with "${goal.title}"!`,
+            `🎯 Small consistent actions toward "${goal.title}" lead to extraordinary results!`,
+            `🔥 Your determination today creates your success tomorrow. Stay fired up about "${goal.title}"!`,
+            `⭐ Every expert was once a beginner. You're building expertise with "${goal.title}" every day!`,
+            `🌈 Challenges are just opportunities in disguise. "${goal.title}" is making you stronger!`
+        ];
+        
+        const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+        
+        res.json({
+            success: true,
+            message: randomMessage
+        });
+    });
+});
+
 module.exports = router; 

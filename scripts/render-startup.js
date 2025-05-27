@@ -174,6 +174,35 @@ db.serialize(() => {
         UNIQUE(user_id, activity_date)
     )`);
 
+    // Create user_activity_logs table
+    db.run(`CREATE TABLE IF NOT EXISTS user_activity_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        activity_type TEXT NOT NULL,
+        activity_description TEXT,
+        ip_address TEXT,
+        user_agent TEXT,
+        page_url TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )`);
+
+    // Create ip_visits table
+    db.run(`CREATE TABLE IF NOT EXISTS ip_visits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ip_address TEXT NOT NULL,
+        user_agent TEXT,
+        referer TEXT,
+        page_path TEXT,
+        country TEXT,
+        city TEXT,
+        first_visit DATETIME DEFAULT CURRENT_TIMESTAMP,
+        last_visit DATETIME DEFAULT CURRENT_TIMESTAMP,
+        visit_count INTEGER DEFAULT 1,
+        is_unique INTEGER DEFAULT 1,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
     // Check if admin exists
     db.get('SELECT * FROM users WHERE is_admin = 1', async (err, admin) => {
         if (err) {

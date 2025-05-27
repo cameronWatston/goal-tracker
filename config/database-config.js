@@ -29,10 +29,20 @@ class DatabaseConfig {
     }
 
     getDatabasePath() {
+        if (process.env.RENDER) {
+            // Use Render's persistent disk path
+            return path.join('/data', 'database.sqlite');
+        }
+        // Local development path
         return path.join(this.baseDir, 'database.sqlite');
     }
 
     getSessionPath() {
+        if (process.env.RENDER) {
+            // Use Render's persistent disk path
+            return '/data';
+        }
+        // Local development path
         return this.baseDir;
     }
 
@@ -52,6 +62,8 @@ class DatabaseConfig {
         console.log(`   Path: ${this.baseDir}`);
         console.log(`   Database: ${this.getDatabasePath()}`);
         console.log(`   Sessions: ${path.join(this.getSessionPath(), this.getSessionDatabase())}`);
+        console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`   Render: ${process.env.RENDER ? 'Yes' : 'No'}`);
     }
 }
 
